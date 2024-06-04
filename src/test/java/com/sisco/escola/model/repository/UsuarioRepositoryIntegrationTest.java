@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class UsuarioRepositoryTest {
+public class UsuarioRepositoryIntegrationTest {
     
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -50,7 +50,8 @@ public class UsuarioRepositoryTest {
     public void deveRetornarFalsoQuandoNaoHouveUsuarioCadastradoComOEmail(){
         /*nao deve existir email na base de dados*/
         /*execução*/
-        boolean verificarSeDeletouEmail = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
+        boolean verificarSeDeletouEmail = usuarioRepository
+                .existsByEmailLogin("clebergarzaro74@gmail.com");
         
         /*verificação*/
         Assertions.assertThat(verificarSeDeletouEmail).isFalse();
