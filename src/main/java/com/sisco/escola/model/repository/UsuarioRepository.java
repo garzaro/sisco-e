@@ -3,7 +3,13 @@ package com.sisco.escola.model.repository;
 import com.sisco.escola.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     
+    /*existe um usuario com um email*/
     boolean existsByEmailLogin(String emailLogin);
+    
+    /*busca um usuario por email*/
+    Optional<Usuario> findByEmailLogin(String emailLogin);
 }
