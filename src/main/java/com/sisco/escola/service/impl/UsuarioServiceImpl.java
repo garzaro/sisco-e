@@ -6,9 +6,10 @@ import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
