@@ -2,8 +2,6 @@ package com.sisco.escola.model.repository;
 
 import com.sisco.escola.model.entity.Usuario;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +29,7 @@ public class UsuarioRepositoryIntegrationTest {
     
     @Test
     @DisplayName("Verificação feita com sucesso - email existe")
-    public void deveVerificarAExistenciaDeUmEmailNaBaseDeDados() {
+    public void deveVerificarAExistenciaDeUmEmail() {
         /*cenario*/
         Usuario usuarioDeTeste = testCriarUsuario();
         testEntityManager.persist(usuarioDeTeste);
@@ -46,8 +44,7 @@ public class UsuarioRepositoryIntegrationTest {
     public void deveRetornarFalsoQuandoNaoHouveUsuarioCadastradoComOEmail() {
         /*nao deve existir email na base de dados*/
         /*execução*/
-        boolean verificarSeDeletouEmail = usuarioRepository
-                .existsByEmailLogin("clebergarzaro74@gmail.com");
+        boolean verificarSeDeletouEmail = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verificarSeDeletouEmail).isFalse();
     }
