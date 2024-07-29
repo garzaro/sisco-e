@@ -8,10 +8,10 @@ public interface UsuarioService {
     Usuario validarLogin(String emailLogin, String senhalogin);
     
     /*salvar o usuario na base*/
-    Usuario persistirUsuarioNaBaseDeDados(Usuario usuario);
+    Usuario persistirUsuario(Usuario usuario);
     
     /*verifica o email na base de dados, unique */
-    void validarEmailLoginNaBaseDeDados(String emailLogin);
+    void validarEmailLogin(String emailLogin);
     
     
     
