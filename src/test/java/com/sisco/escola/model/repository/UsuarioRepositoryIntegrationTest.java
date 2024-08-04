@@ -34,7 +34,8 @@ public class UsuarioRepositoryIntegrationTest {
         Usuario usuarioDeTeste = testCriarUsuario();
         testEntityManager.persist(usuarioDeTeste);
         /*execução/ação*/
-        boolean verificarSeExisteOEmail = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
+        boolean verificarSeExisteOEmail = usuarioRepository
+                .existsByEmailLogin("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verificarSeExisteOEmail).isTrue();
     }
@@ -44,7 +45,8 @@ public class UsuarioRepositoryIntegrationTest {
     public void deveRetornarFalsoQuandoNaoHouveUsuarioCadastradoComOEmail() {
         /*nao deve existir email na base de dados*/
         /*execução*/
-        boolean verificarSeDeletouEmail = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
+        boolean verificarSeDeletouEmail = usuarioRepository
+                .existsByEmailLogin("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verificarSeDeletouEmail).isFalse();
     }
@@ -115,6 +117,7 @@ public class UsuarioRepositoryIntegrationTest {
     /*para criação de instancia*/
     public static Usuario testCriarUsuario() {
         return Usuario.builder()
+                .id(1l)
                 .nomeCompleto("Cleber Garzaro")
                 .nomeUsuario("garzaro74")
                 .cadastroPessoaFisica("123.456.789-00")
