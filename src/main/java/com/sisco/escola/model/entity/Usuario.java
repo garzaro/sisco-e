@@ -12,6 +12,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Builder
@@ -30,7 +31,7 @@ public class Usuario {
     @Column(name = "nome_completo")
     private String nomeCompleto;
     
-    @Column(name = "cpf_usuario")
+    @Column(name = "cpf")
     private String cadastroPessoaFisica;
     
     @Column(name = "nome_usuario")
@@ -45,7 +46,7 @@ public class Usuario {
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
-   
+    
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
     /*TO STRING*/
