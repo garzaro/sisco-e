@@ -6,9 +6,10 @@ import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -32,14 +33,14 @@ public Usuario validarLogin(String emailLogin, String senhalogin) {
     }
     
     @Override
-    public Usuario persistirUsuarioNaBaseDeDados(Usuario usuarioLogin) {
+    public Usuario persistirUsuario(Usuario usuarioLogin) {
         /*service*/
-        validarEmailLoginNaBaseDeDados(usuarioLogin.getEmailLogin());
+        validarEmailLogin(usuarioLogin.getEmailLogin());
         return usuarioRepository.save(usuarioLogin);
     }
     
     @Override
-    public void validarEmailLoginNaBaseDeDados(String emailLogin) {
+    public void validarEmailLogin(String emailLogin) {
         /*ver se existe email*/
         boolean verificarSeOEmailLoginExisteNaBaseDeDados = usuarioRepository.existsByEmailLogin(emailLogin);
         if (verificarSeOEmailLoginExisteNaBaseDeDados){
