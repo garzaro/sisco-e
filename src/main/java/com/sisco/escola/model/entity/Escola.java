@@ -28,6 +28,13 @@ public class Escola {
     @Column(name = "bairro_escola")
     private String bairroEscola;
     
+    @Column(name = "endereco")
+    private String endereco;
+    
+    @Column(name ="telefone")
+    private String telegfone;
+    
+    
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
     /*TO STRING*/
