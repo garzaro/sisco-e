@@ -1,14 +1,16 @@
 package com.sisco.escola.service;
 
 import com.sisco.escola.model.entity.Escola;
-import com.sisco.escola.model.entity.Usuario;
 
 public interface EscolaService {
     
-    /*verificar se a escola existe na base*/
-    Usuario metodoParaValidarEscola(String nomeEscola, String cidadeEscola);
+    /*verificar se a escola existe na base, inep*/
+    Escola verificarEscolaJaCadastrada(String nomeEscola, String cadastroEscola);/*inep*/
     
     /*salvar a escola na base*/
-    Usuario metodoParaPersistirEscolaNaBaseDeDados(Escola nomeEscola);
+    Escola persistirEscola(Escola nomeEscola);
     
+    /*verificar escola na base de dados, unique*/
+    void validarEscola(String inep);
 }
+
