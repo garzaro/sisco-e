@@ -1,7 +1,6 @@
 package com.sisco.escola.service.impl;
 
 import com.sisco.escola.exception.*;
-import com.sisco.escola.exception.ErroValidacaoEscola;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.EscolaRepository;
@@ -18,65 +17,38 @@ public class EscolaServiceImpl implements EscolaService {
     }
     
     @Override
-    public Escola verificarEscolaCadastrada(String nomeEscola, String cadastroEscola) {
-        return escolaRepository.existsByNomeEscolaOrCadastroEscola()
+    public Escola buscarEscolaPorNomeOuCadastro(String nomeEscola, String cadastroEscola) { /*ver se a escola ja esta cadastrada*/
+        Optional<Escola> escolaCadastro = escolaRepository.findByNomeEscolaOrCadastroEscola(nomeEscola, cadastroEscola);
+        if (!escolaCadastro.isPresent()) {
+            throw new ErroEscolaInexitente("Escola não encontrada.");
+        }
+        return escolaCadastro.get();
     }
     
-    
     @Override
-    public Escola persistirEscola(Escola cadastroEscola) {
-    	/*service*/
-    	validarEscola(cadastroEscola.getNomeEscola());
-        return null;
-    }
-}
-
-
-    
-    @Override
-    public Usuario persistirUsuario(Usuario usuarioLogin) {
+    public Escola salvarEscola(Escola nomeEscola) {
+        Escola escolaExitente = escolaRepository.findByNomeEscola(nomeEscola.getNomeEscola());
+        if (escolaExitente != null) {
+            /*excessao personalizada*/
+            throw new ErroEscolaJaCadastrada("Esta escola já está cadastrada");
+        }
         /*service*/
-        validarEmailLogin(usuarioLogin.getEmailLogin());
-        return usuarioRepository.save(usuarioLogin);
+        validarEscola(nomeEscola.getNomeEscola());
+        return escolaRepository.save(nomeEscola);
     }
     
     @Override
-    public void validarEmailLogin(String emailLogin) {
-        /*ver se existe email*/
-        boolean verificarSeOEmailLoginExisteNaBaseDeDados = usuarioRepository.existsByEmailLogin(emailLogin);
-        if (verificarSeOEmailLoginExisteNaBaseDeDados){
-            throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
+    public void validarEscola(String nomeEscola) {
+        /*ver se existe escola*/
+        boolean verificarEscola = escolaRepository.existsByNomeEscola(nomeEscola);
+        if (verificarEscola) {
+            throw new RegraDeNegocioException("Já existe uma escola com esse nome.");
+        }
     }
 }
 
 	
-	@Override
-	public void validarEscola(String nomeEscola) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	 @Override
-	    public Usuario persistirUsuario(Usuario usuarioLogin) {
-	        /*service*/
-	        validarEmailLogin(usuarioLogin.getEmailLogin());
-	        return usuarioRepository.save(usuarioLogin);
-	    }
-	    
-	    @Override
-	    public void validarEmailLogin(String emailLogin) {
-	        /*ver se existe email*/
-	        boolean verificarSeOEmailLoginExisteNaBaseDeDados = usuarioRepository.existsByEmailLogin(emailLogin);
-	        if (verificarSeOEmailLoginExisteNaBaseDeDados){
-	            throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
-     }
+
             
             
             
-            
-            public void validarEmailNaBaseDedados(String email) {
-                /*ver se o email existe*/
-                boolean verificarSeOEmailExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
-                if (verificarSeOEmailExisteNaBaseDeDados){
-                    throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
-                }
