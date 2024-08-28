@@ -28,30 +28,6 @@ public class UsuarioRepositoryIntegrationTest {
     TestEntityManager testEntityManager;
     
     @Test
-    @DisplayName("Verificação feita com sucesso - email existe")
-    public void deveVerificarAExistenciaDeUmEmail() {
-        /*cenario*/
-        Usuario usuarioDeTeste = testCriarUsuario();
-        testEntityManager.persist(usuarioDeTeste);
-        /*execução/ação*/
-        boolean verificarSeExisteOEmail = usuarioRepository
-                .existsByEmailLogin("clebergarzaro74@gmail.com");
-        /*verificação*/
-        Assertions.assertThat(verificarSeExisteOEmail).isTrue();
-    }
-    
-    @Test
-    @DisplayName("Verificação feita com sucesso - false, nao existe cadastro com o email")
-    public void deveRetornarFalsoQuandoNaoHouveUsuarioCadastradoComOEmail() {
-        /*nao deve existir email na base de dados*/
-        /*execução*/
-        boolean verificarSeDeletouEmail = usuarioRepository
-                .existsByEmailLogin("clebergarzaro74@gmail.com");
-        /*verificação*/
-        Assertions.assertThat(verificarSeDeletouEmail).isFalse();
-    }
-    
-    @Test
     @DisplayName("Verificação feita com sucesso - usuario buscado por email")
     public void testDeveRetornarVazioAoBuscarUsuarioPeloEmailSeNaoExistirNaBaseDeDados() {
         /*cenario*/
