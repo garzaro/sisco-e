@@ -1,8 +1,5 @@
 package com.sisco.escola.model.entity;
 
-
-
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,16 +28,16 @@ public class Usuario {
     @Column(name = "nome_completo")
     private String nomeCompleto;
     
-    @Column(name = "cpf")
+    @Column(name = "cpf", unique = true)
     private String cadastroPessoaFisica;
     
     @Column(name = "nome_usuario")
     private String nomeUsuario;
     
-    @Column(name = "email_login")
+    @Column(name = "email_login", unique = true)
     private String emailLogin;
     
-    @Column(name = "senha_login")
+    @Column(name = "senha_login", nullable = false)
     private String senhaLogin;
     
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
