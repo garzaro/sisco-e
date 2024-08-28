@@ -28,16 +28,16 @@ public class Usuario {
     @Column(name = "nome_completo")
     private String nomeCompleto;
     
-    @Column(name = "cpf", unique = true)
+    @Column(name = "cpf")
     private String cadastroPessoaFisica;
     
     @Column(name = "nome_usuario")
     private String nomeUsuario;
     
-    @Column(name = "email_login", unique = true)
+    @Column(name = "email_login")
     private String emailLogin;
     
-    @Column(name = "senha_login", nullable = false)
+    @Column(name = "senha_login")
     private String senhaLogin;
     
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
