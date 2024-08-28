@@ -14,7 +14,4 @@ public interface UsuarioService {
     
     /*verifica o email na base de dados, unique */
     void validarEmailLogin(String emailLogin);
-    
-    
-    
 }
