@@ -27,11 +27,11 @@ public class EscolaServiceImpl implements EscolaService {
     
     @Override
     public Escola salvarEscola(Escola nomeEscola) {
-        Escola escolaExitente = escolaRepository.findByNomeEscola(nomeEscola.getNomeEscola());
+        /*Escola escolaExitente = escolaRepository.findByNomeEscola(nomeEscola.getNomeEscola());
         if (escolaExitente != null) {
-            /*excessao personalizada*/
-            throw new ErroEscolaJaCadastrada("Esta escola já está cadastrada");
-        }
+            /*excessao personalizada
+            throw new RegraDeNegocioException("Esta escola já está cadastrada");
+        }*/
         /*service*/
         validarEscola(nomeEscola.getNomeEscola());
         return escolaRepository.save(nomeEscola);
