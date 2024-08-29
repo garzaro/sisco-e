@@ -1,38 +1,37 @@
 package com.sisco.escola.model.repository;
 
-
 import com.sisco.escola.model.entity.Usuario;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Profile;
 import java.time.LocalDate;
 import java.util.Optional;
 
-//@DataJpaTest
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+/*TESTE DANDO ERRO, ANALISAR DEPOIS*/
+
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 //@Profile("test")
 public class UsuarioRepositoryTest {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
+    TestEntityManager testEntityManager;
 
     @Test
     @DisplayName("email encontrado")
     public void deveVerificarAExistenciaDeUmEmail(){
         /*cenario*/
         Usuario usuario = criarUsuario();
-        usuarioRepository.save(usuario);
-
+        testEntityManager.persist(usuario);
         /*execução*/
         boolean verificarEmail = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
-
         /*verificação*/
         Assertions.assertThat(verificarEmail).isTrue();
     }
@@ -41,7 +40,7 @@ public class UsuarioRepositoryTest {
     @DisplayName("falso, nao tem usuario cadastrado")
     public void deveRetornarFalsoQuandoNaoHouverUsuarioCadastradoPeloEmail(){
         /*cenario*/
-        usuarioRepository.deleteAll();
+        /*usuarioRepository.deleteAll();*/
         /*execução*/
         boolean verificarEmailNaBase = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
         /*verificação*/
@@ -52,11 +51,23 @@ public class UsuarioRepositoryTest {
     @DisplayName("retornou vazio")
     public void deveRetornarVazioAoBuscarUsuarioPeloEmailSeNaoExisteNaBase(){
         /*cenario*/
-        usuarioRepository.deleteAll();
+        /*vazio*/
         /*ação*/
         Optional<Usuario> verUsuarioNaBase = usuarioRepository.findByEmailLogin("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verUsuarioNaBase.isPresent()).isFalse();
+    }
+    
+    @Test
+    @DisplayName("usuario retornado por email")
+    public void deveBuscarUmUsuarioPorEmail() {
+        /*cenario*/
+        Usuario persistirUsuario = criarUsuario();
+        testEntityManager.persist(persistirUsuario);
+        /*execução*/
+        Optional<Usuario> buscarUsuario = usuarioRepository.findByEmailLogin("clebergarzaro74@gmail.com");
+        /*verificação*/
+        Assertions.assertThat(buscarUsuario.isPresent()).isTrue();
     }
 
     @Test
@@ -71,27 +82,33 @@ public class UsuarioRepositoryTest {
     }
     
     @Test
-    public void deveBuscarUmUsuarioPorEmail() {
-    	/*cenario*/
-    	Usuario persistirUsuario = criarUsuario();
-    	usuarioRepository.save(persistirUsuario);
-    	/*execução*/
-    	Optional<Usuario> buscarUsuario = usuarioRepository.findByEmailLogin("clebergarzaro74@gmail.com");
-    	/*verificação*/
-    	Assertions.assertThat(buscarUsuario.isPresent()).isTrue();
+    @DisplayName("instancia recuperada pelo id")
+    public void deveRetornarUmaInstanciaDeUsuarioPeloId() {
+        /*cenario*/
+        Usuario usuarioEsperado = criarUsuario();
+        usuarioRepository.save(usuarioEsperado);
+        /*ação*/
+        Usuario recuperarUsuario = usuarioRepository.findById(usuarioEsperado.getId()).orElseThrow();
+        /*verificação*/
+        Assertions.assertThat(recuperarUsuario.getId()).isNotNull();
+        Assertions.assertThat(recuperarUsuario.getNomeCompleto()).isEqualTo("Cleber Garzaro"); /*comparação*/
+        Assertions.assertThat(recuperarUsuario.getCadastroPessoaFisica()).isEqualTo("123.456.789-00");
+        Assertions.assertThat(recuperarUsuario.getNomeUsuario()).isEqualTo("garzaro74");
+        Assertions.assertThat(recuperarUsuario.getEmailLogin()).isEqualTo("clebergarzaro74@gmail.com");
+        Assertions.assertThat(recuperarUsuario.getSenhaLogin()).isEqualTo("senha");
+        Assertions.assertThat(recuperarUsuario.getDataCadastro()).isEqualTo("2024-08-28");
     }
-
-
+    
     /*para criação de instancia*/
-    public static Usuario criarUsuario() {
-        return Usuario.builder()
-                .id(1l)
-                .nomeCompleto("Cleber Garzaro")
-                .nomeUsuario("garzaro74")
-                .cadastroPessoaFisica("123.456.789-00")
-                .emailLogin("clebergarzaro74@gmail.com")
-                .senhaLogin("senha")
-                .dataCadastro(LocalDate.now())
-                .build();
+        public static Usuario criarUsuario () {
+            return Usuario.builder()
+                    .nomeCompleto("Cleber Garzaro")
+                    .nomeUsuario("garzaro74")
+                    .cadastroPessoaFisica("123.456.789-00")
+                    .emailLogin("clebergarzaro74@gmail.com")
+                    .senhaLogin("senha")
+                    .dataCadastro(LocalDate.now())
+                    .build();
+        }
     }
-}
+
