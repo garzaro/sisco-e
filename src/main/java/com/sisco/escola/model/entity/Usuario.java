@@ -38,7 +38,7 @@ public class Usuario {
     private String email;
     
     @Column(name = "senha")
-    private String senhaLogin;
+    private String senha;
     
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     @Column(name = "data_cadastro")
