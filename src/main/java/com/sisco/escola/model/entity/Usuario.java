@@ -34,10 +34,10 @@ public class Usuario {
     @Column(name = "nome_usuario")
     private String nomeUsuario;
     
-    @Column(name = "email_login")
-    private String emailLogin;
+    @Column(name = "email")
+    private String email;
     
-    @Column(name = "senha_login")
+    @Column(name = "senha")
     private String senhaLogin;
     
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
