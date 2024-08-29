@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public interface UsuarioService {
     
     /*verificar se o usuario existe na base, validação*/
-    Usuario validarLogin(String emailLogin, String senhalogin);
+    Usuario autenticarUsuario(String emailLogin, String senhalogin);
     
     /*salvar o usuario na base*/
     Usuario persistirUsuario(Usuario usuario);
