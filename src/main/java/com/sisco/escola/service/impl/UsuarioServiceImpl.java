@@ -26,7 +26,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	        if(!validandoLogin.isPresent()){
 	            throw new ErroDeAutenticacao("Usuario não encontrado");
 	        }
-	        if (!validandoLogin.get().getSenhaLogin().equals(senha)){
+	        if (!validandoLogin.get().getSenha().equals(senha)){
 	            throw new ErroDeAutenticacao("Digite a senha correta");
 	        }
 	        return validandoLogin.get();
@@ -42,8 +42,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	    @Override
 	    public void validarEmail(String email) {
 	        /*ver se existe email*/
-	        boolean verificarSeOEmailLoginExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
-	        if (verificarSeOEmailLoginExisteNaBaseDeDados){
+	        boolean verificarSeOEmailExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
+	        if (verificarSeOEmailExisteNaBaseDeDados){
 	            throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
         }
     }
