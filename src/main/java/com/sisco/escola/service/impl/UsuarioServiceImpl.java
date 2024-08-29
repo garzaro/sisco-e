@@ -20,29 +20,29 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	/*login: validação, autenticação*/
 	@Override
-	public Usuario autenticarUsuario(String emailLogin, String senhalogin) {
-	    Optional<Usuario> validandoLogin = usuarioRepository.findByEmailLogin(emailLogin);
+	public Usuario autenticarUsuario(String email, String senha) {
+	    Optional<Usuario> validandoLogin = usuarioRepository.findByEmail(email);
 	    /*verificar a existencia de usuario na base de dados*/
 	        if(!validandoLogin.isPresent()){
 	            throw new ErroDeAutenticacao("Usuario não encontrado");
 	        }
-	        if (!validandoLogin.get().getSenhaLogin().equals(senhalogin)){
+	        if (!validandoLogin.get().getSenhaLogin().equals(senha)){
 	            throw new ErroDeAutenticacao("Digite a senha correta");
 	        }
 	        return validandoLogin.get();
 	    }
 	    
 	    @Override
-	    public Usuario persistirUsuario(Usuario usuarioLogin) {
+	    public Usuario persistirUsuario(Usuario usuario) {
 	        /*service*/
-	        validarEmailLogin(usuarioLogin.getEmailLogin());
-	        return usuarioRepository.save(usuarioLogin);
+	        validarEmail(usuario.getEmail());
+	        return usuarioRepository.save(usuario);
 	    }
 	    
 	    @Override
-	    public void validarEmailLogin(String emailLogin) {
+	    public void validarEmail(String email) {
 	        /*ver se existe email*/
-	        boolean verificarSeOEmailLoginExisteNaBaseDeDados = usuarioRepository.existsByEmailLogin(emailLogin);
+	        boolean verificarSeOEmailLoginExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
 	        if (verificarSeOEmailLoginExisteNaBaseDeDados){
 	            throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
         }
