@@ -20,7 +20,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	/*login: validação, autenticação*/
 	@Override
-	public Usuario validarLogin(String emailLogin, String senhalogin) {
+	public Usuario autenticarUsuario(String emailLogin, String senhalogin) {
 	    Optional<Usuario> validandoLogin = usuarioRepository.findByEmailLogin(emailLogin);
 	    /*verificar a existencia de usuario na base de dados*/
 	        if(!validandoLogin.isPresent()){
