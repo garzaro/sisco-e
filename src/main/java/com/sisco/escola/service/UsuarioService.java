@@ -13,5 +13,5 @@ public interface UsuarioService {
     Usuario persistirUsuario(Usuario usuario);
     
     /*verifica o email na base de dados, unique */
-    void validarEmailLogin(String email);
+    void validarEmail(String email);
 }
