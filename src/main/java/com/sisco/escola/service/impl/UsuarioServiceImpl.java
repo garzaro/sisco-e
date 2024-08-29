@@ -5,9 +5,11 @@ import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+@NoArgsConstructor
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
     
