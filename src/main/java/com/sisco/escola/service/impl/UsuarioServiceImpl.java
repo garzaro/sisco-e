@@ -59,6 +59,5 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if (verificarSeCpfExisteNaBase) {
 			throw new RegraDeNegocioException("Já existe um usuario com esse CPF");
 		}
-	
 	}
 }
