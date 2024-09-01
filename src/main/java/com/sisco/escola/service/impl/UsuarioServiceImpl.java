@@ -39,6 +39,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Usuario persistirUsuario(Usuario usuario) {
 		/*service*/
 		validarEmail(usuario.getEmail());
+		validaCPF(usuario.getCadastroPessoaFisica());
 		return usuarioRepository.save(usuario);
 	}
 	    
@@ -54,7 +55,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public void validaCPF(String cadastroPessoaFisica) {
 		/*ver se existe cpf, unique*/
-		boolean verificarSeCpfExisteNaBase = usuarioRepository.existsByCpf(cadastroPessoaFisica);
+		boolean verificarSeCpfExisteNaBase = usuarioRepository.existsByCadastroPessoaFisica(cadastroPessoaFisica);
 		if (verificarSeCpfExisteNaBase) {
 			throw new RegraDeNegocioException("Já existe um usuario com esse CPF");
 		}
