@@ -31,7 +31,7 @@ public class UsuarioRepositoryTest {
         Usuario usuario = criarUsuario();
         testEntityManager.persist(usuario);
         /*execução*/
-        boolean verificarEmail = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
+        boolean verificarEmail = usuarioRepository.existsByEmail("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verificarEmail).isTrue();
     }
@@ -42,7 +42,7 @@ public class UsuarioRepositoryTest {
         /*cenario*/
         /*usuarioRepository.deleteAll();*/
         /*execução*/
-        boolean verificarEmailNaBase = usuarioRepository.existsByEmailLogin("clebergarzaro74@gmail.com");
+        boolean verificarEmailNaBase = usuarioRepository.existsByEmail("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verificarEmailNaBase).isFalse();
     }
@@ -94,8 +94,8 @@ public class UsuarioRepositoryTest {
         Assertions.assertThat(recuperarUsuario.getNomeCompleto()).isEqualTo("Cleber Garzaro"); /*comparação*/
         Assertions.assertThat(recuperarUsuario.getCadastroPessoaFisica()).isEqualTo("123.456.789-00");
         Assertions.assertThat(recuperarUsuario.getNomeUsuario()).isEqualTo("garzaro74");
-        Assertions.assertThat(recuperarUsuario.getEmailLogin()).isEqualTo("clebergarzaro74@gmail.com");
-        Assertions.assertThat(recuperarUsuario.getSenhaLogin()).isEqualTo("senha");
+        Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
+        Assertions.assertThat(recuperarUsuario.getSenha()).isEqualTo("senha");
         Assertions.assertThat(recuperarUsuario.getDataCadastro()).isEqualTo("2024-08-28");
     }
     
@@ -105,8 +105,8 @@ public class UsuarioRepositoryTest {
                     .nomeCompleto("Cleber Garzaro")
                     .nomeUsuario("garzaro74")
                     .cadastroPessoaFisica("123.456.789-00")
-                    .emailLogin("clebergarzaro74@gmail.com")
-                    .senhaLogin("senha")
+                    .email("clebergarzaro74@gmail.com")
+                    .senha("senha")
                     .dataCadastro(LocalDate.now())
                     .build();
         }
