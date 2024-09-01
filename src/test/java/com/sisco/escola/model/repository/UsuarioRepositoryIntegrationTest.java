@@ -30,7 +30,7 @@ public class UsuarioRepositoryIntegrationTest {
         /*cenario*/
         /*execução*/
         Optional<Usuario> usuarioVazio = usuarioRepository
-                .findByEmailLogin("clebergarzaro74@gmail.com");
+                .findByEmail("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(usuarioVazio.isPresent()).isFalse();
     }
@@ -55,7 +55,7 @@ public class UsuarioRepositoryIntegrationTest {
         testEntityManager.persist(persistindoUsuario);
         /*execução*/
         Optional<Usuario> usuarioPersistido = usuarioRepository
-                .findByEmailLogin("clebergarzaro74@gmail.com");
+                .findByEmail("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(usuarioPersistido.isPresent()).isTrue();
     }

@@ -12,7 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByEmail(String email);
     
     /*existe um usuario com um cpf*/
-    boolean existsByCpf(String cpf);
+    boolean existsByCadastroPessoaFisica(String cadastroPessoaFisica);
     
     /*busca um usuario por email*/
     Optional<Usuario> findByEmail(String email);
