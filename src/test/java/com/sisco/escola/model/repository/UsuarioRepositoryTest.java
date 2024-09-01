@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Profile;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -53,7 +53,7 @@ public class UsuarioRepositoryTest {
         /*cenario*/
         /*vazio*/
         /*ação*/
-        Optional<Usuario> verUsuarioNaBase = usuarioRepository.findByEmailLogin("clebergarzaro74@gmail.com");
+        Optional<Usuario> verUsuarioNaBase = usuarioRepository.findByEmail("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(verUsuarioNaBase.isPresent()).isFalse();
     }
@@ -65,7 +65,7 @@ public class UsuarioRepositoryTest {
         Usuario persistirUsuario = criarUsuario();
         testEntityManager.persist(persistirUsuario);
         /*execução*/
-        Optional<Usuario> buscarUsuario = usuarioRepository.findByEmailLogin("clebergarzaro74@gmail.com");
+        Optional<Usuario> buscarUsuario = usuarioRepository.findByEmail("clebergarzaro74@gmail.com");
         /*verificação*/
         Assertions.assertThat(buscarUsuario.isPresent()).isTrue();
     }
