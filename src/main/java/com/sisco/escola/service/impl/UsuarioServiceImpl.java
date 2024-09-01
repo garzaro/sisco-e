@@ -18,8 +18,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     UsuarioRepository usuarioRepository;
    
 	public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
-		super();
-	    this.usuarioRepository = usuarioRepository;
+		this.usuarioRepository = usuarioRepository;
 	}
 	/*login: validação, autenticação*/
 	@Override
