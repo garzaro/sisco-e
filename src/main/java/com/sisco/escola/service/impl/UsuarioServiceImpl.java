@@ -53,9 +53,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 	
 	@Override
-	public void validaCPF(String cpf) {
+	public void validaCPF(String cadastroPessoaFisica) {
 		/*ver se existe cpf, unique*/
-		boolean verificarSeCpfExisteNaBase = usuarioRepository.existsByCpf(cpf);
+		boolean verificarSeCpfExisteNaBase = usuarioRepository.existsByCpf(cadastroPessoaFisica);
 		if (verificarSeCpfExisteNaBase) {
 			throw new RegraDeNegocioException("Já existe um usuario com esse CPF");
 		}
