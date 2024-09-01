@@ -2,6 +2,7 @@ package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.UsuarioAutenticacaoDTO;
 import com.sisco.escola.api.dto.UsuarioCadastroDTO;
+import com.sisco.escola.exception.CpfJaCadastradoException;
 import com.sisco.escola.exception.ErroDeAutenticacao;
 import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Usuario;
@@ -11,47 +12,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/usuarios") /*para mapeamento de todas as requisições*/
+@RequestMapping("api/usuarios") /*para mapeamento de todas as requisições*/
 public class UsuarioController {
     
     public UsuarioService usuarioService;
-        
+    
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
     
     @PostMapping("/autenticar")
-    public ResponseEntity<Object> autenticarUsuario(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
+    public ResponseEntity autenticarUsuario(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
         try {
-            Usuario usuarioAutenticado = usuarioService.autenticarUsuario(
-                    dtoAuth.getEmailLogin(),
-                    dtoAuth.getSenhaLogin());
+            Usuario usuarioAutenticado = usuarioService.autenticarUsuario(dtoAuth.getEmail(), dtoAuth.getSenha());
             return ResponseEntity.ok(usuarioAutenticado);
-            
         } catch (ErroDeAutenticacao e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
     /*Salvar - Este método é um endpoint que recebe uma requisição HTTP POST*/
     /*ResponseEntity representa o corpo da resposta*/
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody UsuarioCadastroDTO dto) {
-        Usuario usuario = Usuario.builder()
+    public ResponseEntity salvar(@RequestBody UsuarioCadastroDTO dto) {
+        Usuario salvarUsuario = Usuario.builder()
                 .nomeCompleto(dto.getNomeCompleto())
                 .cadastroPessoaFisica(dto.getCadastroPessoaFisica())
                 .nomeUsuario(dto.getNomeUsuario())
-                .emailLogin(dto.getEmailLogin())
-                .senhaLogin(dto.getSenhaLogin())
+                .email(dto.getEmail())
+                .senha(dto.getSenha())
                 .dataCadastro(dto.getDataCadastro())
                 .build();
-        
         try {
-            Usuario usuarioSalvo = usuarioService.persistirUsuario(usuario);
-            return new ResponseEntity<Object>(usuarioSalvo, HttpStatus.CREATED);
+            Usuario usuarioSalvo = usuarioService.persistirUsuario(salvarUsuario);
+            return new ResponseEntity (usuarioSalvo, HttpStatus.CREATED);
             /*ou usar url*/
             /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/
-        } catch (RegraDeNegocioException mensagemDeErro) {
+        } catch (RegraDeNegocioException | CpfJaCadastradoException mensagemDeErro) {
             return ResponseEntity.badRequest().body(mensagemDeErro.getMessage());
         }
     }
