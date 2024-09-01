@@ -12,7 +12,7 @@ public class UsuarioCadastroDTO {
     private String nomeCompleto;
     private String cadastroPessoaFisica;
     private String nomeUsuario;
-    private String emailLogin;
-    private String senhaLogin;
+    private String email;
+    private String senha;
     private LocalDate dataCadastro;
 }
