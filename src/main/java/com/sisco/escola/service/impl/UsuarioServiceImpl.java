@@ -5,17 +5,20 @@ import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
+import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 @NoArgsConstructor
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
-    
+    @Autowired
     UsuarioRepository usuarioRepository;
    
 	public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+		super();
 	    this.usuarioRepository = usuarioRepository;
 	}
 	/*login: validação, autenticação*/
@@ -23,28 +26,39 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Usuario autenticarUsuario(String email, String senha) {
 	    Optional<Usuario> validandoLogin = usuarioRepository.findByEmail(email);
 	    /*verificar a existencia de usuario na base de dados*/
-	        if(!validandoLogin.isPresent()){
-	            throw new ErroDeAutenticacao("Usuario não encontrado");
-	        }
-	        if (!validandoLogin.get().getSenha().equals(senha)){
-	            throw new ErroDeAutenticacao("Digite a senha correta");
-	        }
-	        return validandoLogin.get();
-	    }
+		if(!validandoLogin.isPresent()) {
+			throw new ErroDeAutenticacao("Usuario não encontrado pelo email informado");
+		}
+		if (!validandoLogin.get().getSenha().equals(senha)){
+			throw new ErroDeAutenticacao("Digite a senha correta");
+		}
+			return validandoLogin.get();
+	}
 	    
-	    @Override
-	    public Usuario persistirUsuario(Usuario usuario) {
-	        /*service*/
-	        validarEmail(usuario.getEmail());
-	        return usuarioRepository.save(usuario);
-	    }
+	@Override
+	@Transactional
+	public Usuario persistirUsuario(Usuario usuario) {
+		/*service*/
+		validarEmail(usuario.getEmail());
+		return usuarioRepository.save(usuario);
+	}
 	    
-	    @Override
-	    public void validarEmail(String email) {
-	        /*ver se existe email*/
-	        boolean verificarSeOEmailExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
-	        if (verificarSeOEmailExisteNaBaseDeDados){
-	            throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
+	@Override
+	public void validarEmail(String email) {
+		/*ver se existe email, unique*/
+		boolean verificarSeOEmailExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
+		if (verificarSeOEmailExisteNaBaseDeDados){
+			throw new RegraDeNegocioException("Ja existe um usuario com esse email.");
         }
     }
+	
+	@Override
+	public void validaCPF(String cpf) {
+		/*ver se existe cpf, unique*/
+		boolean verificarSeCpfExisteNaBase = usuarioRepository.existsByCpf(cpf);
+		if (verificarSeCpfExisteNaBase) {
+			throw new RegraDeNegocioException("Já existe um usuario com esse CPF");
+		}
+	
+	}
 }
