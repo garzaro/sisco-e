@@ -4,16 +4,22 @@ import com.sisco.escola.model.entity.Escola;
 
 import java.util.Optional;
 
+import com.sisco.escola.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EscolaRepository extends JpaRepository<Escola, Long> {
     
-    /*verifica a existencia de uma escola no banco de dados*/
+    /*verifica a existencia de uma escola por nome*/
     boolean existsByNomeEscola(String nomeEscola);
+    
+    /*verifica a existencia de uma escola por inep*/
     boolean existsByCadastroEscola(String cadastroEscola);
     
-    /*procura uma escola pelo nome no banco de dados*/
-    Optional<Escola> findByNomeEscolaOrCadastroEscola(String nomeEscola, String cadastroEscola);
+    /*procura uma escola pelo nome ou inep*/
+    Optional<Escola> findByNomeEscola(String nomeEscola);
     
-    boolean findByNomeEscola(String nomeEscola);
+    /*procura uma escola pelo nome ou inep*/
+    Optional<Escola> findByCadastroPessoaFisica(String cadastroPessoaFisica);
+    
+    Optional<Escola> findByNomeEscolaOrCadastroEscola(String nomeEscola, String cadastroEscola);
 }
