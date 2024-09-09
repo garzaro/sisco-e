@@ -29,7 +29,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 			throw new ErroDeAutenticacao("Usuario não encontrado pelo email informado");
 		}
 		if (!validandoLogin.get().getSenha().equals(senha)){
-			throw new ErroDeAutenticacao("Digite a senha correta");
+			throw new ErroDeAutenticacao("Senha incorreta");
 		}
 			return validandoLogin.get();
 	}
