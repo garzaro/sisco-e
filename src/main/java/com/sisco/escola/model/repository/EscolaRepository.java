@@ -19,7 +19,5 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
     Optional<Escola> findByNomeEscola(String nomeEscola);
     
     /*procura uma escola pelo nome ou inep*/
-    Optional<Escola> findByCadastroPessoaFisica(String cadastroPessoaFisica);
-    
     Optional<Escola> findByNomeEscolaOrCadastroEscola(String nomeEscola, String cadastroEscola);
 }
