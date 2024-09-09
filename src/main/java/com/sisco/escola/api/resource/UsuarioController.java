@@ -43,7 +43,7 @@ public class UsuarioController {
                 .dataCadastro(dto.getDataCadastro())
                 .build();
         try {
-            Usuario usuarioSalvo = usuarioService.persistirUsuario(salvarUsuario);
+            Usuario usuarioSalvo = usuarioService.salvarUsuario(salvarUsuario);
             return new ResponseEntity (usuarioSalvo, HttpStatus.CREATED);
             /*ou usar url*/
             /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/

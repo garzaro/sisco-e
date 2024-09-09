@@ -10,7 +10,7 @@ public interface UsuarioService {
     Usuario autenticarUsuario(String email, String senha);
     
     /*salvar o usuario na base*/
-    Usuario persistirUsuario(Usuario usuario);
+    Usuario salvarUsuario(Usuario usuario);
     
     /*verifica o email na base de dados, unique */
     void validarEmail(String email);

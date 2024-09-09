@@ -36,10 +36,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	    
 	@Override
 	@Transactional
-	public Usuario persistirUsuario(Usuario usuario) {
+	public Usuario salvarUsuario(Usuario usuario) {
 		/*service*/
 		validarEmail(usuario.getEmail());
 		validaCPF(usuario.getCadastroPessoaFisica());
+		/*salvar o usuario*/
 		return usuarioRepository.save(usuario);
 	}
 	    
