@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/usuarios") /*para mapeamento de todas as requisições*/
+@RequestMapping("api/usuarios") /*uri para mapeamento de todas as requisições*/
 public class UsuarioController {
     
     public UsuarioService usuarioService;
