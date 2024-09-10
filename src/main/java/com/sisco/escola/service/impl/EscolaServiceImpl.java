@@ -2,7 +2,6 @@ package com.sisco.escola.service.impl;
 
 import com.sisco.escola.exception.*;
 import com.sisco.escola.model.entity.Escola;
-import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
 
@@ -20,7 +19,7 @@ public class EscolaServiceImpl implements EscolaService {
     public Escola buscarEscolaPorNomeOuCadastro(String nomeEscola, String cadastroEscola) { /*ver se a escola ja esta cadastrada*/
         Optional<Escola> escolaCadastro = escolaRepository.findByNomeEscolaOrCadastroEscola(nomeEscola, cadastroEscola);
         if (!escolaCadastro.isPresent()) {
-            throw new ErroEscolaInexitente("Escola não encontrada.");
+            throw new ErroEscolaInexitenteException("Escola não encontrada.");
         }
         return escolaCadastro.get();
     }
