@@ -35,7 +35,7 @@ public class Escola {
     private String endereco;
     
     @Column(name ="telefone")
-    private String telefone;
+    private Integer telefone;
     
     
     /*GETTERS AND SETTERS*/
