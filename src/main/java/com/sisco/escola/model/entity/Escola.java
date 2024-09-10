@@ -23,7 +23,7 @@ public class Escola {
     private String nomeEscola;
     
     @Column(name = "inep")
-    private String cadastroEscola;
+    private Integer cadastroEscola;
     
     @Column(name = "cidade_escola")
     private String cidadeEscola;
@@ -35,7 +35,7 @@ public class Escola {
     private String endereco;
     
     @Column(name ="telefone")
-    private String telefone;
+    private Integer telefone;
     
     
     /*GETTERS AND SETTERS*/

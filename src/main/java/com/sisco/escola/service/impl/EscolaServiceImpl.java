@@ -5,8 +5,14 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
 
+import lombok.NoArgsConstructor;
+
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+@NoArgsConstructor
+@Service
 public class EscolaServiceImpl implements EscolaService {
     
     EscolaRepository escolaRepository;
@@ -16,11 +22,16 @@ public class EscolaServiceImpl implements EscolaService {
     }
     
     @Override
-    public Escola buscarEscolaPorNomeOuCadastro(String nomeEscola, String cadastroEscola) { /*ver se a escola ja esta cadastrada*/
+    public Escola buscarEscolaPorNomeOuCadastro(String nomeEscola, Integer cadastroEscola) { /*ver se a escola ja esta cadastrada*/
         Optional<Escola> escolaCadastro = escolaRepository.findByNomeEscolaOrCadastroEscola(nomeEscola, cadastroEscola);
         if (!escolaCadastro.isPresent()) {
-            throw new ErroEscolaInexitenteException("Escola não encontrada.");
+            throw new CodigoInexistenteException("Codigo não encontrado.");
         }
+        if (nomeEscola.isEmpty()) {
+        	throw new EscolaInexitenteException("Escola não encontrada.");
+			
+		}
+        
         return escolaCadastro.get();
     }
     
