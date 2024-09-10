@@ -13,6 +13,9 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
     boolean existsByNomeEscola(String nomeEscola);
     
     /*verifica a existencia de uma escola por inep*/
+    boolean existsByCadastroEscola(Integer cadastroEscola);
+    
+    /*verifica a existencia de uma escola por inep*/
     boolean existsByCadastroEscola(String cadastroEscola);
     
     /*procura uma escola pelo nome ou inep*/
