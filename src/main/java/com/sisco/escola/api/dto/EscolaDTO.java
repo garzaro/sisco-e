@@ -10,7 +10,7 @@ import lombok.Setter;
 public class EscolaDTO {
     
     private String nomeEscola;
-    private String cadastroEscola;
+    private String codigoEscola;
     private String cidadeEscola;
     private String bairroEscola;
     private String endereco;

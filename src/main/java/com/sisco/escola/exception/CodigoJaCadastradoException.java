@@ -1,7 +1,7 @@
 package com.sisco.escola.exception;
 
 public class CodigoJaCadastradoException extends RuntimeException{
-    CodigoJaCadastradoException(String mensagemDeErro){
+    public CodigoJaCadastradoException(String mensagemDeErro){
         super(mensagemDeErro);
     }
 }

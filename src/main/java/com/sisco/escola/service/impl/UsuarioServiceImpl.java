@@ -39,13 +39,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Usuario salvarUsuario(Usuario usuario) {
 		/*service*/
 		validarEmail(usuario.getEmail());
-		validaCPF(usuario.getCadastroPessoaFisica());
+		validarCPF(usuario.getCadastroPessoaFisica());
 		/*salvar o usuario*/
 		return usuarioRepository.save(usuario);
 	}
 	    
 	@Override
-	public void validarEmail(String email) {
+public void validarEmail(String email) {
 		/*ver se existe email, unique*/
 		boolean verificarSeOEmailExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
 		if (verificarSeOEmailExisteNaBaseDeDados){
@@ -54,7 +54,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 	
 	@Override
-	public void validaCPF(String cadastroPessoaFisica) {
+	public void validarCPF(String cadastroPessoaFisica) {
 		/*ver se existe cpf, unique*/
 		boolean verificarSeCpfExisteNaBase = usuarioRepository.existsByCadastroPessoaFisica(cadastroPessoaFisica);
 		if (verificarSeCpfExisteNaBase) {

@@ -16,5 +16,5 @@ public interface UsuarioService {
     void validarEmail(String email);
     
     /*verifica o cpf na base de dados, unique */
-    void validaCPF(String cpf);
+    void validarCPF(String cpf);
 }

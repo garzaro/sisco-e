@@ -26,7 +26,7 @@ public class EscolaController {
     public ResponseEntity salvar(@RequestBody EscolaDTO dto) {
         Escola salvarEscola = Escola.builder()
                 .nomeEscola(dto.getNomeEscola())
-                .cadastroEscola(dto.getCadastroEscola())
+                .codigoEscola(dto.getCodigoEscola())
                 .cidadeEscola(dto.getCidadeEscola())
                 .bairroEscola(dto.getBairroEscola())
                 .endereco(dto.getEndereco())
@@ -37,7 +37,7 @@ public class EscolaController {
             return new ResponseEntity (escolaSalva, HttpStatus.CREATED);
             /*ou usar url*/
             /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/
-        } catch (EscolaJaCadastradaException | CodigoJaCadastradoException mensagemDeErro) {
+        } catch (EscolaJaCadastradaException mensagemDeErro) {
             return ResponseEntity.badRequest().body(mensagemDeErro.getMessage());
         }
     }
