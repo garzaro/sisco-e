@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public interface EscolaService {
     /*verificar se a escola existe na base*/
-    List<Escola> buscarEscolaPorNome(Escola nomeEscola);
+    List<Escola> buscarEscolaPorNome(Escola escola);
     
     /*verificar se existe o codigo na base*/
     Optional<Escola> buscarEscolaPorCodigo(Escola codigoEscola);
@@ -20,10 +20,10 @@ public interface EscolaService {
     Escola salvarEscola(Escola nomeEscola);
     
     /*verificar escola na base de dados, unique*/
-    void validarEscola(Escola nomeEscola);
+    void validarEscolaNaBase(String nomeEscola);
     
     /*verificar cadastro na base de dados, unique*/
-    void validarCodigo(Escola cadastroEscola);
+    void validarCodigo(String cadastroEscola);
 }
 
 

@@ -27,8 +27,8 @@ public class EscolaServiceImpl implements EscolaService {
     }
     
     @Override
-    public List<Escola> buscarEscolaPorNome(Escola nomeEscola) {
-        Example example = Example.of(nomeEscola, ExampleMatcher
+    public List<Escola> buscarEscolaPorNome(Escola escola) {
+        Example example = Example.of(escola, ExampleMatcher
                 .matching()
                 /*ignora se o usuario digitou com caixa alta ou baixa*/
                 .withIgnoreCase()
@@ -48,27 +48,27 @@ public class EscolaServiceImpl implements EscolaService {
     
     @Override
     @Transactional
-    public Escola salvarEscola(Escola nomeEscola) {
+    public Escola salvarEscola(Escola escola) {
         /*service*/
-        validarEscola(nomeEscola);
-        validarCodigo(nomeEscola);
+        validarEscolaNaBase(String.valueOf(escola));
+        validarCodigo(String.valueOf(escola));
         /*salvar a escola*/
-        return escolaRepository.save(nomeEscola);
+        return escolaRepository.save(escola);
     }
     
     @Override
-    public void validarEscola(Escola nomeEscola) {
+    public void validarEscolaNaBase(String nomeEscola) {
         /*ver se existe escola - unique*/
-        boolean verificarEscola = escolaRepository.existsByNomeEscola(String.valueOf(nomeEscola));
+        boolean verificarEscola = escolaRepository.existsByNomeEscola(nomeEscola);
         if (verificarEscola) {
             throw new RegraDeNegocioException("Já existe uma escola com esse nome.");
         }
     }
     
     /*@Override*/
-    public void validarCodigo(Escola cadastroEscola) {
-        /*ver se existe cadastro da escola - inep*/
-        boolean verificarCadastroEscola = escolaRepository.existsByCodigoEscola(String.valueOf(cadastroEscola));
+    public void validarCodigo(String cadastroEscola) {
+        /*ver se existe cadastro da escola - codigo*/
+        boolean verificarCadastroEscola = escolaRepository.existsByCodigoEscola(cadastroEscola);
         if (verificarCadastroEscola) {
         throw new CodigoJaCadastradoException("Já existe uma escola com esse codigo");
         
