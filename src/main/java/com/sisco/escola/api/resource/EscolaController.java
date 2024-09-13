@@ -33,7 +33,7 @@ public class EscolaController {
                 .telefone(dto.getTelefone())
                 .build();
         try {
-            Escola escolaSalva = escolaService.salvarEscola(salvarEscola);
+            Escola escolaSalva = escolaService.salvar(salvarEscola);
             return new ResponseEntity (escolaSalva, HttpStatus.CREATED);
             /*ou usar url*/
             /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/

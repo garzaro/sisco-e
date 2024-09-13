@@ -22,19 +22,19 @@ public class EscolaServiceImpl implements EscolaService {
 
 	@Override
 	public Escola buscarEscolaPorNome(String Escola) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Escola salvar(Escola escola) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return escolaRepository.save(escola);
 	}
 
 	@Override
 	public void validarEscola(String escola) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
