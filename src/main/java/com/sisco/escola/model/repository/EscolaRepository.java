@@ -7,18 +7,27 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 @Repository
 public interface EscolaRepository extends JpaRepository<Escola, Long> {
     
+	/*verifica a existencia de uma escola pelo id*/
+    boolean existsById(Long id);
     /*verifica a existencia de uma escola por nome*/
-    boolean existsByNomeEscola(String nomeEscola);
-    
-    /*verifica a existencia de uma escola por codigo*/
-    boolean existsByCodigoEscola(String cadastroEscola);
-    
+    boolean existsByEscola(String escola);
+    /*verifica a existencia de uma escola pelo codigo*/
+    boolean existsByCodigo(String codigo);
     /*procura uma escola pelo nome*/
-    List<Escola> findByNomeEscola(String nomeEscola);
-    
+    Escola findByNomeEscolaIgnoreCase(String escola);
+    /*procura uma escola pelo id*/
+    Optional<Escola> findById(Long id);
     /*procura uma escola pelo codigo*/
-    Optional<Escola> findByCodigoEscola(String cadastroEscola);
+    Optional<Escola> findByCodigo(String codigo);
+    /*salvar escola*/
+    Escola salvar(Escola escola);
+    /*listar todas as escolas*/
+    List<Escola> findAll();
+    /*deletar uma escola*/
+    void deletar(Escola escola);   
+    
 }
