@@ -1,5 +1,6 @@
 package com.sisco.escola.service.impl;
 
+import com.sisco.escola.exception.EscolaJaCadastradaException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
@@ -34,7 +35,10 @@ public class EscolaServiceImpl implements EscolaService {
 
 	@Override
 	public void validarEscola(String escola) {
-
+		/*verificar se a escola ja existe na base*/
+		if (escolaRepository.existsByEscola(escola)){
+			throw new EscolaJaCadastradaException("Escola já cadastrada");
+		}
 		
 	}
 
