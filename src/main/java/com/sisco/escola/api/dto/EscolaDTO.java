@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class EscolaDTO {
     
+    private Long id;
     private String nomeEscola;
     private String codigoEscola;
     private String cidadeEscola;
