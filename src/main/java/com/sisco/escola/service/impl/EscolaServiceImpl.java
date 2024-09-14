@@ -5,8 +5,6 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +27,28 @@ public class EscolaServiceImpl implements EscolaService {
 
 	@Override
 	public Escola salvar(Escola escola) {
-
+		/*validar antes de salvar*/
+		validarEscola(escola.getNomeEscola());
+		validarCodigo(escola.getCodigoEscola());
 		return escolaRepository.save(escola);
 	}
-
+	
 	@Override
 	public void validarEscola(String escola) {
-		/*verificar se a escola ja existe na base*/
-		if (escolaRepository.existsByEscola(escola)){
+		/*verificar se a escola ja existe na base, unique*/
+		boolean validandoEscola = escolaRepository.existsByNomeEscola(escola);
+		if (validandoEscola){
 			throw new EscolaJaCadastradaException("Escola já cadastrada");
 		}
-		
+	}
+	
+	@Override
+	public void validarCodigo(String codigo) {
+		/*verificar se o codigo ja existe na base, unique*/
+		boolean validandoCodigo = escolaRepository.existsByNomeEscola(codigo);
+		if (validandoCodigo){
+			throw new EscolaJaCadastradaException("Codigo já cadastrado.");
+		}
 	}
 
 	

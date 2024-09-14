@@ -14,20 +14,15 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
 	/*verifica a existencia de uma escola pelo id*/
     boolean existsById(Long id);
     /*verifica a existencia de uma escola por nome*/
-    boolean existsByEscola(String escola);
+    boolean existsByNomeEscola(String escola);
     /*verifica a existencia de uma escola pelo codigo*/
-    boolean existsByCodigo(String codigo);
-    /*procura uma escola pelo nome*/
-    Escola findByNomeEscolaIgnoreCase(String escola);
+    boolean existsByCodigoEscola(String codigo);
     /*procura uma escola pelo id*/
     Optional<Escola> findById(Long id);
+    /*procura uma escola pelo nome*/
+    Escola findByNomeEscola(String escola);
     /*procura uma escola pelo codigo*/
-    Optional<Escola> findByCodigo(String codigo);
-    /*salvar escola*/
-    Escola salvar(Escola escola);
+    Optional<Escola> findByCodigoEscola(String codigo);
     /*listar todas as escolas*/
     List<Escola> findAll();
-    /*deletar uma escola*/
-    void deletar(Escola escola);   
-    
 }
