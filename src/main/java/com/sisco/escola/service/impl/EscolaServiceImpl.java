@@ -19,7 +19,9 @@ public class EscolaServiceImpl implements EscolaService {
 		this.escolaRepository = escolaRepository;
 	}
 
-	/***************************************************************/
+	/**
+	 * @return
+	 *************************************************************/
 	@Override
 	@Transactional
 	public Escola salvar(Escola escola) {
