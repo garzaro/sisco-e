@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 @Builder
 public class EscolaDTO {
-    
+
+    public Long getId;
     /*private Long id;*/
     private String nomeEscola;
     private String codigoEscola;

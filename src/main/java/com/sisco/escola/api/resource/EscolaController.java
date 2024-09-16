@@ -1,6 +1,7 @@
 package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.EscolaDTO;
+import com.sisco.escola.exception.ErroValidacaoException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.service.EscolaService;
 import org.springframework.http.HttpStatus;
@@ -27,20 +28,21 @@ public class EscolaController {
             escolaService.salvar(converterEntidade);
             return new ResponseEntity(converterEntidade, HttpStatus.CREATED);
 
-        }catch (EscolaJaCadastradaException e){
+        }catch (ErroValidacaoException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     private Escola converterDtoParaEntidade(EscolaDTO dto) {
-        Escola converter = new Escola();
-        converter.setNomeEscola(dto.getNomeEscola());
-        converter.setCodigoEscola(dto.getCodigoEscola());
-        converter.setCidadeEscola(dto.getCidadeEscola());
-        converter.setBairroEscola(dto.getBairroEscola());
-        converter.setEndereco(dto.getEndereco());
-        converter.setTelefone(dto.getTelefone());
-        return converter;
+        Escola escola = new Escola();
+        escola.setId(dto.getId);
+        escola.setNomeEscola(dto.getNomeEscola());
+        escola.setCodigoEscola(dto.getCodigoEscola());
+        escola.setCidadeEscola(dto.getCidadeEscola());
+        escola.setBairroEscola(dto.getBairroEscola());
+        escola.setEndereco(dto.getEndereco());
+        escola.setTelefone(dto.getTelefone());
+        return escola;
     }
     
 

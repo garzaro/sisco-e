@@ -15,8 +15,6 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
     boolean existsById(Long id);
     /*verifica a existencia de uma escola por nome*/
     boolean existsByNomeEscola(String escola);
-    /*verifica a existencia de uma escola pelo codigo*/
-    boolean existsByCodigoEscola(String codigo);
     /*procura uma escola pelo id*/
     Optional<Escola> findById(Long id);
     /*procura uma escola pelo nome*/

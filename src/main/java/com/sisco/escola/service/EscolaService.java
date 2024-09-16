@@ -10,9 +10,7 @@ import java.util.List;
 @Service
 public interface EscolaService {
     /*verificar escola na base de dados, unique*/
-    boolean verificarExistenciaEscola(String nomeEscola);
-    /*verificar escola na base de dados, unique*/
-    boolean verificarExistenciaCodigo(String nomeEscola);
+    void validarEscola(Escola nomeEscola);
     /*salvar a escola na base*/
     Escola salvar(Escola escola);
     /*atualizar escola*/
