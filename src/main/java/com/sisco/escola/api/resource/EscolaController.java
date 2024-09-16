@@ -1,6 +1,7 @@
 package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.EscolaDTO;
+import com.sisco.escola.exception.CodigoJaCadastradoException;
 import com.sisco.escola.exception.EscolaJaCadastradaException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.service.EscolaService;
@@ -23,39 +24,26 @@ public class EscolaController {
         this.escolaService = escolaService;
     }
     
-    /*@PostMapping
-    public ResponseEntity salvar(@RequestBody EscolaDTO dto) {
-        Escola salvarEscola = criarEscola(dto);
-        try {
-            Escola escolaSalva = escolaService.salvar(salvarEscola);
-            return new ResponseEntity (escolaSalva, HttpStatus.CREATED);
-            /*ou usar url*/
-            /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();
-        } catch (EscolaJaCadastradaException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }*/
-    
-    
     @PostMapping
     public ResponseEntity salvar(@RequestBody EscolaDTO dto) {
-        Escola salvarEscola = criarEscola(dto);
+        Escola salvarEscola = Escola.builder()
+                .nomeEscola(dto.getNomeEscola())
+                .codigoEscola(dto.getCodigoEscola())
+                .cidadeEscola(dto.getCidadeEscola())
+                .bairroEscola(dto.getBairroEscola())
+                .endereco(dto.getEndereco())
+                .telefone(dto.getTelefone())
+                .build();
         
         try {
-            // Verifica se o nome da escola já está cadastrado
-            if (escolaService.salvar(salvarEscola.getNomeEscola())); {
-                throw new EscolaJaCadastradaException("Nome da escola já cadastrado.");
-            }
-            
             // Verifica se o código da escola já está cadastrado
-            if (escolaService.buscarEscolaPorCodigo(salvarEscola.getNomeEscola())) {
-                throw new EscolaJaCadastradaException("Código da escola já cadastrado.");
-            }
+            if (escolaService.verificarExistenciaCodigo(salvarEscola.getCodigoEscola())) {
             
+            }
             Escola escolaSalva = escolaService.salvar(salvarEscola);
             return new ResponseEntity<>(escolaSalva, HttpStatus.CREATED);
             /*ou usar url*/
-            /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/
+            /*return ResponseEntity.created(URI.create("/api/escolas/" + escolaSalva.getId())).build();*/
         } catch (EscolaJaCadastradaException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

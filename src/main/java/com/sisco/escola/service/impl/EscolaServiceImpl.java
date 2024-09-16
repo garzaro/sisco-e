@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EscolaServiceImpl implements EscolaService {
@@ -25,8 +24,8 @@ public class EscolaServiceImpl implements EscolaService {
 	@Override
 	public Escola salvar(Escola escola) {
 		/*validar antes de salvar*/
-		validarEscola(escola.getNomeEscola());
-		validarCodigo(escola.getCodigoEscola());
+		verificarExistenciaEscola(escola.getNomeEscola());
+		verificarExistenciaCodigo(escola.getCodigoEscola());
 		return escolaRepository.save(escola);
 	}
 	
@@ -36,7 +35,7 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 	
 	@Override
-	public List<Escola> buscarEscola(Escola escola) {
+	public List<Object> buscarEscola(String escola) {
 		return List.of();
 	}
 	
@@ -46,21 +45,23 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 	
 	@Override
-	public void validarEscola(String escola) {
+	public boolean verificarExistenciaEscola(String escola) {
 		/*verificar se a escola ja existe na base, unique*/
 		boolean validandoEscola = escolaRepository.existsByNomeEscola(escola);
 		if (validandoEscola){
 			throw new EscolaJaCadastradaException("Escola já cadastrada.");
 		}
+        return validandoEscola;
     }
 	
 	@Override
-	public void validarCodigo(String codigo) {
+	public boolean verificarExistenciaCodigo(String codigo) {
 		/*verificar se o codigo ja existe na base, unique*/
 		boolean validandoCodigo = escolaRepository.existsByCodigoEscola(codigo);
 		if (validandoCodigo){
 			throw new CodigoJaCadastradoException("Codigo já cadastrado.");
 		}
+		return validandoCodigo;
 	}
 
 	
@@ -100,7 +101,7 @@ public class EscolaServiceImpl implements EscolaService {
     }*/
     
     /*@Override
-    public void validarCodigo(Escola cadastroEscola) {
+    public void verificarExistenciaCodigo(Escola cadastroEscola) {
         /*ver se existe cadastro da escola - inep
         boolean verificarCadastroEscola = escolaRepository.existsByCodigoEscola(String.valueOf(cadastroEscola));
         if (verificarCadastroEscola) {
