@@ -1,8 +1,6 @@
 package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.EscolaDTO;
-import com.sisco.escola.exception.CodigoJaCadastradoException;
-import com.sisco.escola.exception.EscolaJaCadastradaException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.service.EscolaService;
 import org.springframework.http.HttpStatus;
@@ -11,8 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Locale;
 
 @RestController
 @RequestMapping("api/escolas")
@@ -23,32 +19,35 @@ public class EscolaController {
     public EscolaController(EscolaService escolaService) {
         this.escolaService = escolaService;
     }
-    
+
     @PostMapping
-    public ResponseEntity salvar(@RequestBody EscolaDTO dto) {
-        Escola salvarEscola = Escola.builder()
-                .nomeEscola(dto.getNomeEscola())
-                .codigoEscola(dto.getCodigoEscola())
-                .cidadeEscola(dto.getCidadeEscola())
-                .bairroEscola(dto.getBairroEscola())
-                .endereco(dto.getEndereco())
-                .telefone(dto.getTelefone())
-                .build();
-        
+    public ResponseEntity salvar(@RequestBody EscolaDTO escolaDTO){
         try {
-            // Verifica se o código da escola já está cadastrado
-            if (escolaService.verificarExistenciaCodigo(salvarEscola.getCodigoEscola())) {
-            
-            }
-            Escola escolaSalva = escolaService.salvar(salvarEscola);
-            return new ResponseEntity<>(escolaSalva, HttpStatus.CREATED);
-            /*ou usar url*/
-            /*return ResponseEntity.created(URI.create("/api/escolas/" + escolaSalva.getId())).build();*/
-        } catch (EscolaJaCadastradaException e) {
+            Escola converterEntidade = converterDtoParaEntidade(escolaDTO);
+            escolaService.salvar(converterEntidade);
+            return new ResponseEntity(converterEntidade, HttpStatus.CREATED);
+
+        }catch (EscolaJaCadastradaException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    private Escola converterDtoParaEntidade(EscolaDTO dto) {
+        Escola converter = new Escola();
+        converter.setNomeEscola(dto.getNomeEscola());
+        converter.setCodigoEscola(dto.getCodigoEscola());
+        converter.setCidadeEscola(dto.getCidadeEscola());
+        converter.setBairroEscola(dto.getBairroEscola());
+        converter.setEndereco(dto.getEndereco());
+        converter.setTelefone(dto.getTelefone());
+        return converter;
+    }
     
+
+
+
+
+
     
     
     
@@ -87,25 +86,6 @@ public class EscolaController {
         return lancamento;
     }*/
     
-    /*para criação de instancia*/
-    public static Escola criarEscola (EscolaDTO dto) {
-        return Escola.builder()
-                .nomeEscola(dto.getNomeEscola())
-                .codigoEscola(dto.getCodigoEscola())
-                .cidadeEscola(dto.getCidadeEscola())
-                .bairroEscola(dto.getBairroEscola())
-                .endereco(dto.getEndereco())
-                .telefone(dto.getTelefone())
-                .build();
-    }
-    
-    /*Escola.builder()
-                .nomeEscola(dto.getNomeEscola())
-                .codigoEscola(dto.getCodigoEscola())
-                .cidadeEscola(dto.getCidadeEscola())
-                .bairroEscola(dto.getBairroEscola())
-                .endereco(dto.getEndereco())
-                .telefone(dto.getTelefone())
-                .build();*/
+   
     
 }

@@ -1,7 +1,6 @@
 package com.sisco.escola.service.impl;
 
-import com.sisco.escola.exception.CodigoJaCadastradoException;
-import com.sisco.escola.exception.EscolaJaCadastradaException;
+import com.sisco.escola.exception.ErroValidacaoException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
@@ -20,10 +19,37 @@ public class EscolaServiceImpl implements EscolaService {
 		this.escolaRepository = escolaRepository;
 	}
 /***************************************************************/
+public Escola salvar(Escola escola) {
+	if (escolaRepository.findByNomeEscola(escola.getNomeEscola()).isPresent() ||
+			escolaRepository.findByCodigoEscola(escola.getCodigoEscola()).isPresent()) {
+		throw new IllegalArgumentException("Nome ou código já existente.");
+	}
+	Escola escola1 = new Escola();
+	escola1.setNomeEscola(escola1.getNomeEscola());
+	escola1.setCodigoEscola(escola1.getCodigoEscola());
+	return escolaRepository.save(escola1);
+}
 
-	@Override
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*@Override
 	public Escola salvar(Escola escola) {
-		/*validar antes de salvar*/
+		/*validar antes de salvar
 		verificarExistenciaEscola(escola.getNomeEscola());
 		verificarExistenciaCodigo(escola.getCodigoEscola());
 		return escolaRepository.save(escola);
@@ -42,16 +68,16 @@ public class EscolaServiceImpl implements EscolaService {
 	@Override
 	public void deletarEscola(Escola escola) {
 	
-	}
+	}*/
 	
 	@Override
 	public boolean verificarExistenciaEscola(String escola) {
 		/*verificar se a escola ja existe na base, unique*/
 		boolean validandoEscola = escolaRepository.existsByNomeEscola(escola);
 		if (validandoEscola){
-			throw new EscolaJaCadastradaException("Escola já cadastrada.");
+			throw new ErroValidacaoException("Escola já cadastrada.");
 		}
-        return validandoEscola;
+		return validandoEscola;
     }
 	
 	@Override
@@ -59,9 +85,26 @@ public class EscolaServiceImpl implements EscolaService {
 		/*verificar se o codigo ja existe na base, unique*/
 		boolean validandoCodigo = escolaRepository.existsByCodigoEscola(codigo);
 		if (validandoCodigo){
-			throw new CodigoJaCadastradoException("Codigo já cadastrado.");
+			throw new ErroValidacaoException("Codigo já cadastrado.");
 		}
 		return validandoCodigo;
+	}
+
+
+
+	@Override
+	public Escola atualizar(Escola escola) {
+		return null;
+	}
+
+	@Override
+	public void deletarEscola(Escola escola) {
+
+	}
+
+	@Override
+	public List<Object> buscarEscola(String escola) {
+		return List.of();
 	}
 
 	
