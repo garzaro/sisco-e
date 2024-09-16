@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EscolaRepository extends JpaRepository<Escola, Long> {
-    
+ 
 	/*verifica a existencia de uma escola pelo id*/
     boolean existsById(Long id);
     /*verifica a existencia de uma escola por nome*/
@@ -20,7 +20,7 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
     /*procura uma escola pelo id*/
     Optional<Escola> findById(Long id);
     /*procura uma escola pelo nome*/
-    Escola findByNomeEscola(String escola);
+    Optional<Escola> findByNomeEscola(String escola);
     /*procura uma escola pelo codigo*/
     Optional<Escola> findByCodigoEscola(String codigo);
     /*listar todas as escolas*/

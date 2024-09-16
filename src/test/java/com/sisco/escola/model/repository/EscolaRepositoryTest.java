@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class EscolaRepositoryTest {
@@ -26,7 +28,7 @@ public class EscolaRepositoryTest {
         escolaRepository.save(escolaDeTeste);
         
         /*AÇÃO*/
-        Escola verificarSeExisteAEscola = escolaRepository.findByNomeEscola("Marvin");
+        Optional<Escola> verificarSeExisteAEscola = escolaRepository.findByNomeEscola("Marvin");
         
         /*VERIFICAÇÃO*/
         Assertions.assertThat(verificarSeExisteAEscola).isNotNull();

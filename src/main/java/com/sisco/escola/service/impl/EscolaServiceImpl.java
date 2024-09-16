@@ -1,5 +1,6 @@
 package com.sisco.escola.service.impl;
 
+import com.sisco.escola.exception.CodigoJaCadastradoException;
 import com.sisco.escola.exception.EscolaJaCadastradaException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
@@ -8,22 +9,18 @@ import com.sisco.escola.service.EscolaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class EscolaServiceImpl implements EscolaService {
-	
-    @Autowired 
+	@Autowired
     EscolaRepository escolaRepository;
-    
     public EscolaServiceImpl(EscolaRepository escolaRepository) {
 		super();
 		this.escolaRepository = escolaRepository;
 	}
-
-	@Override
-	public Escola buscarEscolaPorNome(String Escola) {
-
-		return null;
-	}
+/***************************************************************/
 
 	@Override
 	public Escola salvar(Escola escola) {
@@ -34,20 +31,35 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 	
 	@Override
+	public Escola atualizar(Escola escola) {
+		return null;
+	}
+	
+	@Override
+	public List<Escola> buscarEscola(Escola escola) {
+		return List.of();
+	}
+	
+	@Override
+	public void deletarEscola(Escola escola) {
+	
+	}
+	
+	@Override
 	public void validarEscola(String escola) {
 		/*verificar se a escola ja existe na base, unique*/
 		boolean validandoEscola = escolaRepository.existsByNomeEscola(escola);
 		if (validandoEscola){
-			throw new EscolaJaCadastradaException("Escola já cadastrada");
+			throw new EscolaJaCadastradaException("Escola já cadastrada.");
 		}
-	}
+    }
 	
 	@Override
 	public void validarCodigo(String codigo) {
 		/*verificar se o codigo ja existe na base, unique*/
-		boolean validandoCodigo = escolaRepository.existsByNomeEscola(codigo);
+		boolean validandoCodigo = escolaRepository.existsByCodigoEscola(codigo);
 		if (validandoCodigo){
-			throw new EscolaJaCadastradaException("Codigo já cadastrado.");
+			throw new CodigoJaCadastradoException("Codigo já cadastrado.");
 		}
 	}
 
