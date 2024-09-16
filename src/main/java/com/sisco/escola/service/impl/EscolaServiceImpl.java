@@ -24,9 +24,9 @@ public class EscolaServiceImpl implements EscolaService {
 	 *************************************************************/
 	@Override
 	@Transactional
-	public Escola salvar(Escola escola) {
+	public void salvar(Escola escola) {
 		validarEscola(escola);
-		return escolaRepository.save(escola);
+		escolaRepository.save(escola);
 
 	}
 

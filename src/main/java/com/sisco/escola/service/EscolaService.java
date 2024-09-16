@@ -12,7 +12,7 @@ public interface EscolaService {
     /*verificar escola na base de dados, unique*/
     void validarEscola(Escola nomeEscola);
     /*salvar a escola na base*/
-    Escola salvar(Escola escola);
+    void salvar(Escola escola);
     /*atualizar escola*/
     Escola atualizar(Escola escola);
     /*deletar escola*/
