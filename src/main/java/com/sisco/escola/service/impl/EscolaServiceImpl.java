@@ -51,9 +51,7 @@ public class EscolaServiceImpl implements EscolaService {
 		if (escola.getCodigoEscola() == null || escola.getCodigoEscola().trim().equals("")) {
 			throw new ErroValidacaoException("Informe o codigo da escola.");
 		}
-		if (escola.existsByNomeEscola(escola.getNomeEscola())) {
-			throw new ErroValidacaoException("Ja existe uma escola com o nome " + escola.getNomeEscola());
-		}
+
 	}
 
 	
