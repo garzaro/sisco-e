@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if (!validandoLogin.get().getSenha().equals(senha)){
 			throw new ErroDeAutenticacao("Senha incorreta");
 		}
-			return validandoLogin.get();
+		return validandoLogin.get();
 	}
 	    
 	@Override

@@ -1,5 +1,6 @@
 package com.sisco.escola.api.resource;
 
+import com.sisco.escola.api.dto.EscolaDTO;
 import com.sisco.escola.api.dto.UsuarioAutenticacaoDTO;
 import com.sisco.escola.api.dto.UsuarioCadastroDTO;
 import com.sisco.escola.exception.CpfJaCadastradoException;
@@ -10,6 +11,8 @@ import com.sisco.escola.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("api/usuarios") /*uri para mapeamento de todas as requisições*/
@@ -35,14 +38,8 @@ public class UsuarioController {
     /*ResponseEntity representa o corpo da resposta*/
     @PostMapping
     public ResponseEntity salvar(@RequestBody UsuarioCadastroDTO dto) {
-        Usuario salvarUsuario = Usuario.builder()
-                .nomeCompleto(dto.getNomeCompleto())
-                .cadastroPessoaFisica(dto.getCadastroPessoaFisica())
-                .nomeUsuario(dto.getNomeUsuario())
-                .email(dto.getEmail())
-                .senha(dto.getSenha())
-                .dataCadastro(dto.getDataCadastro())
-                .build();
+        Usuario salvarUsuario = criarUsuario(dto);
+        
         try {
             Usuario usuarioSalvo = usuarioService.salvarUsuario(salvarUsuario);
             return new ResponseEntity (usuarioSalvo, HttpStatus.CREATED);
@@ -51,6 +48,19 @@ public class UsuarioController {
         } catch (EmailJaCadastradoException | CpfJaCadastradoException mensagemDeErro) {
             return ResponseEntity.badRequest().body(mensagemDeErro.getMessage());
         }
+    }
+    
+    /*para criar instancias*/
+    public static Usuario criarUsuario(UsuarioCadastroDTO dto){
+        return Usuario.builder()
+                .nomeCompleto(dto.getNomeCompleto())
+                .nomeUsuario(dto.getNomeUsuario())
+                .cadastroPessoaFisica(dto.getCadastroPessoaFisica())
+                .email(dto.getEmail())
+                .senha(dto.getSenha())
+                .dataCadastro(LocalDate.now())
+                .build();
+        
     }
     /*@GetMapping("/teste")public String helloWorld() {return "Fala dev";}*/
 }
