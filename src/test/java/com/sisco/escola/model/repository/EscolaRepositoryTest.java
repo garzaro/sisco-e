@@ -21,9 +21,9 @@ public class EscolaRepositoryTest {
         
         /*CENARIO*/
         Escola escolaDeTeste = Escola.builder()
-                .nomeEscola("Marvin")
-                .cidadeEscola("Fortaleza")
-                .bairroEscola("Barra do Ceara")
+                .nome("Marvin")
+                .cidade("Fortaleza")
+                .bairro("Barra do Ceara")
                 .build();
         escolaRepository.save(escolaDeTeste);
         
