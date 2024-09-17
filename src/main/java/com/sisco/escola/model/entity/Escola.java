@@ -20,16 +20,16 @@ public class Escola {
     private Long id;
     
     @Column(name = "nome_escola")
-    private String nomeEscola;
+    private String nome;
     
     @Column(name = "codigo_escola")
-    private String codigoEscola;
+    private String codigo;
     
     @Column(name = "cidade_escola")
-    private String cidadeEscola;
+    private String cidade;
     
     @Column(name = "bairro_escola")
-    private String bairroEscola;
+    private String bairro;
     
     @Column(name = "endereco")
     private String endereco;

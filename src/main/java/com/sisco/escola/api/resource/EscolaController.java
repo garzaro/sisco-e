@@ -36,10 +36,10 @@ public class EscolaController {
     private Escola converterDtoParaEntidade(EscolaDTO dto) {
         Escola escola = new Escola();
         escola.setId(dto.getId);
-        escola.setNomeEscola(dto.getNomeEscola());
-        escola.setCodigoEscola(dto.getCodigoEscola());
-        escola.setCidadeEscola(dto.getCidadeEscola());
-        escola.setBairroEscola(dto.getBairroEscola());
+        escola.setNome(dto.getNomeEscola());
+        escola.setCodigo(dto.getCodigoEscola());
+        escola.setCidade(dto.getCidadeEscola());
+        escola.setBairro(dto.getBairroEscola());
         escola.setEndereco(dto.getEndereco());
         escola.setTelefone(dto.getTelefone());
         return escola;

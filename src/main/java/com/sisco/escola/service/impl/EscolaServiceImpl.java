@@ -5,104 +5,55 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class EscolaServiceImpl implements EscolaService {
-
+	
+	@Autowired
 	private EscolaRepository escolaRepository;
-
-    public EscolaServiceImpl(EscolaRepository escolaRepository) {
-		this.escolaRepository = escolaRepository;
-	}
-
 	/**
-	 * @return
+	 *
 	 *************************************************************/
 	@Override
 	@Transactional
-	public void salvar(Escola escola) {
+	public Escola salvar(Escola escola) {
 		validarEscola(escola);
-		escolaRepository.save(escola);
-
+		verificarEscola(escola.getNome());
+		verificarCodigo(escola.getCodigo());
+		return escolaRepository.save(escola);
 	}
-
+	
 	@Override
-	public Escola atualizar(Escola escola) {
-		return null;
+	public void verificarCodigo(String codigo) {
+		/*ver se existe o codigo, unique*/
+		boolean validarCodigo = escolaRepository.existsByCodigo(codigo);
+		if (validarCodigo) {
+			throw new ErroValidacaoException("Codigo já cadastrado");
+		}
+	
 	}
-
+	
+	public void verificarEscola(String escola) {
+		/*ver se existe a escola, unique*/
+		boolean validarEscola = escolaRepository.existsByNome(escola);
+		if (validarEscola) {
+			throw new ErroValidacaoException("Escola já cadastrada.");
+		}
+	}
+	
 	@Override
-	public void deletarEscola(Escola escola) {
-
-	}
-
-	@Override
-	public List<Object> buscarEscola(String escola) {
-		return List.of();
-	}
-
 	public void validarEscola(Escola escola) {
-		/*verificar se a escola ja existe na base, unique*/
-		if (escola.getNomeEscola() == null || escola.getNomeEscola().trim().equals("")) {
+		/*preencher campos*/
+		if (escola.getNome() == null || escola.getNome().trim().equals("")) {
 			throw new ErroValidacaoException("Informar o nome da escola.");
 		}
-		if (escola.getCodigoEscola() == null || escola.getCodigoEscola().trim().equals("")) {
+		if (escola.getCodigo() == null || escola.getCodigo().trim().equals("")) {
 			throw new ErroValidacaoException("Informe o codigo da escola.");
 		}
-
 	}
-
-	
-	
-
-	
-    
-    
-    /*@Override
-    public List<Escola> buscarEscolaPorNome(Escola nomeEscola) {
-        Example example = Example.of(nomeEscola, ExampleMatcher
-                .matching()
-                /*ignora se o usuario digitou com caixa alta ou baixa
-                .withIgnoreCase()
-                /*contendo o que for passado na busca - CONTAINING
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
-        return escolaRepository.findAll(example);
-    }*/
-    
-    /*@Override
-    public Optional<Escola> buscarEscolaPorCodigo(Escola codigoEscola) {
-        Optional<Escola> codigo = escolaRepository.findByCodigoEscola(String.valueOf(codigoEscola));
-        if (!codigo.isPresent()){
-            throw new EscolaInexitenteException("Escola não encontrada com o codigo fornecido");
-        }
-        return Optional.ofNullable(codigoEscola);
-    }*/
-    
-       
-    /*@Override
-    public void validarEscola(Escola nomeEscola) {
-        /*ver se existe escola - unique
-        boolean verificarEscola = escolaRepository.existsByNomeEscola(String.valueOf(nomeEscola));
-        if (verificarEscola) {
-            throw new RegraDeNegocioException("Já existe uma escola com esse nome.");
-        }
-    }*/
-    
-    /*@Override
-    public void verificarExistenciaCodigo(Escola cadastroEscola) {
-        /*ver se existe cadastro da escola - inep
-        boolean verificarCadastroEscola = escolaRepository.existsByCodigoEscola(String.valueOf(cadastroEscola));
-        if (verificarCadastroEscola) {
-        throw new CodigoJaCadastradoException("Já existe uma escola com esse codigo");
-        
-        }
-    }*/
-
-
 }
 
             
