@@ -21,29 +21,9 @@ public class EscolaServiceImpl implements EscolaService {
 	@Transactional
 	public Escola salvar(Escola escola) {
 		validarEscola(escola);
-		verificarEscola(escola.getNome());
-		verificarCodigo(escola.getCodigo());
 		return escolaRepository.save(escola);
 	}
-	
-	@Override
-	public void verificarCodigo(String codigo) {
-		/*ver se existe o codigo, unique*/
-		boolean validarCodigo = escolaRepository.existsByCodigo(codigo);
-		if (validarCodigo) {
-			throw new ErroValidacaoException("Codigo já cadastrado");
-		}
-	
-	}
-	
-	public void verificarEscola(String escola) {
-		/*ver se existe a escola, unique*/
-		boolean validarEscola = escolaRepository.existsByNome(escola);
-		if (validarEscola) {
-			throw new ErroValidacaoException("Escola já cadastrada.");
-		}
-	}
-	
+
 	@Override
 	public void validarEscola(Escola escola) {
 		/*preencher campos*/
@@ -53,7 +33,15 @@ public class EscolaServiceImpl implements EscolaService {
 		if (escola.getCodigo() == null || escola.getCodigo().trim().equals("")) {
 			throw new ErroValidacaoException("Informe o codigo da escola.");
 		}
-	}
+		boolean ve = escolaRepository.existsByNome(escola.getNome());
+		if (ve) {
+			throw new ErroValidacaoException("Escola ja cadastrada.");
+		}
+		boolean vc = escolaRepository.existsByCodigo(escola.getCodigo());
+		if (vc) {
+			throw new ErroValidacaoException("Código já cadastrado");
+		}
+    }
 }
 
             
