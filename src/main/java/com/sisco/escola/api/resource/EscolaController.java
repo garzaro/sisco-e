@@ -6,10 +6,7 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.service.EscolaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/escolas")
@@ -31,6 +28,16 @@ public class EscolaController {
         }catch (ErroValidacaoException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody EscolaDTO escolaDTO) {
+        return escolaService.obterEscolaPorId(id).map(entity -> {
+            Escola escola = converterDtoParaEntidade(escolaDTO);
+            escola.setId(entity.getId());
+            escolaService.atualizar(escola);
+            return ResponseEntity.ok(escola);
+        }).orElseGet(() -> new ResponseEntity("Escola não encontrada", HttpStatus.BAD_REQUEST));
     }
 
     private Escola converterDtoParaEntidade(EscolaDTO dto) {
