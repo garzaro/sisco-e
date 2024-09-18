@@ -13,8 +13,8 @@ public interface UsuarioService {
     Usuario salvarUsuario(Usuario usuario);
     
     /*verifica o email na base de dados, unique */
-    void validarEmail(String email);
+    void validarEmailECpf(String email, String cpf);
     
-    /*verifica o cpf na base de dados, unique */
-    void validarCPF(String cpf);
+    /*IMPLEMTAR SERVICO BUSCAR POR CPF*/
+    
 }
