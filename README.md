@@ -44,5 +44,6 @@
     - O usuário fornece o email ou CPF.
     - O sistema realiza a busca e exibe os resultados correspondentes.
 
-**Pós-condições:** As operações de criação, atualização, deleção e busca são realizadas com sucesso, e o sistema reflete as mudanças conforme solicitado pelo usuário.
+**Pós-condições:** As operações de criação, atualização, deleção e busca
+ são realizadas com sucesso, e o sistema reflete as mudanças conforme solicitado pelo usuário.
 
