@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UsuarioCadastroDTO {
+    private Long id;
     private String nomeCompleto;
     private String cadastroPessoaFisica;
     private String nomeUsuario;
