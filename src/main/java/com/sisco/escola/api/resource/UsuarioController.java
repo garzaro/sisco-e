@@ -3,9 +3,7 @@ package com.sisco.escola.api.resource;
 import com.sisco.escola.api.dto.EscolaDTO;
 import com.sisco.escola.api.dto.UsuarioAutenticacaoDTO;
 import com.sisco.escola.api.dto.UsuarioCadastroDTO;
-import com.sisco.escola.exception.CpfJaCadastradoException;
-import com.sisco.escola.exception.ErroDeAutenticacao;
-import com.sisco.escola.exception.EmailJaCadastradoException;
+import com.sisco.escola.exception.*;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -45,7 +43,7 @@ public class UsuarioController {
             return new ResponseEntity (usuarioSalvo, HttpStatus.CREATED);
             /*ou usar url*/
             /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/
-        } catch (EmailJaCadastradoException | CpfJaCadastradoException mensagemDeErro) {
+        } catch (ErroValidacaoException mensagemDeErro) {
             return ResponseEntity.badRequest().body(mensagemDeErro.getMessage());
         }
     }
@@ -53,6 +51,7 @@ public class UsuarioController {
     /*para criar instancias*/
     public static Usuario criarUsuario(UsuarioCadastroDTO dto){
         return Usuario.builder()
+                .id(dto.getId())
                 .nomeCompleto(dto.getNomeCompleto())
                 .nomeUsuario(dto.getNomeUsuario())
                 .cadastroPessoaFisica(dto.getCadastroPessoaFisica())
