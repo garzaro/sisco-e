@@ -10,7 +10,7 @@ import lombok.Setter;
 public class EscolaDTO {
 
     public Long getId;
-    /*private Long id;*/
+    private Long id;
     private String nomeEscola;
     private String codigoEscola;
     private String cidadeEscola;
