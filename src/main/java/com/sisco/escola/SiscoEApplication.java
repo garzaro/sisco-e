@@ -10,4 +10,3 @@ public class SiscoEApplication {
 		SpringApplication.run(SiscoEApplication.class, args);
 	}
 }
-PARADO NO METODO ATUALIZAR
