@@ -13,6 +13,8 @@ public interface EscolaService {
     Escola salvar(Escola escola);
     /*atualizar escola*/
     Escola atualizar(Escola escola);
+    /*deletar uma escola*/
+    void deletar(Escola escola);
     /*validar escola antes de salvar, unique*/
     void validarEscola(Escola escola);
     /*procura uma escola pelo id*/
