@@ -37,6 +37,10 @@ public class Escola {
     @Column(name ="telefone")
     private String telefone;
     
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+    
     
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
