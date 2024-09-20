@@ -49,6 +49,16 @@ public class EscolaController {
             }
         }).orElseGet(() -> new ResponseEntity("Escola não encontrada", HttpStatus.BAD_REQUEST));
     }
+    
+    @DeleteMapping("{id}")
+    public ResponseEntity deletar(@PathVariable ("id") Long id){
+        return escolaService.obterEscolaPorId(id).map(entity ->{
+            escolaService.deletar(entity);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }).orElseGet( ()->
+                new ResponseEntity("Escola não encontrada na base de dados", HttpStatus.BAD_REQUEST) );
+    }
+    
     /*Um metodo para converter o dto em uma entidade de lancamento*/
     private Escola converterDtoParaEntidade(EscolaDTO dto) {
         Escola escola = new Escola();
