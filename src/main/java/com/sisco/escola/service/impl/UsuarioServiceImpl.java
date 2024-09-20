@@ -2,7 +2,6 @@ package com.sisco.escola.service.impl;
 
 import com.sisco.escola.exception.ErroDeAutenticacao;
 import com.sisco.escola.exception.ErroValidacaoException;
-import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
@@ -17,6 +16,9 @@ import java.util.Optional;
 @NoArgsConstructor
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
+	
+	UsuarioService usuarioService;
+	
 	@Autowired
 	UsuarioRepository usuarioRepository;
 	
@@ -65,10 +67,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if (verificarSeEmailExisteNaBaseDeDados) {
 			throw new ErroValidacaoException("Ja existe um usuario com esse email.");
 		}
-		if (verificarSeOCpfExisteNaBaseDeDados){
+		if (verificarSeOCpfExisteNaBaseDeDados) {
 			throw new ErroValidacaoException("Ja existe um usuario com esse CPF");
 		}
 	}
+	
+	@Override
+	public Optional<Usuario> obterUsuarioPorId(Long id) {
+		return usuarioRepository.findById(id);
+	}
+	
 }
 
 	
