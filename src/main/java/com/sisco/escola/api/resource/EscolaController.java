@@ -7,6 +7,7 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.EscolaService;
 import com.sisco.escola.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,12 @@ import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("api/escolas")
+@RequiredArgsConstructor /*em substituição ao construtor dos servicos, *final*/
 public class EscolaController {
     
-    public EscolaService escolaService;
-    public UsuarioService usuarioService;
+    public final EscolaService escolaService;
+    public final UsuarioService usuarioService;
     
-    public EscolaController(EscolaService escolaService) {
-        this.escolaService = escolaService;
-    }
-
     @PostMapping
     public ResponseEntity salvar(@RequestBody EscolaDTO escolaDTO){
         try {
