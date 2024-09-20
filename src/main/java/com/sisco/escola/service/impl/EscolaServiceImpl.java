@@ -37,6 +37,13 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 	
 	@Override
+	public void deletar(Escola escola) {
+		/*so deleta se existir uma escola salva*/
+		Objects.requireNonNull(escola.getId()); /*Checagem: para garantir que esteja passando a escola salva*/
+		escolaRepository.delete(escola);
+	}
+	
+	@Override
 	public void validarEscola(Escola escola) {
 		/*preencher campos*/
 		if (escola.getNome() == null || escola.getNome().trim().equals("")) {
