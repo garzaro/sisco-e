@@ -2,17 +2,24 @@ package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.EscolaDTO;
 import com.sisco.escola.exception.ErroValidacaoException;
+import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Escola;
+import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.EscolaService;
+import com.sisco.escola.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("api/escolas")
 public class EscolaController {
     
     public EscolaService escolaService;
+    public UsuarioService usuarioService;
     
     public EscolaController(EscolaService escolaService) {
         this.escolaService = escolaService;
@@ -24,7 +31,6 @@ public class EscolaController {
             Escola converterEntidade = converterDtoParaEntidade(escolaDTO);
             escolaService.salvar(converterEntidade);
             return new ResponseEntity(converterEntidade, HttpStatus.CREATED);
-
         }catch (ErroValidacaoException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -33,13 +39,17 @@ public class EscolaController {
     @PutMapping("{id}")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody EscolaDTO escolaDTO) {
         return escolaService.obterEscolaPorId(id).map(entity -> {
-            Escola escola = converterDtoParaEntidade(escolaDTO);
-            escola.setId(entity.getId());
-            escolaService.atualizar(escola);
-            return ResponseEntity.ok(escola);
+            try {
+                Escola escola = converterDtoParaEntidade(escolaDTO);
+                escola.setId(entity.getId());
+                escolaService.atualizar(escola);
+                return new ResponseEntity(escola, HttpStatus.CREATED);
+            }catch (RegraDeNegocioException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
         }).orElseGet(() -> new ResponseEntity("Escola não encontrada", HttpStatus.BAD_REQUEST));
     }
-
+    /*Um metodo para converter o dto em uma entidade de lancamento*/
     private Escola converterDtoParaEntidade(EscolaDTO dto) {
         Escola escola = new Escola();
         escola.setId(dto.getId);
@@ -49,52 +59,11 @@ public class EscolaController {
         escola.setBairro(dto.getBairroEscola());
         escola.setEndereco(dto.getEndereco());
         escola.setTelefone(dto.getTelefone());
+        
+        Usuario usuario = usuarioService.obterUsuarioPorId(dto.getUsuario())
+                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado."));
+        escola.setUsuario(usuario);
+        
         return escola;
     }
-    
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
-    
-    /*Um metodo para converter o dto em uma entidade de lancamento
-    private Lancamento converterDtoParaEntidade(LancamentoDTO dto){
-        Lancamento lancamento = new Lancamento();
-        lancamento.setId(dto.getId()); /*caso precise atualizar, ele vem preenchido com o id
-        lancamento.setDescricao(dto.getDescricao());
-        lancamento.setAno(dto.getAno());
-        lancamento.setMes(dto.getMes());
-        lancamento.setValor(dto.getValor());
-        /*inicio usuario
-        /*receber o id do usuario, conforme dto
-        Usuario buscarUsuario = usuarioService.obterUsuarioPorId(dto.getUsuario())
-                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado com o id informado"));
-        lancamento.setUsuario(buscarUsuario);
-        /*fim usuario
-        lancamento.setTipoLancamento(TipoLancamento.valueOf(dto.getTipo()));
-        lancamento.setStatusLancamento(StatusLancamento.valueOf(dto.getStatus()));
-        return lancamento;
-    }*/
-    
-   
-    
 }
