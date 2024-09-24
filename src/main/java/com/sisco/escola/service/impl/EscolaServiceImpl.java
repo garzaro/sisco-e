@@ -1,11 +1,14 @@
 package com.sisco.escola.service.impl;
 
+import com.sisco.escola.exception.CodigoNotFoundxception;
 import com.sisco.escola.exception.ErroValidacaoException;
+import com.sisco.escola.exception.EscolaNotFoundException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.CodeGenerationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,12 +69,19 @@ public class EscolaServiceImpl implements EscolaService {
 	public Optional<Escola> obterEscolaPorId(Long id) {
 		return escolaRepository.findById(id);
 	}
-	
+
 	@Override
-	public Optional<Escola> buscarPorNome(Escola escola) {
-		return escolaRepository.findByNome(String.valueOf(escola));
+	public Optional<Escola> buscarPorNome(String nome) {
+		return Optional.ofNullable(escolaRepository.findByNome(nome)
+                .orElseThrow(() -> new EscolaNotFoundException("Escola não encontrada com o nome: " + nome)));
 	}
-	
+
+	@Override
+	public Optional<Escola> buscarPorCodigo(String codigo) {
+		return Optional.ofNullable(escolaRepository.findByCodigo(codigo)
+				.orElseThrow(() -> new CodigoNotFoundxception("Escola não encontrada com o nome: " + codigo)));
+	}
+
 	public void validarAtualizacaoEscola(Escola escola) {
 		if (escola.getNome() == null || escola.getNome().trim().equals("")) {
 			throw new ErroValidacaoException("Informar o nome da escola.");
@@ -80,6 +90,7 @@ public class EscolaServiceImpl implements EscolaService {
 			throw new ErroValidacaoException("Informar o codigo da escola.");
 		}
 	}
+
 }
 
             

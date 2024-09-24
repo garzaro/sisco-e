@@ -1,7 +1,9 @@
 package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.EscolaDTO;
+import com.sisco.escola.exception.CodigoNotFoundxception;
 import com.sisco.escola.exception.ErroValidacaoException;
+import com.sisco.escola.exception.EscolaNotFoundException;
 import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.entity.Usuario;
@@ -21,29 +23,30 @@ import java.util.function.Supplier;
 import static org.springframework.http.ResponseEntity.badRequest;
 
 @RestController
-@RequestMapping("api/escolas")
+@RequestMapping("api/escolas/")
 @RequiredArgsConstructor /*em substituição ao construtor dos servicos, *final*/
 public class EscolaController {
     
     public final EscolaService escolaService;
     public final UsuarioService usuarioService;
     
-    @GetMapping
+    @GetMapping("buscar")
     public ResponseEntity buscar(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "codigo", required = false) String codigo
     ){
-        
-        /*checar nulidade, nome e codigo*/
-        if (Optional.ofNullable(nome).isPresent() || Optional.ofNullable(codigo).isPresent()) {
-            return ResponseEntity.badRequest().body("Por favor, informe o nome ou codigo da escola.");
+        try {
+            Optional<Escola> escola = escolaService.buscarPorNome(nome);
+            return ResponseEntity.ok(escola);
+
+        } catch (CodigoNotFoundxception | EscolaNotFoundException e) {
+            throw new EscolaNotFoundException(e.getMessage());
         }
-        Escola escola = new Escola();
-        escola.setNome(nome);
-        escola.setCodigo(codigo);
-        
-        Optional<Escola> buscarEscola = escolaService.buscarPorNome(escola);
-        
+
+
+
+        Optional<Escola> buscarEscola = escolaService.buscarPorNome(nome);
+
         return ResponseEntity.ok(buscarEscola);
     }
     
@@ -98,4 +101,38 @@ public class EscolaController {
         
         return escola;
     }
+
+
+ /*PARA TESTAR SE FUNCIONA, METODO BUSCAR*/
+
+ /*buscar esola para ver se funciona
+	@RestController
+	@RequestMapping("/api/escolas")
+	public class EscolaController {
+		@Autowired
+		private EscolaService escolaService;
+
+		@GetMapping("/buscar")
+		public ResponseEntity<?> buscarEscola(
+				@RequestParam(required = false) String nome,
+				@RequestParam(required = false) String codigo) {
+			try {
+				Escola escola;
+				if (nome != null && !nome.isEmpty()) {
+					escola = escolaService.buscarPorNome(nome);
+				} else if (codigo != null && !codigo.isEmpty()) {
+					escola = escolaService.buscarPorCodigo(codigo);
+				} else {
+					throw new InvalidParameterException("Nome ou código devem ser fornecidos");
+				}
+				return ResponseEntity.ok(escola);
+			} catch (InvalidParameterException | EscolaNotFoundException e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
+	}*/
+
+
+
+
 }

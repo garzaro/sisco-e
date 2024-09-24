@@ -18,9 +18,11 @@ public interface EscolaService {
     /*validar escola antes de salvar, unique*/
     void validarEscola(Escola escola);
     /*procura uma escola pelo id*/
-    Optional<Escola> obterEscolaPorId(Long id);
+    Optional <Escola> obterEscolaPorId(Long id);
     /*procura uma escola pelo nome*/
-    Optional <Escola> buscarPorNome(Escola escola);
+    Optional <Escola> buscarPorNome(String nome);
+    /*procura uma escola pelo codigo*/
+    Optional <Escola> buscarPorCodigo(String codigo);
 }
 
 
