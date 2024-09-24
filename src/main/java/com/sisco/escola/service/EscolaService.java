@@ -19,6 +19,8 @@ public interface EscolaService {
     void validarEscola(Escola escola);
     /*procura uma escola pelo id*/
     Optional<Escola> obterEscolaPorId(Long id);
+    /*procura uma escola pelo nome*/
+    Optional <Escola> buscarPorNome(Escola escola);
 }
 
 
