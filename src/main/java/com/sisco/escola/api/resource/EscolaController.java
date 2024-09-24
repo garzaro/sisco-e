@@ -8,12 +8,17 @@ import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.EscolaService;
 import com.sisco.escola.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import static org.springframework.http.ResponseEntity.badRequest;
 
 @RestController
 @RequestMapping("api/escolas")
@@ -23,6 +28,25 @@ public class EscolaController {
     public final EscolaService escolaService;
     public final UsuarioService usuarioService;
     
+    @GetMapping
+    public ResponseEntity buscar(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "codigo", required = false) String codigo
+    ){
+        
+        /*checar nulidade, nome e codigo*/
+        if (Optional.ofNullable(nome).isPresent() || Optional.ofNullable(codigo).isPresent()) {
+            return ResponseEntity.badRequest().body("Por favor, informe o nome ou codigo da escola.");
+        }
+        Escola escola = new Escola();
+        escola.setNome(nome);
+        escola.setCodigo(codigo);
+        
+        Optional<Escola> buscarEscola = escolaService.buscarPorNome(escola);
+        
+        return ResponseEntity.ok(buscarEscola);
+    }
+    
     @PostMapping
     public ResponseEntity salvar(@RequestBody EscolaDTO escolaDTO){
         try {
@@ -30,7 +54,7 @@ public class EscolaController {
             escolaService.salvar(converterEntidade);
             return new ResponseEntity(converterEntidade, HttpStatus.CREATED);
         }catch (ErroValidacaoException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return badRequest().body(e.getMessage());
         }
     }
     
@@ -43,7 +67,7 @@ public class EscolaController {
                 escolaService.atualizar(escola);
                 return new ResponseEntity(escola, HttpStatus.CREATED);
             }catch (RegraDeNegocioException e){
-                return ResponseEntity.badRequest().body(e.getMessage());
+                return badRequest().body(e.getMessage());
             }
         }).orElseGet(() -> new ResponseEntity("Escola não encontrada", HttpStatus.BAD_REQUEST));
     }
