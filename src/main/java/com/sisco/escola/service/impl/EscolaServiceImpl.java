@@ -67,6 +67,11 @@ public class EscolaServiceImpl implements EscolaService {
 		return escolaRepository.findById(id);
 	}
 	
+	@Override
+	public Optional<Escola> buscarPorNome(Escola escola) {
+		return escolaRepository.findByNome(String.valueOf(escola));
+	}
+	
 	public void validarAtualizacaoEscola(Escola escola) {
 		if (escola.getNome() == null || escola.getNome().trim().equals("")) {
 			throw new ErroValidacaoException("Informar o nome da escola.");
