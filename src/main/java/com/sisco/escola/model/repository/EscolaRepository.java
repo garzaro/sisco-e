@@ -17,10 +17,10 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
     boolean existsByNome(String escola);
     /*verifica a existencia de uma escola por codigo*/
     boolean existsByCodigo(String escola);
-    /*procura uma escola pelo nome*/
-    Optional<Escola> findByNome(String escola);
-    /*procura uma escola pelo escola*/
-    Optional<Escola> findByCodigo(String escola);
-    /*listar todas as escolas*/
-    List<Escola> findAll();
+    /*buscar escola por nome*/
+    Escola findByNome(String nomeEscola);
+    /*buscar escola por codigo*/
+    Escola findByCodigo(String codigoEscola);
+    /*listar escola
+    List<Escola> findAll(Escola escola);*/
 }

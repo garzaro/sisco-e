@@ -1,7 +1,7 @@
 package com.sisco.escola.api.resource;
 
 import com.sisco.escola.api.dto.EscolaDTO;
-import com.sisco.escola.exception.CodigoNotFoundxception;
+import com.sisco.escola.exception.CodigoNotFoundException;
 import com.sisco.escola.exception.ErroValidacaoException;
 import com.sisco.escola.exception.EscolaNotFoundException;
 import com.sisco.escola.exception.RegraDeNegocioException;
@@ -11,44 +11,25 @@ import com.sisco.escola.service.EscolaService;
 import com.sisco.escola.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static org.springframework.http.ResponseEntity.badRequest;
 
 @RestController
-@RequestMapping("api/escolas/")
+@RequestMapping("api/escolas")
 @RequiredArgsConstructor /*em substituição ao construtor dos servicos, *final*/
 public class EscolaController {
     
     public final EscolaService escolaService;
     public final UsuarioService usuarioService;
     
-    @GetMapping("buscar")
-    public ResponseEntity buscar(
-            @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "codigo", required = false) String codigo
-    ){
-        try {
-            Optional<Escola> escola = escolaService.buscarPorNome(nome);
-            return ResponseEntity.ok(escola);
-
-        } catch (CodigoNotFoundxception | EscolaNotFoundException e) {
-            throw new EscolaNotFoundException(e.getMessage());
-        }
-
-
-
-        Optional<Escola> buscarEscola = escolaService.buscarPorNome(nome);
-
-        return ResponseEntity.ok(buscarEscola);
-    }
     
     @PostMapping
     public ResponseEntity salvar(@RequestBody EscolaDTO escolaDTO){
@@ -61,18 +42,30 @@ public class EscolaController {
         }
     }
     
-    @PutMapping("{id}")
-    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody EscolaDTO escolaDTO) {
-        return escolaService.obterEscolaPorId(id).map(entity -> {
+    
+    @PutMapping("atualizar")
+    public ResponseEntity atualizarEscolaPorNomeOuCodigo(@RequestParam(value = "nome", required = false) String nome,
+                                                         @RequestParam(value = "codigo", required = false) String codigo,
+                                                         @RequestBody EscolaDTO escolaDTO) {
+        /*verifica se ao menos um dos parâmetros foi informado*/
+        if ((StringUtils.isEmpty(nome)) && StringUtils.isEmpty(codigo)) {
+            return new ResponseEntity("Por favor, fornecer o nome ou código da escola", HttpStatus.BAD_REQUEST);
+        }
+        /*busca a escola por nome ou código*/
+        Optional<Escola> escolaOptional = Optional.ofNullable(escolaService.buscar(nome, codigo));
+        /*caso a escola seja encontrada, faz a atualização*/
+        return escolaOptional.map(escolaExistente -> {
             try {
-                Escola escola = converterDtoParaEntidade(escolaDTO);
-                escola.setId(entity.getId());
-                escolaService.atualizar(escola);
-                return new ResponseEntity(escola, HttpStatus.CREATED);
-            }catch (RegraDeNegocioException e){
-                return badRequest().body(e.getMessage());
+                Escola escolaAtualizada = converterDtoParaEntidade(escolaDTO);
+                /*Mantém o ID da entidade existente*/
+                escolaAtualizada.setId(escolaExistente.getId());
+                escolaService.atualizar(escolaAtualizada);
+                /*HttpStatus.OK, atualizações*/
+                return new ResponseEntity(escolaAtualizada, HttpStatus.OK);
+            } catch (EscolaNotFoundException e) {
+                return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
-        }).orElseGet(() -> new ResponseEntity("Escola não encontrada", HttpStatus.BAD_REQUEST));
+        }).orElseGet(() -> new ResponseEntity<>("Escola não encontrada", HttpStatus.NOT_FOUND));
     }
     
     @DeleteMapping("{id}")
@@ -84,53 +77,26 @@ public class EscolaController {
                 new ResponseEntity("Escola não encontrada na base de dados", HttpStatus.BAD_REQUEST) );
     }
     
-    /*Um metodo para converter o dto em uma entidade de lancamento*/
+    @Transactional(readOnly = true)
+    public List<Escola> listarEscolas(Pageable pageable) {
+        return escolaService.listar((Escola) pageable);
+    }
+    
+    /*Um metodo para converter o dto em uma entidade de escola*/
     private Escola converterDtoParaEntidade(EscolaDTO dto) {
         Escola escola = new Escola();
-        escola.setId(dto.getId);
+        /*escola.setId(dto.getId);*/
         escola.setNome(dto.getNomeEscola());
         escola.setCodigo(dto.getCodigoEscola());
         escola.setCidade(dto.getCidadeEscola());
         escola.setBairro(dto.getBairroEscola());
         escola.setEndereco(dto.getEndereco());
         escola.setTelefone(dto.getTelefone());
-        
-        Usuario usuario = usuarioService.obterUsuarioPorId(dto.getUsuario())
-                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado."));
-        escola.setUsuario(usuario);
-        
         return escola;
     }
 
 
- /*PARA TESTAR SE FUNCIONA, METODO BUSCAR*/
-
- /*buscar esola para ver se funciona
-	@RestController
-	@RequestMapping("/api/escolas")
-	public class EscolaController {
-		@Autowired
-		private EscolaService escolaService;
-
-		@GetMapping("/buscar")
-		public ResponseEntity<?> buscarEscola(
-				@RequestParam(required = false) String nome,
-				@RequestParam(required = false) String codigo) {
-			try {
-				Escola escola;
-				if (nome != null && !nome.isEmpty()) {
-					escola = escolaService.buscarPorNome(nome);
-				} else if (codigo != null && !codigo.isEmpty()) {
-					escola = escolaService.buscarPorCodigo(codigo);
-				} else {
-					throw new InvalidParameterException("Nome ou código devem ser fornecidos");
-				}
-				return ResponseEntity.ok(escola);
-			} catch (InvalidParameterException | EscolaNotFoundException e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
-		}
-	}*/
+ 
 
 
 

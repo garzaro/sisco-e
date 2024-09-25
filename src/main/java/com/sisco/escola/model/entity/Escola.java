@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Optional;
 
 @Builder
 @NoArgsConstructor
@@ -40,6 +43,8 @@ public class Escola {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+    
+    
     
     
     /*GETTERS AND SETTERS*/

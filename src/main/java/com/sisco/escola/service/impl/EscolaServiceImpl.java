@@ -1,19 +1,24 @@
 package com.sisco.escola.service.impl;
 
-import com.sisco.escola.exception.CodigoNotFoundxception;
+import com.sisco.escola.exception.CodigoNotFoundException;
 import com.sisco.escola.exception.ErroValidacaoException;
 import com.sisco.escola.exception.EscolaNotFoundException;
+import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;
 import com.sisco.escola.service.EscolaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.CodeGenerationException;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 public class EscolaServiceImpl implements EscolaService {
@@ -66,22 +71,42 @@ public class EscolaServiceImpl implements EscolaService {
     }
 	
 	@Override
+	public Escola buscar(String nome, String codigo) {
+		if (StringUtils.isEmpty(nome) && StringUtils.isEmpty(codigo)){
+			throw new RegraDeNegocioException("Por favor, forneça o nome ou o codigo da escola");
+		}
+		Escola escola = null;
+		/*redução de duplicação*/
+		if (StringUtils.isEmpty(nome)) {
+			escola = escolaRepository.findByNome(nome);
+			if (escola == null){
+				throw new EscolaNotFoundException("Não existe a escola com o nome " + nome);
+			}
+			/*duplicação de codigo na busca por codigo, pode ficar igual a busca por nome*/
+		} else if (codigo != null && !codigo.isEmpty()) {
+			escola = escolaRepository.findByCodigo(codigo);
+			if (escola == null){
+				throw new CodigoNotFoundException("A escola com código " + codigo + " não foi encontrada");
+			}
+		}
+		return escola;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Escola> listar(Escola escola) {
+		Example example = Example.of(escola, ExampleMatcher
+				.matching()
+				.withIgnoreCase()
+				.withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+		return escolaRepository.findAll(example);
+	}
+	
+	@Override
 	public Optional<Escola> obterEscolaPorId(Long id) {
 		return escolaRepository.findById(id);
 	}
-
-	@Override
-	public Optional<Escola> buscarPorNome(String nome) {
-		return Optional.ofNullable(escolaRepository.findByNome(nome)
-                .orElseThrow(() -> new EscolaNotFoundException("Escola não encontrada com o nome: " + nome)));
-	}
-
-	@Override
-	public Optional<Escola> buscarPorCodigo(String codigo) {
-		return Optional.ofNullable(escolaRepository.findByCodigo(codigo)
-				.orElseThrow(() -> new CodigoNotFoundxception("Escola não encontrada com o nome: " + codigo)));
-	}
-
+	
 	public void validarAtualizacaoEscola(Escola escola) {
 		if (escola.getNome() == null || escola.getNome().trim().equals("")) {
 			throw new ErroValidacaoException("Informar o nome da escola.");

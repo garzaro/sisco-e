@@ -3,8 +3,12 @@ package com.sisco.escola.service;
 
 
 import com.sisco.escola.model.entity.Escola;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,10 +23,10 @@ public interface EscolaService {
     void validarEscola(Escola escola);
     /*procura uma escola pelo id*/
     Optional <Escola> obterEscolaPorId(Long id);
-    /*procura uma escola pelo nome*/
-    Optional <Escola> buscarPorNome(String nome);
-    /*procura uma escola pelo codigo*/
-    Optional <Escola> buscarPorCodigo(String codigo);
+    /*buscar escola*/
+    Escola buscar(String nome, String codigo);
+    /*listar escolas*/
+    List<Escola> listar(Escola escola);
 }
 
 

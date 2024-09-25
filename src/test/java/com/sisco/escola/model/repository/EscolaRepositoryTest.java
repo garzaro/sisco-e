@@ -28,7 +28,7 @@ public class EscolaRepositoryTest {
         escolaRepository.save(escolaDeTeste);
         
         /*AÇÃO*/
-        Optional<Escola> verificarSeExisteAEscola = escolaRepository.findByNome("Marvin");
+        Escola verificarSeExisteAEscola = escolaRepository.findByNome("Marvin");
         
         /*VERIFICAÇÃO*/
         Assertions.assertThat(verificarSeExisteAEscola).isNotNull();
