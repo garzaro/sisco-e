@@ -19,8 +19,6 @@ public interface UsuarioService {
     
     Optional<Usuario> obterUsuarioPorId(Long id);
     
-    
-    
     /*IMPLEMTAR SERVICO BUSCAR POR CPF*/
     
 }

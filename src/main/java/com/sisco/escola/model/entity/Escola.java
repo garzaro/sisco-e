@@ -1,19 +1,17 @@
 package com.sisco.escola.model.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
-
+@Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Entity
 @Table(name = "escola", schema = "siscoescola")
 public class Escola {
     
@@ -28,10 +26,10 @@ public class Escola {
     @Column(name = "codigo_escola")
     private String codigo;
     
-    @Column(name = "cidade_escola")
+    @Column(name = "cidade")
     private String cidade;
     
-    @Column(name = "bairro_escola")
+    @Column(name = "bairro")
     private String bairro;
     
     @Column(name = "endereco")
@@ -40,14 +38,9 @@ public class Escola {
     @Column(name ="telefone")
     private String telefone;
     
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
-    
-    
-    
+    private Usuario usuario;*/
     
     /*GETTERS AND SETTERS*/
-    /*HASHCODE AND EQUALS*/
-    /*TO STRING*/
 }

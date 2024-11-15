@@ -92,7 +92,7 @@ public class UsuarioRepositoryTest {
         /*verificação*/
         Assertions.assertThat(recuperarUsuario.getId()).isNotNull();
         Assertions.assertThat(recuperarUsuario.getNomeCompleto()).isEqualTo("Cleber Garzaro"); /*comparação*/
-        Assertions.assertThat(recuperarUsuario.getCadastroPessoaFisica()).isEqualTo("123.456.789-00");
+        Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("123.456.789-00");
         Assertions.assertThat(recuperarUsuario.getNomeUsuario()).isEqualTo("garzaro74");
         Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
         Assertions.assertThat(recuperarUsuario.getSenha()).isEqualTo("senha");
@@ -104,7 +104,7 @@ public class UsuarioRepositoryTest {
             return Usuario.builder()
                     .nomeCompleto("Cleber Garzaro")
                     .nomeUsuario("garzaro74")
-                    .cadastroPessoaFisica("123.456.789-00")
+                    .cpf("123.456.789-00")
                     .email("clebergarzaro74@gmail.com")
                     .senha("senha")
                     .dataCadastro(LocalDate.now())

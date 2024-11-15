@@ -8,10 +8,10 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @Setter
-public class UsuarioCadastroDTO {
+public class UsuarioDTO {
     private Long id;
     private String nomeCompleto;
-    private String cadastroPessoaFisica;
+    private String cpf;
     private String nomeUsuario;
     private String email;
     private String senha;

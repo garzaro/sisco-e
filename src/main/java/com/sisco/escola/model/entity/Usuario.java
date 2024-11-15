@@ -29,7 +29,7 @@ public class Usuario {
     private String nomeCompleto;
     
     @Column(name = "cpf")
-    private String cadastroPessoaFisica;
+    private String cpf;
     
     @Column(name = "nome_usuario")
     private String nomeUsuario;

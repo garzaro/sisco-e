@@ -30,7 +30,7 @@ public class UsuarioServiceTest {
     public void testDeveValidarEmailNaBase() {
         usuarioRepository.deleteAll();
 
-        usuarioService.validarEmail("clebergarzaro7@gmail.com");
+        usuarioService.validarEmailECpf("clebergarzaro7@gmail.com", "123.456.789-00");
 
     }
     
@@ -42,7 +42,7 @@ public class UsuarioServiceTest {
         usuarioRepository.save(salvarUsuario);
 
         assertThrows(RegraDeNegocioException.class, () -> {
-            usuarioService.validarEmail("clebergarzaro74@gmail.com");
+            usuarioService.validarEmailECpf("clebergarzaro7@gmail.com", "123.456.789-00");
         });
     }
 
@@ -50,7 +50,7 @@ public class UsuarioServiceTest {
         return Usuario.builder()
                 .nomeCompleto("Cleber Garzaro")
                 .nomeUsuario("garzaro74")
-                .cadastroPessoaFisica("123.456.789-00")
+                .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
                 .senha("senha")
                 .dataCadastro(LocalDate.now())

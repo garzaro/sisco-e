@@ -1,7 +1,9 @@
 package com.sisco.escola.exception;
 
 public class EscolaNotFoundException extends RuntimeException {
-    public EscolaNotFoundException(String escolaInexistente){
+    private static final long serialVersionUID = 1L;
+
+	public EscolaNotFoundException(String escolaInexistente){
         super(escolaInexistente);
     }
 }

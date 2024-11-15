@@ -44,8 +44,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
-		/*service*/
-		validarEmailECpf(usuario.getEmail(), usuario.getCadastroPessoaFisica());
+		/*ver se o email e cpf ja existem na base de dados*/
+		validarEmailECpf(usuario.getEmail(), usuario.getCpf());
 		/*validarCPF(usuario.getCadastroPessoaFisica());*/
 		/*salvar o usuario*/
 		return usuarioRepository.save(usuario);
@@ -61,13 +61,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 			throw new ErroValidacaoException("O cpf é obrigatório.");
 		}
 		
-		boolean verificarSeEmailExisteNaBaseDeDados = usuarioRepository.existsByEmail(email);
-		boolean verificarSeOCpfExisteNaBaseDeDados = usuarioRepository.existsByCadastroPessoaFisica(cpf);
+		boolean verificarSeEmailExiste = usuarioRepository.existsByEmail(email);
+		boolean verificarSeOCpfExiste = usuarioRepository.existsByCpf(cpf);
 		
-		if (verificarSeEmailExisteNaBaseDeDados) {
+		if (verificarSeEmailExiste) {
 			throw new ErroValidacaoException("Ja existe um usuario com esse email.");
 		}
-		if (verificarSeOCpfExisteNaBaseDeDados) {
+		if (verificarSeOCpfExiste) {
 			throw new ErroValidacaoException("Ja existe um usuario com esse CPF");
 		}
 	}

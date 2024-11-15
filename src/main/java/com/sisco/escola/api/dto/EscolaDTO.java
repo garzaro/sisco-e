@@ -1,6 +1,5 @@
 package com.sisco.escola.api.dto;
 
-import com.sisco.escola.model.entity.Usuario;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,15 +8,11 @@ import lombok.Setter;
 @Setter
 @Builder
 public class EscolaDTO {
-
-    public Long getId;
     private Long id;
-    private String nomeEscola;
-    private String codigoEscola;
-    private String cidadeEscola;
-    private String bairroEscola;
+    private String nome;
+    private String codigo;
+    private String cidade;
+    private String bairro;
     private String endereco;
     private String telefone;
-    private Long usuario;
-    
 }

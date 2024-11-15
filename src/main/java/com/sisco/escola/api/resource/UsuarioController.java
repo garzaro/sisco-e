@@ -1,8 +1,7 @@
 package com.sisco.escola.api.resource;
 
-import com.sisco.escola.api.dto.EscolaDTO;
 import com.sisco.escola.api.dto.UsuarioAutenticacaoDTO;
-import com.sisco.escola.api.dto.UsuarioCadastroDTO;
+import com.sisco.escola.api.dto.UsuarioDTO;
 import com.sisco.escola.exception.*;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.UsuarioService;
@@ -32,10 +31,10 @@ public class UsuarioController {
         }
     }
     
-    /*Salvar - Este método é um endpoint que recebe uma requisição HTTP POST*/
+    /*Salvar - Este metodo é um endpoint que recebe uma requisição HTTP POST*/
     /*ResponseEntity representa o corpo da resposta*/
     @PostMapping
-    public ResponseEntity salvar(@RequestBody UsuarioCadastroDTO dto) {
+    public ResponseEntity salvar(@RequestBody UsuarioDTO dto) {
         Usuario salvarUsuario = criarUsuario(dto);
         
         try {
@@ -49,12 +48,12 @@ public class UsuarioController {
     }
     
     /*para criar instancias*/
-    public static Usuario criarUsuario(UsuarioCadastroDTO dto){
+    public static Usuario criarUsuario(UsuarioDTO dto){
         return Usuario.builder()
                 .id(dto.getId())
                 .nomeCompleto(dto.getNomeCompleto())
                 .nomeUsuario(dto.getNomeUsuario())
-                .cadastroPessoaFisica(dto.getCadastroPessoaFisica())
+                .cpf(dto.getCpf())
                 .email(dto.getEmail())
                 .senha(dto.getSenha())
                 .dataCadastro(LocalDate.now())

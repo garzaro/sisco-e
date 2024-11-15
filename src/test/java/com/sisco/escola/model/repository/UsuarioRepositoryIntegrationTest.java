@@ -74,7 +74,7 @@ public class UsuarioRepositoryIntegrationTest {
         /*comparação*/
         Assertions.assertThat(recuperarAInstanciaCriada.getNomeCompleto())
                 .isEqualTo("Cleber Garzaro");
-        Assertions.assertThat(recuperarAInstanciaCriada.getCadastroPessoaFisica())
+        Assertions.assertThat(recuperarAInstanciaCriada.getCpf())
                 .isEqualTo("123.456.789-00");
         Assertions.assertThat(recuperarAInstanciaCriada.getEmail())
                 .isEqualTo("clebergarzaro74@gmail.com");
@@ -92,7 +92,7 @@ public class UsuarioRepositoryIntegrationTest {
                 .id(1l)
                 .nomeCompleto("Cleber Garzaro")
                 .nomeUsuario("garzaro74")
-                .cadastroPessoaFisica("123.456.789-00")
+                .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
                 .senha("senha")
                 .dataCadastro(LocalDate.now())
