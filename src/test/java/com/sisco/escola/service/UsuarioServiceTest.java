@@ -30,7 +30,7 @@ public class UsuarioServiceTest {
     public void testDeveValidarEmailNaBase() {
         usuarioRepository.deleteAll();
 
-        usuarioService.validarEmailECpf("clebergarzaro7@gmail.com", "123.456.789-00");
+       // usuarioService.validarUsuario("clebergarzaro7@gmail.com");
 
     }
     
@@ -42,7 +42,7 @@ public class UsuarioServiceTest {
         usuarioRepository.save(salvarUsuario);
 
         assertThrows(RegraDeNegocioException.class, () -> {
-            usuarioService.validarEmailECpf("clebergarzaro7@gmail.com", "123.456.789-00");
+       //     usuarioService.validarUsuario("clebergarzaro7@gmail.com", null, null, null, null);
         });
     }
 

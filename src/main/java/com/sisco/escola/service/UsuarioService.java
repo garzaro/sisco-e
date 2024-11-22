@@ -14,8 +14,19 @@ public interface UsuarioService {
     /*salvar o usuario na base*/
     Usuario salvarUsuario(Usuario usuario);
     
-    /*verifica o email na base de dados, unique */
-    void validarEmailECpf(String email, String cpf);
+    /*atualiza o usuario*/
+    Usuario atualizarUsuario(Usuario usuario);
+    
+    /*verifica o email e cpf na base de dados, unique 
+    void validarUsuario(
+    		String nomeCompleto,
+    		String cpf,
+    		String nomeUsuario,
+    		String email,
+    		String senha
+    		);*/
+    
+    void validarUsuario(Usuario usuario);
     
     Optional<Usuario> obterUsuarioPorId(Long id);
     

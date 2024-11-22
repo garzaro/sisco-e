@@ -3,7 +3,6 @@ package com.sisco.escola.api.resource;
 import com.sisco.escola.api.converter.ConvertDtoToEntity;
 import com.sisco.escola.api.dto.EscolaDTO;
 import com.sisco.escola.exception.ErroValidacaoException;
-import com.sisco.escola.exception.EscolaNotFoundException;
 import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.service.EscolaService;
@@ -35,19 +34,21 @@ public class EscolaController {
     
     @PostMapping
     public ResponseEntity salvar(@RequestBody EscolaDTO dto) {
+    	
         try {
+        	
             Escola converterEntidade = converter.converterDtoParaEntidade(dto);
             converterEntidade = escolaService.salvarEscola(converterEntidade);
             return new ResponseEntity(converterEntidade, HttpStatus.CREATED);
-        } catch (EscolaNotFoundException e) {
+            
+        } catch (RegraDeNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
-    /* entity é o retorno do service quando é obtido por id */
     @PutMapping("{id}")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody EscolaDTO dto) {
-        /* entity é resultado da busca pelo id */
+        /* entity é resultado da busca do service pelo id */
         return escolaService.obterEscolaPorId(id).map(entity -> {
             try {
                 Escola escola = converter.converterDtoParaEntidade(dto);
@@ -58,9 +59,40 @@ public class EscolaController {
             } catch (RegraDeNegocioException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
-        }).orElseGet(() -> new ResponseEntity("A escola com o ID " + "|_" + id + "_|" + " não foi encontrada.",
+        }).orElseGet(() -> new ResponseEntity("A escola com o ID " + "( " + id + " )" + " não foi encontrada.",
                 HttpStatus.BAD_REQUEST));
     }
+    
+    /*@PutMapping("{id}")
+    public void atualizar(@PathVariable("id") String id, @RequestBody Produto produto){
+        produto.setId(id);
+        produtoRepository.save(produto);
+    }*/
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     @DeleteMapping("{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
