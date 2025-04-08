@@ -1,6 +1,7 @@
 package com.sisco.escola.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class Usuario {
     private String nomeCompleto;
     
     @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
+
     @Column(name = "cpf")
     private String cpf;
     
