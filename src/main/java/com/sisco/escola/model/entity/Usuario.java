@@ -32,7 +32,6 @@ public class Usuario {
     private String nomeCompleto;
     
     @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
-
     @Column(name = "cpf")
     private String cpf;
     
@@ -49,7 +48,7 @@ public class Usuario {
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
-    
+
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
     /*TO STRING*/
