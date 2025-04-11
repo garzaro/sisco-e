@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SiscoEApplication implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS" );
+		registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS" );
 	}
 	/*main*/
 	public static void main(String[] args) {
