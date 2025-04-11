@@ -6,6 +6,8 @@ import com.sisco.escola.api.dto.UsuarioDTO;
 import com.sisco.escola.exception.*;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.UsuarioService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,10 +17,11 @@ import java.time.LocalDate;
 import java.util.function.Function;
 
 @RestController
-@RequestMapping("api/usuarios") /*uri para mapeamento de todas as requisições*/
+@RequestMapping(path = "api/usuarios") /*uri para mapeamento de todas as requisições*/
 public class UsuarioController {
-
+	@Autowired
     public UsuarioService usuarioService;
+	@Autowired
     public ConvertDtoToEntity converter;
 
     public UsuarioController(UsuarioService usuarioService, ConvertDtoToEntity converter) {
