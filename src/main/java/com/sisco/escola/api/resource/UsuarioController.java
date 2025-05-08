@@ -6,9 +6,9 @@ import com.sisco.escola.api.dto.UsuarioDTO;
 import com.sisco.escola.exception.*;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -39,9 +39,8 @@ public class UsuarioController {
     /*Salvar - Este metodo é um endpoint que recebe uma requisição HTTP POST*/
     /*ResponseEntity representa o corpo da resposta*/
     @PostMapping
-    public ResponseEntity salvar(@RequestBody @Validated UsuarioDTO dto) {
+    public ResponseEntity salvar(@Valid @RequestBody UsuarioDTO dto) {
         Usuario salvarUsuario = criarUsuario(dto);
-
         try {
             Usuario usuarioSalvo = usuarioService.salvarUsuario(salvarUsuario);
             return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);

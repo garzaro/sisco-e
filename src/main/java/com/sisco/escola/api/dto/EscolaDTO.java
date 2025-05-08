@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -15,4 +17,5 @@ public class EscolaDTO {
     private String bairro;
     private String endereco;
     private String telefone;
+    private LocalDate dataCadastro;
 }
