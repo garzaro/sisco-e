@@ -1,6 +1,7 @@
 package com.sisco.escola.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -47,7 +48,7 @@ public class Usuario {
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
-    
+
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
     /*TO STRING*/
