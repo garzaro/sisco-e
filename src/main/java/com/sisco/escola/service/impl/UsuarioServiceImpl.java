@@ -37,10 +37,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         Optional<Usuario> validandoLogin = usuarioRepository.findByEmail(email);
         /* verificar a existencia de usuario na base de dados */
         if (!validandoLogin.isPresent()) {
-            throw new ErroDeAutenticacao("Acesso não autorizado.");
+            throw new ErroDeAutenticacao("Verifique seu email");
         }
         if (!validandoLogin.get().getSenha().equals(senha)) {
-            throw new ErroDeAutenticacao("Senha incorreta");
+            throw new ErroDeAutenticacao("Verifique sua senha");
         }
         return validandoLogin.get();
     }
