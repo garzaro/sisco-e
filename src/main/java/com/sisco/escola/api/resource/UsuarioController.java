@@ -7,6 +7,7 @@ import com.sisco.escola.exception.*;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.service.UsuarioService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +18,15 @@ import java.time.LocalDate;
 import java.util.function.Function;
 
 @RestController
-@RequestMapping(path = "api/usuarios") /*uri para mapeamento de todas as requisições*/
+@RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
-	@Autowired
-    public UsuarioService usuarioService;
-	@Autowired
-    public ConvertDtoToEntity converter;
 
-    public UsuarioController(UsuarioService usuarioService, ConvertDtoToEntity converter) {
-        this.usuarioService = usuarioService;
-        this.converter = converter;
-    }
+    private final UsuarioService usuarioService;
+    private final ConvertDtoToEntity converter;
 
     @PostMapping("/autenticar")
-    public ResponseEntity autenticarUsuario(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
+    public ResponseEntity<?> autenticarUsuario(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
         try {
             Usuario usuarioAutenticado = usuarioService.autenticarUsuario(dtoAuth.getEmail(), dtoAuth.getSenha());
             return ResponseEntity.ok(usuarioAutenticado);
@@ -38,9 +34,7 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    /*Salvar - Este metodo é um endpoint que recebe uma requisição HTTP POST*/
-    /*ResponseEntity representa o corpo da resposta*/
+    
     @PostMapping
     public ResponseEntity salvar(@RequestBody @Validated UsuarioDTO dto) {
         Usuario salvarUsuario = criarUsuario(dto);

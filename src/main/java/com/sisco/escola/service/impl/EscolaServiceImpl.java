@@ -107,18 +107,13 @@ public class EscolaServiceImpl implements EscolaService {
 		if (escola.getTelefone() == null || escola.getTelefone().trim().equals("")) {
 			throw new RegraDeNegocioException("Informar o telefone da escola.");			
 		}
-		
-
 		/* deve saber quando é para atualizar ou criar/salvar uma escola */
 		if (escola.getId() == null) {
 			validarNomeEscolaDuplicado(escola);
-
 		} else {
 			validarParaNaoDuplicarAoAtualizar(escola);
-
 		}
 	}
-
 	private void validarNomeEscolaDuplicado(Escola escola) {
 		/*validação para criar o registro*/
 		if (escolaRepository.existsByNome(escola.getNome())) {
@@ -128,7 +123,6 @@ public class EscolaServiceImpl implements EscolaService {
 			throw new RegraDeNegocioException("Código já cadastrado.");
 		}
 	}
-
 	private void validarParaNaoDuplicarAoAtualizar(Escola escola) {
 		/* valida o nome, ignorando o id atual */
 		if (escolaRepository.existsByNomeAndIdNot(escola.getNome(), escola.getId())) {

@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -37,6 +40,10 @@ public class Escola {
     
     @Column(name ="telefone")
     private String telefone;
+    
+    @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
+    @Column(name = "data_cadastro")
+    private LocalDate dataCadastro;
     
     /*@ManyToOne
     @JoinColumn(name = "id_usuario")
