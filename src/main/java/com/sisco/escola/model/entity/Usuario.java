@@ -29,7 +29,7 @@ public class Usuario {
     private Long id;
     
     @Column(name = "nome_completo")
-    private String nomeCompleto;
+    private String nome;
     
     @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
     @Column(name = "cpf")

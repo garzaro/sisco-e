@@ -9,13 +9,13 @@ import java.util.Optional;
 public interface UsuarioService {
     
     /*verificar se o usuario existe na base, validação*/
-    Usuario autenticarUsuario(String email, String senha);
+    Usuario autenticar(String email, String senha);
     
     /*salvar o usuario na base*/
-    Usuario salvarUsuario(Usuario usuario);
+    Usuario salvar(Usuario usuario);
     
     /*atualiza o usuario*/
-    Usuario atualizarUsuario(Usuario usuario);
+    Usuario atualizar(Usuario usuario);
     
     /*verifica o email e cpf na base de dados, unique 
     void validarUsuario(
@@ -26,7 +26,7 @@ public interface UsuarioService {
     		String senha
     		);*/
     
-    void validarUsuario(Usuario usuario);
+    void validar(Usuario usuario);
     
     Optional<Usuario> obterUsuarioPorId(Long id);
     

@@ -32,7 +32,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     
     /* login: validação, autenticação */
     @Override
-    public Usuario autenticarUsuario(String email, String senha) {
+    public Usuario autenticar(String email, String senha) {
         
         Optional<Usuario> validandoLogin = usuarioRepository.findByEmail(email);
         /* verificar a existencia de usuario na base de dados */
@@ -47,27 +47,27 @@ public class UsuarioServiceImpl implements UsuarioService {
     
     @Override
     @Transactional
-    public Usuario salvarUsuario(Usuario usuario) {
+    public Usuario salvar(Usuario usuario) {
         /* ver se o email e cpf ja existem na base de dados */
-        validarUsuario(usuario);
+        validar(usuario);
         /* salvar o usuario */
         return usuarioRepository.save(usuario);
     }
     
     @Override
-    public Usuario atualizarUsuario(Usuario usuario) {
+    public Usuario atualizar(Usuario usuario) {
         Objects.requireNonNull(usuario.getId());
-        validarUsuario(usuario);
+        validar(usuario);
         return usuarioRepository.save(usuario);
     }
     
     @Override
-    public void validarUsuario(Usuario usuario) {
+    public void validar(Usuario usuario) {
         /* preencher campos */
-        if (usuario.getNomeCompleto() == null || usuario.getNomeCompleto().trim().equals("")) {
+        if (usuario.getNome() == null || usuario.getNome().trim().equals("")) {
             throw new ErroValidacaoException("O nome completo é obrigatório.");
         }
-        if (usuario.getNomeUsuario() == null || usuario.getNomeUsuario().trim().equals("")) {
+        if (usuario.getUsuario() == null || usuario.getUsuario().trim().equals("")) {
             throw new ErroValidacaoException("O nome de usuário é obrigatório.");
         }
         if (usuario.getEmail() == null || usuario.getEmail().trim().equals("")) {
@@ -96,14 +96,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         /*garantia a nao duplicidade ao criar ou atualizar*/
         if (usuario.getId() == null) {
-            validarDadosDuplicadoUsuario(usuario);
+            validarDuplicacao(usuario);
         } else {
             validarParaNaoDuplicarAoAtualizar(usuario);
         }
     }
     
     /*validação para criar o registro*/
-    public void validarDadosDuplicadoUsuario(Usuario usuario) {
+    public void validarDuplicacao(Usuario usuario) {
         boolean verificarSeEmailExiste = usuarioRepository.existsByEmail(usuario.getEmail());
         boolean verificarSeOCpfExiste = usuarioRepository.existsByCpf(usuario.getCpf());
         
