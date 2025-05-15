@@ -35,8 +35,8 @@ public class UsuarioController {
         }
     }
     
-    @PostMapping
-    public ResponseEntity salvar(@RequestBody @Validated UsuarioDTO dto) {
+    @PostMapping()
+    public ResponseEntity salvar(@RequestBody UsuarioDTO dto) { /*@Validated*/
         Usuario salvarUsuario = criarUsuario(dto);
 
         try {
