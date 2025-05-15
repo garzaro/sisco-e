@@ -30,9 +30,9 @@ public class ConvertDtoToEntity {
     public Usuario converterDtoParaEntidade(UsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
-        usuario.setNomeCompleto(dto.getNomeCompleto());
+        usuario.setNome(dto.getNome());
         usuario.setCpf(dto.getCpf());
-        usuario.setNomeUsuario(dto.getNomeUsuario());
+        usuario.setUsuario(dto.getUsuario());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
         usuario.setDataCadastro(dto.getDataCadastro());

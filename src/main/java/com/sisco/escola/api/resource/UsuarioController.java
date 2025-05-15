@@ -26,9 +26,9 @@ public class UsuarioController {
     private final ConvertDtoToEntity converter;
 
     @PostMapping("/autenticar")
-    public ResponseEntity<?> autenticarUsuario(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
+    public ResponseEntity<?> autenticar(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
         try {
-            Usuario usuarioAutenticado = usuarioService.autenticarUsuario(dtoAuth.getEmail(), dtoAuth.getSenha());
+            Usuario usuarioAutenticado = usuarioService.autenticar(dtoAuth.getEmail(), dtoAuth.getSenha());
             return ResponseEntity.ok(usuarioAutenticado);
         } catch (ErroDeAutenticacao e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -40,7 +40,7 @@ public class UsuarioController {
         Usuario salvarUsuario = criarUsuario(dto);
 
         try {
-            Usuario usuarioSalvo = usuarioService.salvarUsuario(salvarUsuario);
+            Usuario usuarioSalvo = usuarioService.salvar(salvarUsuario);
             return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
             /*ou usar url*/
             /*return ResponseEntity.created(URI.create("/api/usuarios/" + usuarioSalvo.getId())).build();*/
@@ -50,12 +50,12 @@ public class UsuarioController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity atualizarUsuario(@PathVariable("id") Long id, @RequestBody UsuarioDTO dto) {
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody UsuarioDTO dto) {
         return usuarioService.obterUsuarioPorId(id).map(entity -> {
             try {
                 Usuario usuario = converter.converterDtoParaEntidade(dto);
                 usuario.setId(id);
-                usuarioService.atualizarUsuario(usuario);
+                usuarioService.atualizar(usuario);
                 return ResponseEntity.ok(usuario);
 
             } catch (ErroValidacaoException e) {
@@ -69,8 +69,8 @@ public class UsuarioController {
     public static Usuario criarUsuario(UsuarioDTO dto) {
         return Usuario.builder()
                 .id(dto.getId())
-                .nomeCompleto(dto.getNomeCompleto())
-                .nomeUsuario(dto.getNomeUsuario())
+                .nome(dto.getNome())
+                .usuario(dto.getUsuario())
                 .cpf(dto.getCpf())
                 .email(dto.getEmail())
                 .senha(dto.getSenha())
@@ -78,7 +78,6 @@ public class UsuarioController {
                 .build();
 
     }
-
     /*@GetMapping("/teste")public String helloWorld() {return "Fala dev";}*/
 }
         

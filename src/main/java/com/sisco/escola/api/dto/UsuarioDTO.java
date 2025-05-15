@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @Setter
 public class UsuarioDTO {
     private Long id;
-    private String nomeCompleto;
+    private String nome;
     private String cpf;
-    private String nomeUsuario;
+    private String usuario;
     private String email;
     private String senha;
     private LocalDate dataCadastro;
