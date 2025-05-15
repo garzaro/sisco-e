@@ -36,7 +36,7 @@ public class Usuario {
     private String cpf;
     
     @Column(name = "nome_usuario")
-    private String nomeUsuario;
+    private String usuario;
     
     @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
     @Column(name = "email")
