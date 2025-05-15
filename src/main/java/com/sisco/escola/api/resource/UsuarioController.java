@@ -26,9 +26,9 @@ public class UsuarioController {
     private final ConvertDtoToEntity converter;
 
     @PostMapping("/autenticar")
-    public ResponseEntity<?> autenticar(@RequestBody UsuarioAutenticacaoDTO dtoAuth) {
+    public ResponseEntity<?> autenticar(@RequestBody UsuarioAutenticacaoDTO dto) {
         try {
-            Usuario usuarioAutenticado = usuarioService.autenticar(dtoAuth.getEmail(), dtoAuth.getSenha());
+            Usuario usuarioAutenticado = usuarioService.autenticar(dto.getEmail(), dto.getSenha());
             return ResponseEntity.ok(usuarioAutenticado);
         } catch (ErroDeAutenticacao e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -36,7 +36,7 @@ public class UsuarioController {
     }
     
     @PostMapping
-    public ResponseEntity salvar(@RequestBody @Validated UsuarioDTO dto) {
+    public ResponseEntity salvar(@RequestBody UsuarioDTO dto) {
         Usuario salvarUsuario = criarUsuario(dto);
 
         try {
