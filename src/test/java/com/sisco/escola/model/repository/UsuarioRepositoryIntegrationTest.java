@@ -72,13 +72,13 @@ public class UsuarioRepositoryIntegrationTest {
                 .findById(criarUmaInstanciaERecuperarPeloId.getId()).orElseThrow();
         Assertions.assertThat(recuperarAInstanciaCriada).isNotNull();
         /*comparação*/
-        Assertions.assertThat(recuperarAInstanciaCriada.getNomeCompleto())
+        Assertions.assertThat(recuperarAInstanciaCriada.getNome())
                 .isEqualTo("Cleber Garzaro");
         Assertions.assertThat(recuperarAInstanciaCriada.getCpf())
                 .isEqualTo("123.456.789-00");
         Assertions.assertThat(recuperarAInstanciaCriada.getEmail())
                 .isEqualTo("clebergarzaro74@gmail.com");
-        Assertions.assertThat(recuperarAInstanciaCriada.getNomeUsuario())
+        Assertions.assertThat(recuperarAInstanciaCriada.getUsuario())
                 .isEqualTo("garzaro74");
         Assertions.assertThat(recuperarAInstanciaCriada.getSenha())
                 .isEqualTo("senha");
@@ -90,8 +90,8 @@ public class UsuarioRepositoryIntegrationTest {
     public static Usuario testCriarUsuario() {
         return Usuario.builder()
                 .id(1l)
-                .nomeCompleto("Cleber Garzaro")
-                .nomeUsuario("garzaro74")
+                .nome("Cleber Garzaro")
+                .usuario("garzaro74")
                 .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
                 .senha("senha")

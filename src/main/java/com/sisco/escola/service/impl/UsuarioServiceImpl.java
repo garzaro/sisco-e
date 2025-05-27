@@ -73,8 +73,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (usuario.getEmail() == null || usuario.getEmail().trim().equals("")) {
             throw new ErroValidacaoException("O email é obrigatório.");
         }
-        /*validação manual*/
+        /*validação manual
         if (!Pattern.matches("^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$", usuario.getEmail())) {
+            throw new ErroValidacaoException("O email deve seguir o padrao email@seudominio.com (br).");
+        }*/
+        if (usuario.getEmail() == null || usuario.getEmail().trim().equals("")) {
             throw new ErroValidacaoException("O email deve seguir o padrao email@seudominio.com (br).");
         }
         

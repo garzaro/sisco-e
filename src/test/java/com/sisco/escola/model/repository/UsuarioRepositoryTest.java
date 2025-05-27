@@ -91,9 +91,9 @@ public class UsuarioRepositoryTest {
         Usuario recuperarUsuario = usuarioRepository.findById(usuarioEsperado.getId()).orElseThrow();
         /*verificação*/
         Assertions.assertThat(recuperarUsuario.getId()).isNotNull();
-        Assertions.assertThat(recuperarUsuario.getNomeCompleto()).isEqualTo("Cleber Garzaro"); /*comparação*/
+        Assertions.assertThat(recuperarUsuario.getNome()).isEqualTo("Cleber Garzaro"); /*comparação*/
         Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("123.456.789-00");
-        Assertions.assertThat(recuperarUsuario.getNomeUsuario()).isEqualTo("garzaro74");
+        Assertions.assertThat(recuperarUsuario.getNome()).isEqualTo("garzaro74");
         Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
         Assertions.assertThat(recuperarUsuario.getSenha()).isEqualTo("senha");
         Assertions.assertThat(recuperarUsuario.getDataCadastro()).isEqualTo("2024-08-28");
@@ -102,8 +102,8 @@ public class UsuarioRepositoryTest {
     /*para criação de instancia*/
         public static Usuario criarUsuario () {
             return Usuario.builder()
-                    .nomeCompleto("Cleber Garzaro")
-                    .nomeUsuario("garzaro74")
+                    .nome("Cleber Garzaro")
+                    .usuario("garzaro74")
                     .cpf("123.456.789-00")
                     .email("clebergarzaro74@gmail.com")
                     .senha("senha")

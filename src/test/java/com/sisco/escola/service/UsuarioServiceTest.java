@@ -48,8 +48,8 @@ public class UsuarioServiceTest {
 
     public Usuario testCriarUsuario() {
         return Usuario.builder()
-                .nomeCompleto("Cleber Garzaro")
-                .nomeUsuario("garzaro74")
+                .nome("Cleber Garzaro")
+                .usuario("garzaro74")
                 .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
                 .senha("senha")
