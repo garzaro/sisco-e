@@ -28,17 +28,17 @@ public class Usuario {
     @Column(name = "id")
     private Long id;
     
-    @Column(name = "nome")
+    @Column(name = "nome_completo")
     private String nome;
     
-    //@Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
+    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
     @Column(name = "cpf")
     private String cpf;
     
-    @Column(name = "usuario")
+    @Column(name = "nome_usuario")
     private String usuario;
     
-   // @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
+    @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
     @Column(name = "email")
     private String email;
     
