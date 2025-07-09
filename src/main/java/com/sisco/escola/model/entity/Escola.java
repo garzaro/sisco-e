@@ -29,8 +29,8 @@ public class Escola {
     @Column(name = "codigo_escola")
     private String codigo;
     
-    @Column(name = "cidade")
-    private String cidade;
+    @Column(name = "municipio")
+    private String municipio;
     
     @Column(name = "bairro")
     private String bairro;
