@@ -28,6 +28,9 @@ public class Escola {
     
     @Column(name = "codigo_escola")
     private String codigo;
+
+    @Column(name = "estado")
+    private String estado;
     
     @Column(name = "municipio")
     private String municipio;
