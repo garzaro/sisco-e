@@ -19,7 +19,7 @@ public class ConvertDtoToEntity {
         escola.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
         escola.setNome(dto.getNome());
         escola.setCodigo(dto.getCodigo());
-        escola.setCidade(dto.getCidade());
+        escola.setMunicipio(dto.getMunicipio());
         escola.setBairro(dto.getBairro());
         escola.setEndereco(dto.getEndereco());
         escola.setTelefone(dto.getTelefone());

@@ -92,7 +92,7 @@ public class EscolaServiceImpl implements EscolaService {
 			throw new RegraDeNegocioException("Informar o codigo da escola.");
 		}
 		
-		if (escola.getCidade() == null || escola.getCidade().trim().equals("")) {
+		if (escola.getMunicipio() == null || escola.getMunicipio().trim().equals("")) {
 			throw new RegraDeNegocioException("Informar o nome da cidade.");
 		}
 		
