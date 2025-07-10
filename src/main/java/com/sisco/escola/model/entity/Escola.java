@@ -29,6 +29,9 @@ public class Escola {
     @Column(name = "codigo_escola")
     private String codigo;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "estado")
     private String estado;
     
