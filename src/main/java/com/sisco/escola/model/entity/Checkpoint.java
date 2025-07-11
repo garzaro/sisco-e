@@ -34,12 +34,6 @@ public class Checkpoint {
     @Column(name = "range_dhcp", length = 50)
     private String rangeDHCP;
     
-    @Column(name = "dns_um", length = 45)
-    private String dns1;
-    
-    @Column(name = "dns_dois", length = 45)
-    private String dns2;
-    
     /*RELACIONAMENTO*/
     @ManyToOne
     @JoinColumn(name = "idEscola")
