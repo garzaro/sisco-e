@@ -41,12 +41,9 @@ public class Escola {
     @Column(name = "bairro")
     private String bairro;
     
-    @Column(name = "endereco")
-    private String endereco;
-    
-    @Column(name ="telefone")
-    private String telefone;
-    
+    @Column(name = "logradouro")
+    private String logradouro;
+
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
