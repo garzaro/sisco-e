@@ -24,6 +24,11 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
+	public long quantidadeEscola() {
+		return escolaRepository.count();
+	}
+
+	@Override
 	@Transactional
 	public Escola salvarEscola(Escola escola) {
 		validarEscola(escola);

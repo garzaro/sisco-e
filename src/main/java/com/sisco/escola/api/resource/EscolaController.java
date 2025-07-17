@@ -31,6 +31,11 @@ public class EscolaController {
         this.usuarioService = usuarioService;
         this.converter = converter;
     }
+    @GetMapping("/quantidade")
+    public ResponseEntity<Long> quantidadeEscolas(){
+        long quantidade = escolaService.quantidadeEscola();
+        return ResponseEntity.ok(quantidade);
+    }
     
     @PostMapping
     public ResponseEntity salvar(@RequestBody EscolaDTO dto) {

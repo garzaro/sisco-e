@@ -9,6 +9,8 @@ import com.sisco.escola.model.entity.Escola;
 
 @Service
 public interface EscolaService {
+    /*quantidade de escolas cadastradas*/
+    long quantidadeEscola();
 	/*recebe uma escola e salva na base*/
     Escola salvarEscola(Escola escola);
 	/*atualizar escola*/
