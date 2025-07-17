@@ -30,6 +30,12 @@ public class Provedor {
     
     @Column(name = "gateway_provedor", length = 15)
     private String gatewayProvedor;
+
+    @Column(name = "dns_um", length = 45)
+    private String dns1;
+
+    @Column(name = "dns_dois", length = 45)
+    private String dns2;
     
     @Column(name = "velocidade_link", length = 20)
     private String velocidadeLink;
