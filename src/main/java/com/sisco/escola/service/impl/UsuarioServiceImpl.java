@@ -30,13 +30,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     private static final List<String> dominiosEmailPermitidos = List.of(
             "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "edu.br", "org", "gov.br");
     
-    /* login: validação, autenticação */
+    /* login: validação, autenticação 
     @Override
     public Usuario autenticar(String email, String senha) {
         return usuarioRepository.findByEmail(email)
                 .filter(usuario -> passwordEncoder.matches(senha, usuario.getSenha()))
-                .orElseThrow(()-> new ErroValidacaoException("Email ou senha não confere")); /*new IllegalArgumentException*/
-    } /*implementar o argon2*/
+                .orElseThrow(()-> new ErroValidacaoException("Email ou senha não confere")); /*new IllegalArgumentException*
+    } implementar o argon2*
 
 
     @Override
@@ -44,7 +44,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.findByEmail(email)
                 .filter(usuario -> senhaService.verificarSenha(senha, usuario.getSenha()))
                 .orElseThrow(() -> new CredenciaisInvalidasException());
-    }
+    }*/
 
 
 
@@ -146,5 +146,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (verificarCpfAoAtualizar){
             throw new ErroValidacaoException("Seu usuario já está com esse CPF. Não pode ser atualizado.");
         }
-    }	
+    }
+
+	@Override
+	public Usuario autenticar(String email, String senha) {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }
