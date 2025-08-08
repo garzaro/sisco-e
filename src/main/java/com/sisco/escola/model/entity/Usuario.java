@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,32 +23,41 @@ import java.util.Objects;
 @Data
 @Entity
 @Table(name = "usuario", schema = "siscoescola")
-public class Usuario {
+public class Usuario{
     
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private Long id;
-    
-    @Column(name = "nome_completo")
+
+    @NotBlank(message = "O nome completo é obrigatório")
+    @Size(max = 100, message = "O nome completo deve ter no máximo 100 caracteres")
+    @Column(name = "nome_completo", nullable = false, length = 100)
     private String nome;
     
-    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
-    @Column(name = "cpf")
+    @NotBlank(message = "O CPF é obrigatório")
+    //@Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
+    //@CPF(message = "CPF inválido")
+    @Column(name = "cpf", nullable = false, length = 14, unique = true)
     private String cpf;
-    
+
+    @NotBlank(message = "O nome de usuário é obrigatório")
+    @Size(max = 100, message = "O nome de usuário deve ter no máximo 100 caracteres")
     @Column(name = "nome_usuario")
     private String usuario;
-    
-    @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
+
+    @NotBlank(message = "O e-mail é obrigatório")
+    @Email(message = "E-mail inválido")
+    //@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Formato de e-mail inválido")
     @Column(name = "email")
     private String email;
-    
+
+    @NotBlank(message = "A senha é obrigatório")
+    @Size(message = "Senha inválida")
     @Column(name = "senha")
     private String senha;
-    
-    @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
-    @Column(name = "data_cadastro")
+
+    @Column(name = "data_cadastro", updatable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private LocalDate dataCadastro;
 
     /*GETTERS AND SETTERS*/
