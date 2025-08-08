@@ -30,20 +30,25 @@ public class UsuarioServiceImpl implements UsuarioService {
     private static final List<String> dominiosEmailPermitidos = List.of(
             "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "edu.br", "org", "gov.br");
     
-    /* login: validação, autenticação */
+    /* login: validação, autenticação 
     @Override
     public Usuario autenticar(String email, String senha) {
-        
-        Optional<Usuario> validandoLogin = usuarioRepository.findByEmail(email);
-        /* verificar a existencia de usuario na base de dados */
-        if (!validandoLogin.isPresent()) {
-            throw new ErroDeAutenticacao("Verifique seu email");
-        }
-        if (!validandoLogin.get().getSenha().equals(senha)) {
-            throw new ErroDeAutenticacao("Verifique sua senha");
-        }
-        return validandoLogin.get();
-    }
+        return usuarioRepository.findByEmail(email)
+                .filter(usuario -> passwordEncoder.matches(senha, usuario.getSenha()))
+                .orElseThrow(()-> new ErroValidacaoException("Email ou senha não confere")); /*new IllegalArgumentException*
+    } implementar o argon2*
+
+
+    @Override
+    public Usuario autenticar(String email, String senha) {
+        return usuarioRepository.findByEmail(email)
+                .filter(usuario -> senhaService.verificarSenha(senha, usuario.getSenha()))
+                .orElseThrow(() -> new CredenciaisInvalidasException());
+    }*/
+
+
+
+
     
     @Override
     @Transactional
@@ -60,7 +65,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         validar(usuario);
         return usuarioRepository.save(usuario);
     }
+             
+    @Override
+    public Optional<Usuario> obterUsuarioPorId(Long id) {
+        return usuarioRepository.findById(id);
+    }
     
+    public Optional<Usuario> pegarUsuarioPorCpf(String cpf) {
+		return usuarioRepository.findByCpf(cpf);
+	}
+    
+    /*VALIDAÇÃO*/
     @Override
     public void validar(Usuario usuario) {
         /* preencher campos */
@@ -103,7 +118,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         } else {
             validarParaNaoDuplicarAoAtualizar(usuario);
         }
-    }
+    }    
     
     /*validação para criar o registro*/
     public void validarDuplicacao(Usuario usuario) {
@@ -132,9 +147,10 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new ErroValidacaoException("Seu usuario já está com esse CPF. Não pode ser atualizado.");
         }
     }
-    
-    @Override
-    public Optional<Usuario> obterUsuarioPorId(Long id) {
-        return usuarioRepository.findById(id);
-    }
+
+	@Override
+	public Usuario autenticar(String email, String senha) {
+
+		return null;
+	}	
 }

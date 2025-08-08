@@ -23,8 +23,6 @@ public class ConvertDtoToEntity {
         escola.setEstado(dto.getEstado());
         escola.setMunicipio(dto.getMunicipio());
         escola.setBairro(dto.getBairro());
-        escola.setEndereco(dto.getEndereco());
-        escola.setTelefone(dto.getTelefone());
         escola.setDataCadastro(dto.getDataCadastro());
         return escola;
     }

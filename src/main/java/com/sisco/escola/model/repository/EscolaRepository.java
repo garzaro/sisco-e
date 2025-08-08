@@ -8,8 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface EscolaRepository extends JpaRepository<Escola, Long> {
-	
-	/*verifica a existencia de uma escola por nome*/
+
+    /*verifica a existencia de uma escola por nome*/
     boolean existsByNome(String escola);
     
     /*verifica a existencia de uma escola por codigo*/

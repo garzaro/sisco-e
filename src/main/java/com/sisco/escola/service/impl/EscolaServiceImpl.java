@@ -24,6 +24,11 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
+	public long quantidadeEscola() {
+		return escolaRepository.count();
+	}
+
+	@Override
 	@Transactional
 	public Escola salvarEscola(Escola escola) {
 		validarEscola(escola);
@@ -100,11 +105,11 @@ public class EscolaServiceImpl implements EscolaService {
 			throw new RegraDeNegocioException("Informar o nome do bairro.");
 		}
 		
-		if (escola.getEndereco() == null || escola.getEndereco().trim().equals("")) {
+		if (escola.getLogradouro() == null || escola.getLogradouro().trim().equals("")) {
 			throw new RegraDeNegocioException("Informar o endereço da escola.");
 		}
 		
-		if (escola.getTelefone() == null || escola.getTelefone().trim().equals("")) {
+		/*if (escola.getTelefone() == null || escola.getTelefone().trim().equals("")) {
 			throw new RegraDeNegocioException("Informar o telefone da escola.");			
 		}
 		/* deve saber quando é para atualizar ou criar/salvar uma escola */

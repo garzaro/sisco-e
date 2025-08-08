@@ -16,19 +16,12 @@ public interface UsuarioService {
     
     /*atualiza o usuario*/
     Usuario atualizar(Usuario usuario);
-    
-    /*verifica o email e cpf na base de dados, unique 
-    void validarUsuario(
-    		String nomeCompleto,
-    		String cpf,
-    		String nomeUsuario,
-    		String email,
-    		String senha
-    		);*/
-    
+         
     void validar(Usuario usuario);
     
     Optional<Usuario> obterUsuarioPorId(Long id);
+
+	Optional<Usuario> pegarUsuarioPorCpf(String cpf);
     
     /*IMPLEMTAR SERVICO BUSCAR POR CPF*/
     
