@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -53,12 +54,13 @@ public class Usuario{
     private String email;
 
     @NotBlank(message = "A senha é obrigatório")
-    @Size(message = "Senha inválida")
-    @Column(name = "senha")
+    @Size(max = 255, message = "Senha inválida")
+    @Column(name = "senha", nullable = false,length = 255)
     private String senha;
 
+    @CreationTimestamp
     @Column(name = "data_cadastro", updatable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
-    private LocalDate dataCadastro;
+    private LocalDateTime dataCadastro;
 
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
