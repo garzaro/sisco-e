@@ -1,6 +1,8 @@
 package com.sisco.escola.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,35 +20,53 @@ public class Provedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    
-    @Column(name = "provedor_internet", length = 30)
+
+    @NotBlank(message = "O provedor é obrigatório")
+    @Size(max = 50, message = "Provedor deve ter no máximo 50 caracteres")
+    @Column(name = "provedor_internet", nullable = false, length = 30)
     private String provedorInternet;
-    
-    @Column(name = "ip_link", length = 15)
+
+    @NotBlank(message = "IP é obrigatório")
+    @Size(max = 39, message = "Internet Protocol deve ter no maximo 39 caracteres")
+    @Column(name = "ip_link", nullable = false, length = 39)
     private String ipLink;
-    
-    @Column(name = "mascara_rede", length = 15)
+
+    @NotBlank(message = "A máscara é obrigatótio")
+    @Size(max = 5, message = "A máscara deve ter no máximo 5 caracteres")
+    @Column(name = "mascara_rede", nullable = false, length = 5)
     private String mascaraRede;
-    
-    @Column(name = "gateway_provedor", length = 15)
+
+    @NotBlank(message = "O gateway é obrigatório")
+    @Size(max = 39, message = "O gateway deve ter no máximo 39 caracteres")
+    @Column(name = "gateway_provedor", nullable = false, length = 39)
     private String gatewayProvedor;
 
-    @Column(name = "dns_um", length = 45)
+    @NotBlank(message = "DNS é obrigatório")
+    @Size(max = 39, message = "O DNS deve ter no máximo 39 caracteres")
+    @Column(name = "dns_um", nullable = false, length = 39)
     private String dns1;
 
-    @Column(name = "dns_dois", length = 45)
+    @Size(max = 39, message = "O DNS deve ter no máximo 39 caracteres")
+    @Column(name = "dns_dois", nullable = false, length = 39)
     private String dns2;
-    
-    @Column(name = "velocidade_link", length = 20)
+
+    @Size(max = 39, message = "O DNS deve ter no máximo 39 caracteres")
+    @Column(name = "dns_tres", nullable = false, length = 39)
+    private String dns3;
+
+    @NotBlank(message = "A velocidade do link é obrigatório")
+    @Size(max = 10, message = "A velocidade do link deve ter no máximo 10 caracteres")
+    @Column(name = "velocidade_link", nullable = false, length = 10)
     private String velocidadeLink;
-    
-    /*VER ENUM DO PROJETO DE FINANCAS*/
-    @Column(name = "status_link")
-    private String statusLink;
-    
+
     @ManyToOne
     @JoinColumn(name = "idEscola")
     private Escola escola;
-    
+
+    @NotBlank(message = "O status do link é obrigatório")
+    @Size(max = 4, message = "O status do link deve ter no máximo 4 caracteres")
+    @Column(name = "status_link", nullable = false, length = 4)
+    private StatusLink statusLink;
+
     /*getters e setters*/
 }
