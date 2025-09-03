@@ -6,15 +6,15 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.entity.Usuario;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
 public class ConvertDtoToEntity {
     /*@Autowired
     UsuarioService usuarioService;*/
 
-    /* Um metodo para converter o dto em uma entidade de escola */
-    public Escola converterDtoParaEntidade(EscolaDTO dto) {
+    /**polimorfismo - sobrecarga (overload)*/
+
+    /**metodo para converter o dto em uma entidade de escola */
+    public Escola toEntity(EscolaDTO dto) {
         Escola escola = new Escola();
         escola.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
         escola.setNome(dto.getNome());
@@ -27,8 +27,8 @@ public class ConvertDtoToEntity {
         return escola;
     }
 
-    /* Um metodo para converter o dto em uma entidade de usuario */
-    public Usuario converterDtoParaEntidade(UsuarioDTO dto) {
+    /** metodo para converter o dto em uma entidade de usuario */
+    public Usuario toEntity(UsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
         usuario.setNome(dto.getNome());
