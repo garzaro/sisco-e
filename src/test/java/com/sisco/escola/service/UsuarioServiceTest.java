@@ -1,20 +1,18 @@
 package com.sisco.escola.service;
 
-
-import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
@@ -25,35 +23,41 @@ public class UsuarioServiceTest {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    @DisplayName("Email validado com sucesso, nao existe email")
+    @DisplayName("Usuario salvo com sucesso")
     @Test
-    public void testDeveValidarEmailNaBase() {
-        usuarioRepository.deleteAll();
-
-       // usuarioService.validarUsuario("clebergarzaro7@gmail.com");
-
+    public void deveSalvarUsuarioNoBancoDeDados() {
+        /**cenario*/
+        Usuario usuario = criarUsuario();
+        usuarioRepository.save(usuario);
     }
-    
+
+    @DisplayName("Verificar se o email existe")
+    @Test
+    public void deveValidarEmailQuandoEmailNaoExistir(){
+        /**cenario*/
+        usuarioRepository.deleteAll();
+        usuarioService.validarEmailCpf("usuario@gmail.com","");
+    }
+
     @DisplayName("Erro lancado, ja existe email cadastrado")
     @Test
-    public void testServiceDevelancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
-        Usuario salvarUsuario = testCriarUsuario();
+    public void develancarErroValidandoEmailQuandoEmailJaCadastrado() {
+        /**cenario**/
+        Usuario usuario = criarUsuario();
+        usuarioRepository.save(usuario);
 
-        usuarioRepository.save(salvarUsuario);
-
-        assertThrows(RegraDeNegocioException.class, () -> {
-       //     usuarioService.validarUsuario("clebergarzaro7@gmail.com", null, null, null, null);
-        });
+        /**ação**/
+        usuarioService.validarEmailCpf("usuario@gmail.com", "");
     }
 
-    public Usuario testCriarUsuario() {
+    public Usuario criarUsuario() {
         return Usuario.builder()
                 .nome("Cleber Garzaro")
                 .usuario("garzaro74")
                 .cpf("123.456.789-00")
-                .email("clebergarzaro74@gmail.com")
-                .senha("senha")
-                .dataCadastro(LocalDate.now())
+                .email("usuario@gmail.com")
+                .senha("S3nh4@123")
+                .dataCadastro(LocalDateTime.now())
                 .build();
     }
 }
