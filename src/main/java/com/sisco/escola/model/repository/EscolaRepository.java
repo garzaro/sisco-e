@@ -2,6 +2,7 @@ package com.sisco.escola.model.repository;
 
 import com.sisco.escola.model.entity.Escola;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
