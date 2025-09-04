@@ -14,6 +14,9 @@ public interface UsuarioService {
 
     /**validar o email - ao salvar nao deve duplicar*/
     void validarEmail(String email);
+    
+    /**validar o cpf - ao salvar nao deve duplicar*/
+    void validarCpf(String cpf);   
 
     Optional<Usuario> obterUsuarioPorId(Long id);
 
