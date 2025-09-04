@@ -14,10 +14,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     /*existe um usuario com um cpf*/
     boolean existsByCpf(String cpf);
     
-    /*verifica a existencia de um usuario por nome, ignora o id atual e salva, caso seja atualização*/
+    /*  VER ISSO DE VERDADE ISSO AQUI FOI COPIADO DE IA verifica a existencia de um usuario por nome, ignora o id atual e salva, caso seja atualização*/
     boolean existsByEmailAndIdNot(String email, Long id);
     
-    /*verifica a existencia de uma escola por codigo, ignora o id atual e salva, caso seja atualização*/
+    /* VER ISSO DE VERDADE ISSO AQUI FOI COPIADO DE IA verifica a existencia de uma escola por codigo, ignora o id atual e salva, caso seja atualização*/
     boolean existsByCpfAndIdNot(String cpf, Long id);
     
     /*busca um usuario por email*/
@@ -25,5 +25,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
     /*busca um usuario por email - IMPLEMENTAR SERVICO*/
     Optional<Usuario> findByCpf(String cpf);
-    
 }
+
+
