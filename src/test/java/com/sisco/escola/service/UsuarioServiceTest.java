@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,7 +54,7 @@ public class UsuarioServiceTest {
                 .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
                 .senha("senha")
-                .dataCadastro(LocalDate.now())
+                .dataCadastro(Instant.now())
                 .build();
     }
 }

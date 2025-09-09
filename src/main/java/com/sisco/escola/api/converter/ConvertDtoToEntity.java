@@ -6,6 +6,7 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.entity.Usuario;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Component
@@ -36,7 +37,7 @@ public class ConvertDtoToEntity {
         usuario.setUsuario(dto.getUsuario());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
-        usuario.setDataCadastro(dto.getDataCadastro());
+        usuario.setDataCadastro(Instant.from(dto.getDataCadastro()));
         return usuario;
     }
 }
