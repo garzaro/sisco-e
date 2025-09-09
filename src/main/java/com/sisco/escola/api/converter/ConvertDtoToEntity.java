@@ -16,7 +16,7 @@ public class ConvertDtoToEntity {
     UsuarioService usuarioService;*/
 
     /* Um metodo para converter o dto em uma entidade de escola */
-    public Escola converterDtoParaEntidade(EscolaDTO dto) {
+    public Escola toEntity(EscolaDTO dto) {
         Escola escola = new Escola();
         escola.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
         escola.setNome(dto.getNome());
@@ -30,7 +30,7 @@ public class ConvertDtoToEntity {
     }
 
     /* Um metodo para converter o dto em uma entidade de usuario */
-    public Usuario converterDtoParaEntidade(UsuarioDTO dto) {
+    public Usuario toEntity(UsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
         usuario.setNome(dto.getNome());

@@ -33,7 +33,7 @@ public class UsuarioController {
         try {
             Usuario usuarioAutenticado = usuarioService.autenticar(dto.getEmail(), dto.getSenha());
             return ResponseEntity.ok(usuarioAutenticado);
-        } catch (ErroDeAutenticacao e) {
+        } catch (ErroAutenticacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -56,9 +56,9 @@ public class UsuarioController {
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody UsuarioDTO dto) {
         return usuarioService.obterUsuarioPorId(id).map(entity -> {
             try {
-                Usuario usuario = converter.converterDtoParaEntidade(dto);
+                Usuario usuario = converter.toEntity(dto);
                 usuario.setId(id);
-                usuarioService.atualizar(usuario);
+//                usuarioService.atualizar(usuario);
                 return ResponseEntity.ok(usuario);
 
             } catch (ErroValidacaoException e) {
