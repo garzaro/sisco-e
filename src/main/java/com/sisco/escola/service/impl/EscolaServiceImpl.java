@@ -24,7 +24,7 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
-	public long quantidadeEscola() {
+	public long totalEscola() {
 		return escolaRepository.count();
 	}
 

@@ -7,22 +7,18 @@ import java.util.Optional;
 
 @Service
 public interface UsuarioService {
-    
-    /*verificar se o usuario existe na base, validação*/
+
     Usuario autenticar(String email, String senha);
-    
-    /*salvar o usuario na base*/
+
     Usuario salvar(Usuario usuario);
+
+    /**validar o email - ao salvar nao deve duplicar*/
+    void validarEmail(String email);
     
-    /*atualiza o usuario*/
-    Usuario atualizar(Usuario usuario);
-         
-    void validar(Usuario usuario);
-    
+    /**validar o cpf - ao salvar nao deve duplicar*/
+    void validarCpf(String cpf);   
+
     Optional<Usuario> obterUsuarioPorId(Long id);
 
-	Optional<Usuario> pegarUsuarioPorCpf(String cpf);
-    
-    /*IMPLEMTAR SERVICO BUSCAR POR CPF*/
-    
+    Optional<Usuario> pegarUsuarioPorCpf(String cpf);
 }
