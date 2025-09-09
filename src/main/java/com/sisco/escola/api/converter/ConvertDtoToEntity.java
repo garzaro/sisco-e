@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class ConvertDtoToEntity {
@@ -24,7 +25,7 @@ public class ConvertDtoToEntity {
         escola.setEstado(dto.getEstado());
         escola.setMunicipio(dto.getMunicipio());
         escola.setBairro(dto.getBairro());
-        escola.setDataCadastro(dto.getDataCadastro());
+        escola.setDataCadastro(LocalDateTime.from(dto.getDataCadastro()));
         return escola;
     }
 
