@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/usuario")
 @RequiredArgsConstructor
 public class UsuarioController {
 
@@ -36,9 +36,9 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<?> salvar( @RequestBody @Valid UsuarioDTO dto) {
         /**primeiramente criar a entidade**/
-        Usuario criarUsuario = criarUsuario(dto);
+        Usuario criar = criarUsuario(dto);
         try {
-            Usuario usuarioSalvo = usuarioService.salvar(criarUsuario);
+            Usuario usuarioSalvo = usuarioService.salvar(criar);
             return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
 
         } catch (ErroValidacaoException mensagemDeErro) {
