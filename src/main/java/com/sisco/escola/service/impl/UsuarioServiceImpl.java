@@ -6,22 +6,23 @@ import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+//@RequiredArgsConstructor
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     private UsuarioRepository usuarioRepository;
-    private Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 16, 3); 
-
-    public UsuarioServiceImpl( UsuarioRepository usuarioRepository){
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository){
         this.usuarioRepository = usuarioRepository;
     }
-    
+    private Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 16, 3); 
+
     /* lista de emails permitidos */
     private static final List<String> emailsPermitidos = List.of(
             "gmail.com", "gov.br");

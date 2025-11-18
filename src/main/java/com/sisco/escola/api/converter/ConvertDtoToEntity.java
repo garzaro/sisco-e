@@ -6,14 +6,16 @@ import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.entity.Usuario;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Component
 public class ConvertDtoToEntity {
     /*@Autowired
     UsuarioService usuarioService;*/
 
-    /**polimorfismo - sobrecarga (overload)*/
-
-    /**metodo para converter o dto em uma entidade de escola */
+    /* Um metodo para converter o dto em uma entidade de escola */
     public Escola toEntity(EscolaDTO dto) {
         Escola escola = new Escola();
         escola.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
@@ -23,11 +25,11 @@ public class ConvertDtoToEntity {
         escola.setEstado(dto.getEstado());
         escola.setMunicipio(dto.getMunicipio());
         escola.setBairro(dto.getBairro());
-        escola.setDataCadastro(dto.getDataCadastro());
+        escola.setDataCadastro(LocalDateTime.from(dto.getDataCadastro()));
         return escola;
     }
 
-    /** metodo para converter o dto em uma entidade de usuario */
+    /* Um metodo para converter o dto em uma entidade de usuario */
     public Usuario toEntity(UsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setId(dto.getId()); /* caso precise atualizar, ele vem preenchido com o id */
@@ -36,7 +38,7 @@ public class ConvertDtoToEntity {
         usuario.setUsuario(dto.getUsuario());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
-        usuario.setDataCadastro(dto.getDataCadastro());
+        usuario.setDataCadastro(Instant.from(dto.getDataCadastro()));
         return usuario;
     }
 }

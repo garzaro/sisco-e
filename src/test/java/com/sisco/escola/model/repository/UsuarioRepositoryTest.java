@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -107,7 +108,7 @@ public class UsuarioRepositoryTest {
                     .cpf("123.456.789-00")
                     .email("clebergarzaro74@gmail.com")
                     .senha("senha")
-                    .dataCadastro(LocalDate.now())
+                    .dataCadastro(Instant.now())
                     .build();
         }
     }
