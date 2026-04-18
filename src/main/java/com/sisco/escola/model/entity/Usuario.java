@@ -1,33 +1,22 @@
 package com.sisco.escola.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
 /**
  * To-do list
- *  CAMPO SENHA
- *  []  Pelo menos uma letra minúscula ((?=.*[a-z])).
- *  []  Pelo menos uma letra maiúscula ((?=.*[A-Z])).
- *  []  Pelo menos um dígito ((?=.*\d)).
- *  []  Pelo menos um caractere especial ((?=.*[@$!%*?&])).
- *  []  Comprimento mínimo de 8 caracteres ({8,}).
- *  * */
+ * */
 
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "usuario", schema = "siscoescola")
 public class Usuario {
@@ -38,7 +27,7 @@ public class Usuario {
     private Long id;
 
     @NotBlank(message = "Nome é obrigatório")
-    @Size(max = 100, message = "NOme deve ter no máximo 100 caracteres")
+    @Size(max = 100, message = "Nome deve ter no máximo 100 caracteres")
     @Column(name = "nome_completo", nullable = false, length = 100)
     private String nome;
 
@@ -61,12 +50,20 @@ public class Usuario {
     private String email;
 
     @NotBlank(message = "Senha é obrigatório")
-    @Size(min = 8, max = 32, message = "A senha deve ter entre 8 e 32 caracteres." )
+    @Size(min = 8, max = 32, message = "A senha deve ter entre 6 e 32 caracteres." )
+    //@Pattern() //remover
+    /*
+    [] Pelo menos uma letra minúscula ((?=.*[a-z])).
+    [] Pelo menos uma letra maiúscula ((?=.*[A-Z])).
+    [] Pelo menos um dígito ((?=.*\d)).
+    [] Pelo menos um caractere especial ((?=.*[@$!%*?&])).
+    [] Comprimento mínimo de 6 caracteres ({8,}).
+    */
     @Pattern(
 
             regexp = "^(?=.*[a-z])(?=.*[A-Z])" +
                     "(?=.*\\d)(?=.*[@$!%*?&])" +
-                    "[A-Za-z\\d@$!%*?&]{8,}$",
+                    "[A-Za-z\\d@$!%*?&]{6,}$",
 
             message = "A senha deve conter pelo" +
                     " menos uma letra maiúscula," +
