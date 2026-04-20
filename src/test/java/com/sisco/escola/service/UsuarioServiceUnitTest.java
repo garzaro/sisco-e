@@ -18,7 +18,7 @@ public class UsuarioServiceUnitTest {
     @BeforeAll
     public void setUp(){
         usuarioRepository = Mockito.mock(UsuarioRepository.class);
-        usuarioService = new UsuarioServiceImpl(usuarioRepository);
+        usuarioService = new UsuarioServiceImpl(usuarioRepository, null, null, null);
     
     }
     

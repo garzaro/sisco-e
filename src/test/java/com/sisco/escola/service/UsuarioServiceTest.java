@@ -53,7 +53,7 @@ public class UsuarioServiceTest {
                 .usuario("garzaro74")
                 .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
-                .senha("senha")
+                .password("senha")
                 .dataCadastro(Instant.now())
                 .build();
     }

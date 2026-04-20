@@ -96,7 +96,7 @@ public class UsuarioRepositoryTest {
         Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("123.456.789-00");
         Assertions.assertThat(recuperarUsuario.getUsuario()).isEqualTo("garzaro74");
         Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
-        Assertions.assertThat(recuperarUsuario.getSenha()).isEqualTo("senha");
+        Assertions.assertThat(recuperarUsuario.getPassword()).isEqualTo("senha");
         Assertions.assertThat(recuperarUsuario.getDataCadastro()).isEqualTo("2024-08-28");
     }
     
@@ -107,7 +107,7 @@ public class UsuarioRepositoryTest {
                     .usuario("garzaro74")
                     .cpf("123.456.789-00")
                     .email("clebergarzaro74@gmail.com")
-                    .senha("senha")
+                    .password("senha")
                     .dataCadastro(Instant.now())
                     .build();
         }

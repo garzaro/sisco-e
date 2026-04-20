@@ -81,7 +81,7 @@ public class UsuarioRepositoryIntegrationTest {
                 .isEqualTo("clebergarzaro74@gmail.com");
         Assertions.assertThat(recuperarAInstanciaCriada.getUsuario())
                 .isEqualTo("garzaro74");
-        Assertions.assertThat(recuperarAInstanciaCriada.getSenha())
+        Assertions.assertThat(recuperarAInstanciaCriada.getPassword())
                 .isEqualTo("senha");
         Assertions.assertThat(recuperarAInstanciaCriada.getDataCadastro())
                 .isEqualTo(LocalDate.now());
@@ -95,7 +95,7 @@ public class UsuarioRepositoryIntegrationTest {
                 .usuario("garzaro74")
                 .cpf("123.456.789-00")
                 .email("clebergarzaro74@gmail.com")
-                .senha("senha")
+                .password("senha")
                 .dataCadastro(Instant.now())
                 .build();
     }

@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import com.sisco.escola.validacao.CpfValido;
 
 import java.time.Instant;
 
 /**
  * To-do list
- * */
+ * [] Muito acoplado com a base
+ * 
+ *  * */
 
 
 @Builder
@@ -26,31 +29,32 @@ public class Usuario {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Nome é obrigatório")
-    @Size(max = 100, message = "Nome deve ter no máximo 100 caracteres")
+    @NotBlank(message = "{usuario.nome.notblank}")
+    @Size(max = 100, message = "{usuario.nome.size}")
     @Column(name = "nome_completo", nullable = false, length = 100)
     private String nome;
 
-    @NotBlank(message = "CPF é obrigatótio")
+    @NotBlank(message = "{usuario.cpf.notblank}")
     @Size(max = 14)
-    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")
+    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$", message = "{usuario.cpf.pattern}")
+    @CpfValido
     @Column(name = "cpf", nullable = false, unique = true, length = 14)
     private String cpf;
 
-    @NotBlank(message = "Nome de usuário é obrigatório")
-    @Size(max = 50, message = "Nome de usuario deve ter no máximo 50 caracteres")
+    @NotBlank(message = "{usuario.username.notblank}")
+    @Size(max = 50, message = "{usuario.username.size}")
     @Column(name = "nome_usuario", nullable = false, length = 50)
     private String usuario;
 
-    @NotBlank(message = "Email  é obrigatório")
-    @Email(message = "Email deve ter um formato válido")
-    @Size(max = 150, message = "Email deve ter no máximo 150 caracteres")
+    @NotBlank(message = "{usuario.email.notblank}")
+    @Email(message = "{usuario.email.valid}")
+    @Size(max = 150, message = "{usuario.email.size}")
     @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
     @Column(name = "email", nullable = false, unique = true, length = 150)
     private String email;
 
-    @NotBlank(message = "Senha é obrigatório")
-    @Size(min = 8, max = 32, message = "A senha deve ter entre 6 e 32 caracteres." )
+    @NotBlank(message = "{usuario.senha.notblank}")
+    @Size(min = 8, max = 32, message = "{usuario.senha.size}")
     //@Pattern() //remover
     /*
     [] Pelo menos uma letra minúscula ((?=.*[a-z])).
@@ -65,13 +69,10 @@ public class Usuario {
                     "(?=.*\\d)(?=.*[@$!%*?&])" +
                     "[A-Za-z\\d@$!%*?&]{6,}$",
 
-            message = "A senha deve conter pelo" +
-                    " menos uma letra maiúscula," +
-                    " uma minúscula, um número e um" +
-                    " caractere especial."
+            message = "{usuario.senha.pattern}"
     )
     @Column(name = "senha")
-    private String senha;
+    private String password;
 
     /**
      * LEGADO
@@ -85,6 +86,9 @@ public class Usuario {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant dataCadastro;
+
+    @Column(name = "ativo")
+    private Boolean ativo;
 
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/
