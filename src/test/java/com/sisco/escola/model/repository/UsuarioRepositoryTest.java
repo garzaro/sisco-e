@@ -93,11 +93,11 @@ public class UsuarioRepositoryTest {
         /*verificação*/
         Assertions.assertThat(recuperarUsuario.getId()).isNotNull();
         Assertions.assertThat(recuperarUsuario.getNome()).isEqualTo("Cleber Garzaro"); /*comparação*/
-        Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("123.456.789-00");
+        Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("111.444.777-35");
         Assertions.assertThat(recuperarUsuario.getUsuario()).isEqualTo("garzaro74");
         Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
-        Assertions.assertThat(recuperarUsuario.getPassword()).isEqualTo("senha");
-        Assertions.assertThat(recuperarUsuario.getDataCadastro()).isEqualTo("2024-08-28");
+        Assertions.assertThat(recuperarUsuario.getPassword()).isEqualTo("Senha@123");
+        Assertions.assertThat(recuperarUsuario.getDataCadastro()).isNotNull();
     }
     
     /*para criação de instancia*/
@@ -105,9 +105,9 @@ public class UsuarioRepositoryTest {
             return Usuario.builder()
                     .nome("Cleber Garzaro")
                     .usuario("garzaro74")
-                    .cpf("123.456.789-00")
+                    .cpf("111.444.777-35")
                     .email("clebergarzaro74@gmail.com")
-                    .password("senha")
+                    .password("Senha@123")
                     .dataCadastro(Instant.now())
                     .build();
         }

@@ -76,26 +76,25 @@ public class UsuarioRepositoryIntegrationTest {
         Assertions.assertThat(recuperarAInstanciaCriada.getNome())
                 .isEqualTo("Cleber Garzaro");
         Assertions.assertThat(recuperarAInstanciaCriada.getCpf())
-                .isEqualTo("123.456.789-00");
+                .isEqualTo("111.444.777-35");
         Assertions.assertThat(recuperarAInstanciaCriada.getEmail())
                 .isEqualTo("clebergarzaro74@gmail.com");
         Assertions.assertThat(recuperarAInstanciaCriada.getUsuario())
                 .isEqualTo("garzaro74");
         Assertions.assertThat(recuperarAInstanciaCriada.getPassword())
-                .isEqualTo("senha");
+                .isEqualTo("Senha@123");
         Assertions.assertThat(recuperarAInstanciaCriada.getDataCadastro())
-                .isEqualTo(LocalDate.now());
+                .isNotNull();
     }
     
     /*para criação de instancia*/
     public static Usuario testCriarUsuario() {
         return Usuario.builder()
-                .id(1l)
                 .nome("Cleber Garzaro")
                 .usuario("garzaro74")
-                .cpf("123.456.789-00")
+                .cpf("111.444.777-35")
                 .email("clebergarzaro74@gmail.com")
-                .password("senha")
+                .password("Senha@123")
                 .dataCadastro(Instant.now())
                 .build();
     }

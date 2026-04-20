@@ -101,8 +101,9 @@ public class EscolaController {
                 new ResponseEntity("Escola não encontrada na base de dados", HttpStatus.BAD_REQUEST));
     }
     
+    @GetMapping
     @Transactional(readOnly = true)
-    public List<Escola> listarEscolas(Pageable pageable) {
-        return escolaService.listarEscolas((Escola) pageable);
+    public List<Escola> listarEscolas(Escola escolaFiltro) {
+        return escolaService.listarEscolas(escolaFiltro);
     }
 }

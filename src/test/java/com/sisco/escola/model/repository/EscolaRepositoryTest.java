@@ -21,14 +21,18 @@ public class EscolaRepositoryTest {
         
         /*CENARIO*/
         Escola escolaDeTeste = Escola.builder()
-                .nome("Marvin")
-                //.cidade("Fortaleza")
+                .nome("Escola de Teste")
+                .codigo("1234567890")
+                .email("escola@teste.com")
+                .estado("Ceara")
+                .municipio("Fortaleza")
                 .bairro("Barra do Ceara")
+                .logradouro("Rua das Flores, 123")
                 .build();
         escolaRepository.save(escolaDeTeste);
         
         /*AÇÃO*/
-        boolean verificarSeExisteAEscola = escolaRepository.existsByNomeAndIdNot("Marvin", null);
+        boolean verificarSeExisteAEscola = escolaRepository.existsByNomeAndIdNot("Escola de Teste", null);
         
         /*VERIFICAÇÃO*/
         Assertions.assertThat(verificarSeExisteAEscola).isNotNull();

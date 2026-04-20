@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+idea/workspace.xml
+.idea/compiler.xml
+.idea/inspectionProfiles/
+.idea/encodings.xml
+.idea/jarRepositories.xml
+*.iml
