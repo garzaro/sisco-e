@@ -1,13 +1,18 @@
 package com.sisco.escola.api.resource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.sisco.escola.model.repository.EscolaRepository;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
@@ -17,12 +22,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@WebMvcTest(controllers = EscolaController.class)
 @AutoConfigureMockMvc
 /*@Sql("classpath:data.sql") // Assuming you have a data.sql file for testing*/
 public class EscolaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    // @MockBean
+    // EscolaRepository escolaRepository;
 
     @Test
     @Transactional
