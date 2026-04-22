@@ -14,14 +14,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//@RequiredArgsConstructor
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("api/escolas")
+@RequestMapping("api/escola")
 public class EscolaController {
     
     private final EscolaService escolaService;
     private final UsuarioService usuarioService;
+
+    public EscolaController(EscolaService escolaService, UsuarioService usuarioService) {
+        this.escolaService = escolaService;
+        this.usuarioService = usuarioService;
+    }
     
     /**total de escolas cadastras**/
     @GetMapping("/total")

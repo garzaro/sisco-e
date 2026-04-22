@@ -1,6 +1,5 @@
 package com.sisco.escola.service.impl;
 
-import com.sisco.escola.exception.ErroValidacaoException;
 import com.sisco.escola.exception.RegraDeNegocioException;
 import com.sisco.escola.model.entity.Escola;
 import com.sisco.escola.model.repository.EscolaRepository;

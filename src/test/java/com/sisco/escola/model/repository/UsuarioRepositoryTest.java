@@ -13,10 +13,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
-/*TESTE DANDO ERRO, ANALISAR DEPOIS*/
+/**TESTE DE INTEGRACAO**/
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 //@Profile("test")
 public class UsuarioRepositoryTest {
 
@@ -32,10 +31,24 @@ public class UsuarioRepositoryTest {
         Usuario usuario = criarUsuario();
         testEntityManager.persist(usuario);
         /*execução*/
-        boolean verificarEmail = usuarioRepository.existsByEmail("clebergarzaro74@gmail.com");
+        boolean verificarEmail = usuarioRepository.existsByEmail("usuario@gmail.com");
         /*verificação*/
         Assertions.assertThat(verificarEmail).isTrue();
     }
+    
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("email encontrado")
+    public void deveVerificarExistenciaDeUmEmailNoBancoDeDados(){
+        /*cenario*/
+        Usuario usuario = criarUsuario();
+        usuarioRepository.save(usuario);
+        /*execução*/
+        boolean verificarEmail = usuarioRepository.existsByEmail("usuario@gmail.com");
+        /*verificação*/
+        Assertions.assertThat(verificarEmail).isTrue();
+    }
+
 
     @Test
     @DisplayName("falso, nao tem usuario cadastrado")
@@ -106,7 +119,7 @@ public class UsuarioRepositoryTest {
                     .nome("Cleber Garzaro")
                     .usuario("garzaro74")
                     .cpf("111.444.777-35")
-                    .email("clebergarzaro74@gmail.com")
+                    .email("usuario@gmail.com")
                     .password("Senha@123")
                     .dataCadastro(Instant.now())
                     .build();

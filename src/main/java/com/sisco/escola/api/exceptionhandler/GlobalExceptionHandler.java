@@ -99,7 +99,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         .mensagem(fe.getDefaultMessage())   // mensagem vem da anotação no modelo
                         .build())
                 .toList();
-
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
                 .timestamp(Instant.now())
