@@ -1,30 +1,15 @@
 package com.sisco.escola.api.mapper;
 
-import com.sisco.escola.api.dto.UsuarioDTO;
-import com.sisco.escola.model.entity.Usuario;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import java.util.List;
+import com.sisco.escola.api.dto.UsuarioDTO;
+import com.sisco.escola.model.entity.Usuario;
 
-/**
- * Mapper MapStruct responsável pela conversão entre {@link Usuario} (entidade JPA)
- * e {@link UsuarioDTO} (objeto de transferência de dados).
- *
- * <p>Regras de mapeamento:
- * <ul>
- *   <li>{@code usuario} (campo na entidade) → {@code usuario} (mesmo nome no DTO): mapeado explicitamente
- *       para deixar a intenção clara, pois ambos os lados têm nomes idênticos.</li>
- *   <li>{@code senha} é ignorada no sentido entidade → DTO, evitando exposição do hash.</li>
- *   <li>Na atualização parcial ({@link #atualizarEntidadeComDto}), propriedades nulas do DTO
- *       não sobrescrevem os valores existentes na entidade.</li>
- * </ul>
- *
- * <p>{@code componentModel = "spring"} faz o MapStruct gerar um bean Spring
- * que pode ser injetado via {@code @Autowired} / construtor.
- */
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
@@ -88,4 +73,5 @@ public interface UsuarioMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dataCadastro", ignore = true)
     void atualizarEntidadeComDto(UsuarioDTO dto, @MappingTarget Usuario entity);
+
 }

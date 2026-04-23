@@ -1,23 +1,24 @@
 package com.sisco.escola.api.dto;
 
-import jakarta.validation.constraints.*;
+import java.time.Instant;
+
+import com.sisco.escola.validacao.CpfValido;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.sisco.escola.validacao.CpfValido;
-import java.time.Instant;
 
-/**
- * O @Requestbody no controller faz desseriealizacao (converte JSON para entity),
- * JSON para este objeto, java type, de entrada da api
- * **/
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDTO {
-    private Long id;
+	private Long id;
 
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 100, message = "{usuario.nome.size}")
