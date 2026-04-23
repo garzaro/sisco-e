@@ -1,4 +1,4 @@
-package com.sisco.escola.model;
+package com.sisco.escola.model.entity;
 
 import com.sisco.escola.validacao.CpfValido;
 import jakarta.persistence.*;
@@ -70,7 +70,6 @@ public class Usuario {
     private String password;
 
     /**
-     * ---------------------------------------------------------------
      * @CreationTimestamp
      * O valor é definido automaticamente pelo Hibernate na primeira vez que a entidade é salva.
      * Registra o momento EXATO da criação da entidade.
