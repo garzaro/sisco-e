@@ -1,6 +1,9 @@
 package com.sisco.escola.service;
 
 import com.sisco.escola.api.dto.UsuarioDTO;
+
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -37,7 +40,7 @@ public interface UsuarioService {
      * @param usuarioDTO novos dados do usuário
      * @return DTO atualizado
      */
-    UsuarioDTO atualizar(Long id, UsuarioDTO usuarioDTO);
+    UsuarioDTO atualizar(UUID id, UsuarioDTO usuarioDTO);
 
     /**
      * Busca um usuário pelo seu identificador primário.
@@ -46,7 +49,7 @@ public interface UsuarioService {
      * @return DTO do usuário encontrado
      * @throws com.sisco.escola.exception.RegraDeNegocioException se não encontrado
      */
-    UsuarioDTO buscarPorId(Long id);
+    UsuarioDTO buscarPorId(UUID id);
 
     /**
      * Exclui permanentemente um usuário do sistema.
@@ -54,7 +57,7 @@ public interface UsuarioService {
      *
      * @param id identificador do usuário a ser removido
      */
-    void deletar(Long id);
+    void deletar(UUID uuid);
 
     /**
      * Lista todos os usuários de forma paginada.
@@ -113,7 +116,7 @@ public interface UsuarioService {
      * @param id         identificador do usuário
      * @param novaSenha  nova senha em texto plano (será validada e codificada)
      */
-    void redefinirSenha(Long id, String newPassword);
+    void redefinirSenha(UUID uuid, String novaSenha);
 
     // -------------------------------------------------------------------------
     // Regras de Negócio — Ciclo de Vida da Conta
@@ -124,7 +127,7 @@ public interface UsuarioService {
      *
      * @param id identificador do usuário
      */
-    void ativarConta(Long id);
+    void ativarConta(UUID uuid);
 
     /**
      * Desativa a conta de um usuário (soft-delete / {@code ativo = false}).
@@ -132,7 +135,7 @@ public interface UsuarioService {
      *
      * @param id identificador do usuário
      */
-    void desativarConta(Long id);
+    void desativarConta(UUID uuid);
 
     // -------------------------------------------------------------------------
     // Validação de Existência  (unicidade de campos de identidade)
@@ -160,5 +163,5 @@ public interface UsuarioService {
      * @param username username a ser verificado
      * @throws com.sisco.escola.exception.ErroValidacaoException se o username já existir
      */
-    void validarUsername(String username);
+    void validarUsuario(String usuario);
 }

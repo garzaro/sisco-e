@@ -42,7 +42,7 @@ public interface UsuarioMapper {
      * @param entity entidade JPA
      * @return DTO sem o campo senha
      */
-    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "senha", ignore = true)
     UsuarioDTO toDto(Usuario entity);
 
     /**
@@ -85,7 +85,7 @@ public interface UsuarioMapper {
      * @param dto    fonte dos novos dados
      * @param entity entidade JPA a ser modificada in-place
      */
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "dataCadastro", ignore = true)
     void atualizarEntidadeComDto(UsuarioDTO dto, @MappingTarget Usuario entity);
 }

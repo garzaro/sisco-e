@@ -26,7 +26,7 @@ public class UsuarioRepositoryIntegrationTest {
     TestEntityManager testEntityManager;
     
     @Test
-    @DisplayName("Verificação feita com sucesso - usuario buscado por email")
+    @DisplayName("Verificação feita com sucesso - usuario buscado por email inexistente")
     public void testDeveRetornarVazioAoBuscarUsuarioPeloEmailSeNaoExistirNaBaseDeDados() {
         /*cenario*/
         /*execução*/
@@ -45,7 +45,7 @@ public class UsuarioRepositoryIntegrationTest {
         /*ação*/
         Usuario usuarioPersistido = usuarioRepository.save(salvandoUsuario);
         /*verificação*/
-        Assertions.assertThat(usuarioPersistido.getId()).isNotNull();
+        Assertions.assertThat(usuarioPersistido.getUuid()).isNotNull();
     }
     
     @Test
@@ -68,12 +68,14 @@ public class UsuarioRepositoryIntegrationTest {
         /*cenario*/
         Usuario criarUmaInstanciaERecuperarPeloId = testCriarUsuario();
         testEntityManager.persist(criarUmaInstanciaERecuperarPeloId);
+        
         /*verificação*/
         Usuario recuperarAInstanciaCriada = usuarioRepository
-                .findById(criarUmaInstanciaERecuperarPeloId.getId()).orElseThrow();
+                .findById(criarUmaInstanciaERecuperarPeloId.getUuid()).orElseThrow();
         Assertions.assertThat(recuperarAInstanciaCriada).isNotNull();
+        
         /*comparação*/
-        Assertions.assertThat(recuperarAInstanciaCriada.getNome())
+        Assertions.assertThat(recuperarAInstanciaCriada.getNomeCompleto())
                 .isEqualTo("Cleber Garzaro");
         Assertions.assertThat(recuperarAInstanciaCriada.getCpf())
                 .isEqualTo("111.444.777-35");
@@ -81,7 +83,7 @@ public class UsuarioRepositoryIntegrationTest {
                 .isEqualTo("clebergarzaro74@gmail.com");
         Assertions.assertThat(recuperarAInstanciaCriada.getUsuario())
                 .isEqualTo("garzaro74");
-        Assertions.assertThat(recuperarAInstanciaCriada.getPassword())
+        Assertions.assertThat(recuperarAInstanciaCriada.getSenha())
                 .isEqualTo("Senha@123");
         Assertions.assertThat(recuperarAInstanciaCriada.getDataCadastro())
                 .isNotNull();
@@ -90,11 +92,11 @@ public class UsuarioRepositoryIntegrationTest {
     /*para criação de instancia*/
     public static Usuario testCriarUsuario() {
         return Usuario.builder()
-                .nome("Cleber Garzaro")
+                .nomeCompleto("Cleber Garzaro")
                 .usuario("garzaro74")
                 .cpf("111.444.777-35")
                 .email("clebergarzaro74@gmail.com")
-                .password("Senha@123")
+                .senha("Senha@123")
                 .dataCadastro(Instant.now())
                 .build();
     }

@@ -4,6 +4,7 @@ import com.sisco.escola.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Interface de repositório para a entidade {@link Usuario}.
@@ -29,7 +30,7 @@ import java.util.Optional;
  */
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
     
     /*existe um usuario com o email informado*/
     boolean existsByEmail(String email);

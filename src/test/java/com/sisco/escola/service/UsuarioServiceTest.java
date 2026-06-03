@@ -60,7 +60,7 @@ public class UsuarioServiceTest {
 	public void deveInicializarIdComoNullPorPadrao() {
 		Usuario usuario = criarUsuario();
 		
-		assertThat(usuario.getId()).isNull();				
+		assertThat(usuario.getUuid()).isNull();				
 	}
     
     @DisplayName("Email validado com sucesso")
@@ -86,11 +86,11 @@ public class UsuarioServiceTest {
     
     public Usuario criarUsuario() {
         return Usuario.builder()
-                .nome("Cleber Garzaro")
+                .nomeCompleto("Cleber Garzaro")
                 .usuario("garzaro74")
                 .cpf("111.444.777-35")
                 .email("clebergarzaro74@gmail.com")
-                .password("Senha@123")
+                .senha("Senha@123")
                 .dataCadastro(Instant.now())
                 .build();
     }

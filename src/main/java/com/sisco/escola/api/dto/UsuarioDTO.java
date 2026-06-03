@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import validator_domain_core.validation.AllowedDomain;
+
 import com.sisco.escola.validacao.CpfValido;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * O @Requestbody no controller faz desseriealizacao (converte JSON para entity),
@@ -17,7 +20,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDTO {
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 100, message = "{usuario.nome.size}")
@@ -37,8 +40,16 @@ public class UsuarioDTO {
     @Email(message = "{usuario.email.valid}")
     @Size(max = 150, message = "{usuario.email.size}")
     @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
+    @AllowedDomain
     private String email;
 
+    /*
+     * [] Pelo menos uma letra minúscula ((?=.*[a-z])).
+     * [] Pelo menos uma letra maiúscula ((?=.*[A-Z])).
+     * [] Pelo menos um dígito ((?=.*\d)).
+     * [] Pelo menos um caractere especial ((?=.*[@$!%*?&])).
+     * [] Comprimento mínimo de 6 caracteres ({8,}).
+    */
     @NotBlank(message = "{usuario.senha.notblank}")
     @Size(min = 8, max = 32, message = "{usuario.senha.size}")
     @Pattern(
@@ -47,7 +58,10 @@ public class UsuarioDTO {
                     "[A-Za-z\\d@$!%*?&]{6,}$",
             message = "{usuario.senha.pattern}"
     )
-    private String password;
+    
+    @NotBlank(message = "{usuario.senha.notblank}")
+    @Size(min = 8, max = 32, message = "{usuario.senha.size}")
+    private String senha;
 
     private Instant dataCadastro;
 

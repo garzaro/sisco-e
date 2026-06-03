@@ -6,6 +6,9 @@ import com.sisco.escola.service.UsuarioService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +47,7 @@ public class UsuarioController {
      * Erros de validação e conflito são tratados pelo GlobalExceptionHandler (422 / 409).
      */
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioDTO dto) {
+    public ResponseEntity<UsuarioDTO> atualizar(@PathVariable UUID id, @RequestBody @Valid UsuarioDTO dto) {
         UsuarioDTO atualizado = usuarioService.atualizar(id, dto);
         return ResponseEntity.ok(atualizado);
     }
@@ -54,7 +57,7 @@ public class UsuarioController {
      * Recurso não encontrado é tratado pelo GlobalExceptionHandler (422).
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<UsuarioDTO> buscarPorId(@PathVariable UUID id) {
         UsuarioDTO usuario = usuarioService.buscarPorId(id);
         return ResponseEntity.ok(usuario);
     }
@@ -63,7 +66,7 @@ public class UsuarioController {
      * Desativa a conta de um usuário (soft-delete).
      */
     @PatchMapping("/{id}/desativar")
-    public ResponseEntity<Void> desativar(@PathVariable Long id) {
+    public ResponseEntity<Void> desativar(@PathVariable UUID id) {
         usuarioService.desativarConta(id);
         return ResponseEntity.noContent().build();
     }
@@ -72,7 +75,7 @@ public class UsuarioController {
      * Reativa a conta de um usuário.
      */
     @PatchMapping("/{id}/ativar")
-    public ResponseEntity<Void> ativar(@PathVariable Long id) {
+    public ResponseEntity<Void> ativar(@PathVariable UUID id) {
         usuarioService.ativarConta(id);
         return ResponseEntity.noContent().build();
     }

@@ -19,11 +19,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Implementação de {@link UsuarioService}.
@@ -49,11 +50,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     private static final List<String> DOMINIOS_PERMITIDOS = List.of("gmail.com", "gov.br");
 
     /**
-     * Argon2id — configuração recomendada pelo OWASP (2023):
-     * saltLength=16, hashLength=32, parallelism=1, memory=64MB, iterations=3.
+     * Injeção do PasswordEncoder (Argon2id) configurado na classe de segurança central SecurityConfig.
      */
-    private final Argon2PasswordEncoder passwordEncoder =
-            new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
+    private final PasswordEncoder passwordEncoder;
 
     // -------------------------------------------------------------------------
     // CRUD Essencial
@@ -64,11 +63,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioDTO cadastrar(UsuarioDTO usuarioDTO) {
         validarEmail(usuarioDTO.getEmail());
         validarCpf(usuarioDTO.getCpf());
-        validarUsername(usuarioDTO.getUsuario());
-        validarDominioEmail(usuarioDTO.getEmail());
-
+        validarUsuario(usuarioDTO.getUsuario());
+        
         Usuario entity = usuarioMapper.toEntity(usuarioDTO);
-        entity.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
+        entity.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         entity.setAtivo(true);
 
         Usuario salvo = usuarioRepository.save(entity);
@@ -77,7 +75,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public UsuarioDTO atualizar(Long id, UsuarioDTO usuarioDTO) {
+    public UsuarioDTO atualizar(UUID id, UsuarioDTO usuarioDTO) {
         Usuario entity = encontrarOuLancarErro(id);
 
         // Valida unicidade apenas se o valor for diferente do atual
@@ -88,7 +86,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             validarCpf(usuarioDTO.getCpf());
         }
         if (!entity.getUsuario().equalsIgnoreCase(usuarioDTO.getUsuario())) {
-            validarUsername(usuarioDTO.getUsuario());
+            validarUsuario(usuarioDTO.getUsuario());
         }
 
         usuarioMapper.atualizarEntidadeComDto(usuarioDTO, entity);
@@ -97,15 +95,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public UsuarioDTO buscarPorId(Long id) {
+    public UsuarioDTO buscarPorId(UUID id) {
         return usuarioMapper.toDto(encontrarOuLancarErro(id));
     }
 
     @Override
     @Transactional
-    public void deletar(Long id) {
-        encontrarOuLancarErro(id); // garante que o registro existe antes de deletar
-        usuarioRepository.deleteById(id);
+    public void deletar(UUID uuid) {
+        encontrarOuLancarErro(uuid); // garante que o registro existe antes de deletar
+        usuarioRepository.deleteById(uuid);
     }
 
     @Override
@@ -125,7 +123,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ErroAutenticacaoException("Credenciais inválidas"));
 
-        if (!passwordEncoder.matches(password, usuario.getPassword())) {
+        if (!passwordEncoder.matches(password, usuario.getSenha())) {
             throw new ErroAutenticacaoException(mensagens.pegar("credenciais.invalidas"));
         }
         return usuarioMapper.toDto(usuario);
@@ -164,9 +162,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public void redefinirSenha(Long id, String newPassword) {
-        Usuario entity = encontrarOuLancarErro(id);
-        entity.setPassword(passwordEncoder.encode(newPassword));
+    public void redefinirSenha(UUID uuid, String novaSenha) {
+        Usuario entity = encontrarOuLancarErro(uuid);
+        entity.setSenha(passwordEncoder.encode(novaSenha));
         // save implícito pelo contexto transacional (@Transactional + entidade gerenciada)
     }
 
@@ -176,15 +174,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public void ativarConta(Long id) {
-        Usuario entity = encontrarOuLancarErro(id);
+    public void ativarConta(UUID uuid) {
+        Usuario entity = encontrarOuLancarErro(uuid);
         entity.setAtivo(true);
     }
 
     @Override
     @Transactional
-    public void desativarConta(Long id) {
-        Usuario entity = encontrarOuLancarErro(id);
+    public void desativarConta(UUID uuid) {
+        Usuario entity = encontrarOuLancarErro(uuid);
         entity.setAtivo(false);
     }
 
@@ -209,8 +207,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void validarUsername(String username) {
-        boolean existeUsuario = usuarioRepository.existsByUsuario(username);
+    public void validarUsuario(String usuario) {
+        boolean existeUsuario = usuarioRepository.existsByUsuario(usuario);
         if (existeUsuario) {
             throw new ErroValidacaoException(mensagens.pegar("usuario.ja.existe"));
         }
@@ -223,20 +221,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     /**
      * Busca um usuário pelo ID ou lança {@link RegraDeNegocioException}.
      */
-    private Usuario encontrarOuLancarErro(Long id) {
-        return usuarioRepository.findById(id)
+    private Usuario encontrarOuLancarErro(@org.springframework.lang.NonNull UUID uuid) {
+        return usuarioRepository.findById(uuid)
                 .orElseThrow(() -> new RegraDeNegocioException(
                         mensagens.pegar("usuario.nao.encontrado.com.id" )));
-    }
-
-    /**
-     * Valida se o domínio do e-mail está na lista de domínios permitidos.
-     */
-    private void validarDominioEmail(String email) {
-        String dominio = email.substring(email.lastIndexOf("@") + 1);
-        if (!DOMINIOS_PERMITIDOS.contains(dominio)) {
-            throw new ErroValidacaoException(
-                    mensagens.pegar("domínio.de.e-mail.nao.permitido" + DOMINIOS_PERMITIDOS));
-        }
-    }
+    }	
 }

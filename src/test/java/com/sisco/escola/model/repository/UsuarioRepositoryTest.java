@@ -92,7 +92,7 @@ public class UsuarioRepositoryTest {
         /*execução*/
         Usuario usuarioSalvo = usuarioRepository.save(salvarUsuario);
         /*verificação*/
-        Assertions.assertThat(usuarioSalvo.getId()).isNotNull();
+        Assertions.assertThat(usuarioSalvo.getUuid()).isNotNull();
     }
     
     @Test
@@ -102,25 +102,25 @@ public class UsuarioRepositoryTest {
         Usuario usuarioEsperado = criarUsuario();
         usuarioRepository.save(usuarioEsperado);
         /*ação*/
-        Usuario recuperarUsuario = usuarioRepository.findById(usuarioEsperado.getId()).orElseThrow();
+        Usuario recuperarUsuario = usuarioRepository.findById(usuarioEsperado.getUuid()).orElseThrow();
         /*verificação*/
-        Assertions.assertThat(recuperarUsuario.getId()).isNotNull();
-        Assertions.assertThat(recuperarUsuario.getNome()).isEqualTo("Cleber Garzaro"); /*comparação*/
+        Assertions.assertThat(recuperarUsuario.getUuid()).isNotNull();
+        Assertions.assertThat(recuperarUsuario.getNomeCompleto()).isEqualTo("Cleber Garzaro"); /*comparação*/
         Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("111.444.777-35");
         Assertions.assertThat(recuperarUsuario.getUsuario()).isEqualTo("garzaro74");
         Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
-        Assertions.assertThat(recuperarUsuario.getPassword()).isEqualTo("Senha@123");
+        Assertions.assertThat(recuperarUsuario.getSenha()).isEqualTo("Senha@123");
         Assertions.assertThat(recuperarUsuario.getDataCadastro()).isNotNull();
     }
     
     /*para criação de instancia*/
         public static Usuario criarUsuario () {
             return Usuario.builder()
-                    .nome("Cleber Garzaro")
+                    .nomeCompleto("Cleber Garzaro")
                     .usuario("garzaro74")
                     .cpf("111.444.777-35")
                     .email("usuario@gmail.com")
-                    .password("Senha@123")
+                    .senha("Senha@123")
                     .dataCadastro(Instant.now())
                     .build();
         }
