@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
+public class UsuarioRequestDTO {
     private UUID id;
 
     @NotBlank(message = "{usuario.nome.notblank}")
@@ -51,7 +51,7 @@ public class UsuarioDTO {
      * [] Comprimento mínimo de 6 caracteres ({8,}).
     */
     @NotBlank(message = "{usuario.senha.notblank}")
-    @Size(min = 8, max = 32, message = "{usuario.senha.size}")
+    @Size(min = 6, max = 255, message = "{usuario.senha.size}")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])" +
                     "(?=.*\\d)(?=.*[@$!%*?&])" +
@@ -60,7 +60,6 @@ public class UsuarioDTO {
     )
     
     @NotBlank(message = "{usuario.senha.notblank}")
-    @Size(min = 8, max = 32, message = "{usuario.senha.size}")
     private String senha;
 
     private Instant dataCadastro;
