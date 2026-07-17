@@ -35,24 +35,15 @@ public class Usuario {
     @Column(name = "email", nullable = false, unique = true, length = 150)
     private String email;
    
-    @Column(name = "senha")  
+    @Column(name = "senha", nullable = false, length = 250)
     private String senha;
-
-    /**
-     * LEGADO
-     * @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
-     * ------------------------------------------------------------------
-     * @CreationTimestamp
-     * O valor é definido automaticamente pelo Hibernate na primeira vez que a entidade é salva.
-     * Registra o momento EXATO da criação da entidade.
-     * `updatable = false` garante que este campo nunca seja alterado após a criação.
-     * */
+    
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant dataCadastro;
 
     @Column(name = "ativo")
-    private Boolean ativo;
+    private Boolean isAtivo;
 
     /*GETTERS AND SETTERS*/
     /*HASHCODE AND EQUALS*/

@@ -1,6 +1,6 @@
 package com.sisco.escola.service.impl;
 
-import com.sisco.escola.api.dto.UsuarioDTO;
+import com.sisco.escola.api.dto.UsuarioRequestDTO;
 import com.sisco.escola.api.mapper.UsuarioMapper;
 import com.sisco.escola.exception.ErroAutenticacaoException;
 import com.sisco.escola.exception.ErroValidacaoException;
@@ -10,9 +10,6 @@ import com.sisco.escola.model.entity.Usuario;
 import com.sisco.escola.model.repository.UsuarioRepository;
 import com.sisco.escola.service.UsuarioService;
 
-import io.micrometer.common.lang.NonNull;
-import io.micrometer.common.lang.Nullable;
-import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.MessageSource;
@@ -22,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,14 +27,22 @@ import java.util.UUID;
 /**
  * Implementação de {@link UsuarioService}.
  *
- * <p>Responsabilidades:
- * <ul>
- *   <li>Orquestra operações de CRUD delegando persistência ao {@link UsuarioRepository}.</li>
- *   <li>Usa {@link UsuarioMapper} (MapStruct) para converter entidades em DTOs e vice-versa.</li>
- *   <li>Codifica senhas com Argon2 antes de qualquer persistência.</li>
- *   <li>Nunca expõe a entidade JPA fora desta classe — o contrato público retorna apenas DTOs.</li>
- * </ul>
+ * Responsabilidades:
+ *  
+ * validação de estado e regras de negócio
+ * Orquestra operações de CRUD delegando persistência ao {@link UsuarioRepository}.
+ * Usa {@link UsuarioMapper} (MapStruct) para converter entidades em DTOs e vice-versa.
+ * Codifica senhas com Argon2 antes de qualquer persistência.
+ * Nunca expõe a entidade JPA fora desta classe — o contrato público retorna apenas DTOs.
+ * 
  */
+
+/**
+ * Isso instrui o Spring a validar automaticamente os parâmetros de métodos de classes anotadas 
+ * com @Validated usando as anotações Bean Validation.
+ * 
+ **/
+@Validated
 @Service
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
@@ -45,29 +51,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioMapper usuarioMapper;
     private final MessageSource messageSource;
     private final Mensagens mensagens;
-
-    /** Domínios de e-mail aceitos para cadastro. */
-    private static final List<String> DOMINIOS_PERMITIDOS = List.of("gmail.com", "gov.br");
-
     /**
      * Injeção do PasswordEncoder (Argon2id) configurado na classe de segurança central SecurityConfig.
      */
     private final PasswordEncoder passwordEncoder;
 
-    // -------------------------------------------------------------------------
-    // CRUD Essencial
-    // -------------------------------------------------------------------------
+    /** Domínios de e-mail aceitos para cadastro. */
+    private static final List<String> DOMINIOS_PERMITIDOS = List.of("gmail.com", "gov.br");
 
     @Override
     @Transactional
-    public UsuarioDTO cadastrar(UsuarioDTO usuarioDTO) {
-        validarEmail(usuarioDTO.getEmail());
-        validarCpf(usuarioDTO.getCpf());
-        validarUsuario(usuarioDTO.getUsuario());
+    public UsuarioRequestDTO cadastrarUsuario(UsuarioRequestDTO usuarioRequestDTO) {
+        validarEmail(usuarioRequestDTO.getEmail());
+        validarCpf(usuarioRequestDTO.getCpf());
         
-        Usuario entity = usuarioMapper.toEntity(usuarioDTO);
-        entity.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
-        entity.setAtivo(true);
+        Usuario entity = usuarioMapper.toEntity(usuarioRequestDTO);
+        entity.setSenha(passwordEncoder.encode(usuarioRequestDTO.getSenha()));
+        entity.setIsAtivo(true);
 
         Usuario salvo = usuarioRepository.save(entity);
         return usuarioMapper.toDto(salvo);
@@ -75,27 +75,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public UsuarioDTO atualizar(UUID id, UsuarioDTO usuarioDTO) {
-        Usuario entity = encontrarOuLancarErro(id);
+    public UsuarioRequestDTO atualizar(UUID uuid, UsuarioRequestDTO usuarioRequestDTO) {
+        Usuario entity = encontrarOuLancarErro(uuid);
+        /**valida unicidade apenas se o valor for diferente do atual, se o estado for alterado**/
+        if (!entity.getEmail().equalsIgnoreCase(usuarioRequestDTO.getEmail())) {
+            validarEmail(usuarioRequestDTO.getEmail());
+        }
+        if (!entity.getCpf().matches(usuarioRequestDTO.getCpf())) {
+            validarCpf(usuarioRequestDTO.getCpf());
+        }
+//        if (!entity.getUsuario().equals(usuarioRequestDTO.getUsuario())) {
+//            validarUsuario(usuarioRequestDTO.getUsuario());
+//        }
 
-        // Valida unicidade apenas se o valor for diferente do atual
-        if (!entity.getEmail().equalsIgnoreCase(usuarioDTO.getEmail())) {
-            validarEmail(usuarioDTO.getEmail());
-        }
-        if (!entity.getCpf().equals(usuarioDTO.getCpf())) {
-            validarCpf(usuarioDTO.getCpf());
-        }
-        if (!entity.getUsuario().equalsIgnoreCase(usuarioDTO.getUsuario())) {
-            validarUsuario(usuarioDTO.getUsuario());
-        }
-
-        usuarioMapper.atualizarEntidadeComDto(usuarioDTO, entity);
+        usuarioMapper.atualizarEntidadeDto(usuarioRequestDTO, entity);
         return usuarioMapper.toDto(entity); // save implícito pelo contexto transacional
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UsuarioDTO buscarPorId(UUID id) {
+    public UsuarioRequestDTO buscarPorId(UUID id) {
         return usuarioMapper.toDto(encontrarOuLancarErro(id));
     }
 
@@ -108,23 +107,21 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UsuarioDTO> listarTodos(Pageable pageable) {
+    public Page<UsuarioRequestDTO> listarTodos(Pageable pageable) {
         return usuarioRepository.findAll(pageable)
                 .map(usuarioMapper::toDto);
     }
 
-    // -------------------------------------------------------------------------
-    // Segurança e Identidade
-    // -------------------------------------------------------------------------
+    /**Segurança e Identidade**/
 
     @Override
     @Transactional(readOnly = true)
-    public UsuarioDTO autenticar(String email, String password) {
+    public UsuarioRequestDTO autenticar(String email, String password) {
         Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new ErroAutenticacaoException("Credenciais inválidas"));
+                .orElseThrow(() -> new ErroAutenticacaoException("Credenciais inválidas!!!"));
 
         if (!passwordEncoder.matches(password, usuario.getSenha())) {
-            throw new ErroAutenticacaoException(mensagens.pegar("credenciais.invalidas"));
+            throw new ErroAutenticacaoException(mensagens.pegarMensagem("credenciais.invalidas!!!"));
         }
         return usuarioMapper.toDto(usuario);
     }
@@ -133,7 +130,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional(readOnly = true)
     //@Timed CONTINUAR COM TIMED
-    public UsuarioDTO buscarPorEmail(String email) {
+    public UsuarioRequestDTO buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .map(usuarioMapper::toDto)
                 .orElseThrow(() -> new RegraDeNegocioException(
@@ -143,20 +140,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 //    "Usuário não encontrado"
     @Override
     @Transactional(readOnly = true)
-    public UsuarioDTO buscarPorUsername(String username) {
+    public UsuarioRequestDTO buscarPorUsername(String username) {
         return usuarioRepository.findByUsuario(username)
                 .map(usuarioMapper::toDto)
                 .orElseThrow(() -> new RegraDeNegocioException(
-                		mensagens.pegar("usuario.nao.encontrado")));
+                		mensagens.pegarMensagem("usuario.nao.encontrado")));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UsuarioDTO buscarPorCpf(String cpf) {
+    public UsuarioRequestDTO buscarPorCpf(String cpf) {
         return usuarioRepository.findByCpf(cpf)
                 .map(usuarioMapper::toDto)
                 .orElseThrow(() -> new RegraDeNegocioException(
-                		mensagens.pegar("cpf.nao.encontrado")
+                		mensagens.pegarMensagem("cpf.nao.encontrado")
                 		));
     }
 
@@ -168,33 +165,29 @@ public class UsuarioServiceImpl implements UsuarioService {
         // save implícito pelo contexto transacional (@Transactional + entidade gerenciada)
     }
 
-    // -------------------------------------------------------------------------
-    // Regras de Negócio — Ciclo de Vida da Conta
-    // -------------------------------------------------------------------------
+    /** Regras de Negócio — Ciclo de Vida da Conta **/
 
     @Override
     @Transactional
     public void ativarConta(UUID uuid) {
         Usuario entity = encontrarOuLancarErro(uuid);
-        entity.setAtivo(true);
+        entity.setIsAtivo(true);
     }
 
     @Override
     @Transactional
     public void desativarConta(UUID uuid) {
         Usuario entity = encontrarOuLancarErro(uuid);
-        entity.setAtivo(false);
+        entity.setIsAtivo(false);
     }
 
-    // -------------------------------------------------------------------------
-    // Validação de Existência
-    // -------------------------------------------------------------------------
+    /**Validação de Existência**/
 
     @Override
     public void validarEmail(String email) {
         boolean existeEmail = usuarioRepository.existsByEmail(email);
         if (existeEmail) {
-            throw new ErroValidacaoException(mensagens.pegar("email.ja.existe"));
+            throw new ErroValidacaoException(mensagens.pegarMensagem("email.ja.existe"));
         }
     }
 
@@ -202,28 +195,24 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void validarCpf(String cpf) {
         boolean existeCpf =  usuarioRepository.existsByCpf(cpf);
         if (existeCpf) {
-            throw new ErroValidacaoException(mensagens.pegar("cpf.ja.existe"));
+            throw new ErroValidacaoException(mensagens.pegarMensagem("cpf.ja.existe"));
         }
     }
 
-    @Override
-    public void validarUsuario(String usuario) {
-        boolean existeUsuario = usuarioRepository.existsByUsuario(usuario);
-        if (existeUsuario) {
-            throw new ErroValidacaoException(mensagens.pegar("usuario.ja.existe"));
-        }
-    }
+//    @Override
+//    public void validarUsuario(String usuario) {
+//        boolean existeUsuario = usuarioRepository.existsByUsuario(usuario);
+//        if (existeUsuario) {
+//            throw new ErroValidacaoException(mensagens.pegarMensagem("usuario.ja.existe"));
+//        }
+//    }
 
-    // -------------------------------------------------------------------------
-    // Métodos auxiliares privados
-    // -------------------------------------------------------------------------
-
-    /**
+    /**Métodos auxiliares privados
      * Busca um usuário pelo ID ou lança {@link RegraDeNegocioException}.
      */
     private Usuario encontrarOuLancarErro(@org.springframework.lang.NonNull UUID uuid) {
         return usuarioRepository.findById(uuid)
                 .orElseThrow(() -> new RegraDeNegocioException(
-                        mensagens.pegar("usuario.nao.encontrado.com.id" )));
+                        mensagens.pegarMensagem("usuario.nao.encontrado.com.id" )));
     }	
 }

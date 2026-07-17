@@ -12,7 +12,7 @@ public class Mensagens {
 	public Mensagens(@NonNull MessageSource messaSource) {
 		this.accessor = new MessageSourceAccessor(messaSource);		
 	}
-	public String pegar(@NonNull String code, Object... args) {
+	public String pegarMensagem(@NonNull String code, Object... args) {
 		return accessor.getMessage(code, args); //pega locale automaticamente		
 	}	
 }

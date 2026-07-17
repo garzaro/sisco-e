@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             pegaEmailDoUsuario = jwtServiceProvider.extrairUsernameToken(jwt); //.obterEmailFromToken(jwt);
         } catch (ExpiredJwtException | MalformedJwtException ex) {
         	/**Log crítico: token malformado/expirado é um evento de segurança relevante**/
-            logger.warn("Token inválido ou expirado: {} " + ex.getMessage());
+            logger.warn("Token inválido ou expirado: {} ", ex.getMessage());
             /**Continua a execução para o próximo filtro na cadeia de filtros do Spring Security**/
             filterChain.doFilter(request, response);
             return;

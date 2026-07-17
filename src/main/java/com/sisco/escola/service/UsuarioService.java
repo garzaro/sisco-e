@@ -1,6 +1,6 @@
 package com.sisco.escola.service;
 
-import com.sisco.escola.api.dto.UsuarioDTO;
+import com.sisco.escola.api.dto.UsuarioRequestDTO;
 
 import java.util.UUID;
 
@@ -10,37 +10,32 @@ import org.springframework.data.domain.Pageable;
 /**
  * Contrato de serviço para operações relacionadas ao {@link com.sisco.escola.model.entity.Usuario}.
  *
- * <p>Segue os princípios de Arquitetura Limpa:
- * <ul>
- *   <li>Retorna apenas {@link UsuarioDTO}, nunca a entidade JPA diretamente.</li>
- *   <li>Separa responsabilidades de CRUD, identidade/segurança e regras de negócio.</li>
- *   <li>Listagens suportam paginação via {@link Pageable}.</li>
- * </ul>
+ * Segue os princípios de Arquitetura Limpa:
+ * Retorna apenas {@link UsuarioRequestDTO}, nunca a entidade JPA diretamente.
+ *  Separa responsabilidades de CRUD, identidade/segurança e regras de negócio.
+ *   Listagens suportam paginação via {@link Pageable}.
+ * 
  */
 public interface UsuarioService {
-
-    // -------------------------------------------------------------------------
-    // CRUD Essencial
-    // -------------------------------------------------------------------------
 
     /**
      * Cadastra um novo usuário no sistema.
      * Valida unicidade de e-mail, CPF e username antes de persistir.
      *
-     * @param usuarioDTO dados do usuário a ser criado
+     * @param usuarioRequestDTO dados do usuário a ser criado
      * @return DTO do usuário criado com {@code id} e {@code dataCadastro} preenchidos
      */
-    UsuarioDTO cadastrar(UsuarioDTO usuarioDTO);
+    UsuarioRequestDTO cadastrarUsuario(UsuarioRequestDTO usuarioRequestDTO);
 
     /**
      * Atualiza os dados de um usuário existente.
      * Campos de identidade (email, CPF, username) são validados contra duplicidade.
      *
      * @param id         identificador do usuário
-     * @param usuarioDTO novos dados do usuário
+     * @param usuarioRequestDTO novos dados do usuário
      * @return DTO atualizado
      */
-    UsuarioDTO atualizar(UUID id, UsuarioDTO usuarioDTO);
+    UsuarioRequestDTO atualizar(UUID id, UsuarioRequestDTO usuarioRequestDTO);
 
     /**
      * Busca um usuário pelo seu identificador primário.
@@ -49,7 +44,7 @@ public interface UsuarioService {
      * @return DTO do usuário encontrado
      * @throws com.sisco.escola.exception.RegraDeNegocioException se não encontrado
      */
-    UsuarioDTO buscarPorId(UUID id);
+    UsuarioRequestDTO buscarPorId(UUID id);
 
     /**
      * Exclui permanentemente um usuário do sistema.
@@ -65,7 +60,7 @@ public interface UsuarioService {
      * @param pageable parâmetros de paginação e ordenação
      * @return página de DTOs
      */
-    Page<UsuarioDTO> listarTodos(Pageable pageable);
+    Page<UsuarioRequestDTO> listarTodos(Pageable pageable);
 
     // -------------------------------------------------------------------------
     // Segurança e Identidade  (Spring Security / autenticação)
@@ -80,7 +75,7 @@ public interface UsuarioService {
      * @return DTO do usuário autenticado
      * @throws com.sisco.escola.exception.ErroAutenticacaoException se as credenciais forem inválidas
      */
-    UsuarioDTO autenticar(String email, String senha);
+    UsuarioRequestDTO autenticar(String email, String senha);
 
     /**
      * Carrega um usuário pelo e-mail — consumido pelo {@code UserDetailsService} do Spring Security.
@@ -89,7 +84,7 @@ public interface UsuarioService {
      * @return DTO do usuário encontrado
      * @throws com.sisco.escola.exception.RegraDeNegocioException se não encontrado
      */
-    UsuarioDTO buscarPorEmail(String email);
+    UsuarioRequestDTO buscarPorEmail(String email);
 
     /**
      * Carrega um usuário pelo username — consumido pelo {@code UserDetailsService} do Spring Security.
@@ -98,7 +93,7 @@ public interface UsuarioService {
      * @return DTO do usuário encontrado
      * @throws com.sisco.escola.exception.RegraDeNegocioException se não encontrado
      */
-    UsuarioDTO buscarPorUsername(String username);
+    UsuarioRequestDTO buscarPorUsername(String username);
 
     /**
      * Busca um usuário pelo CPF.
@@ -107,7 +102,7 @@ public interface UsuarioService {
      * @return DTO do usuário encontrado
      * @throws com.sisco.escola.exception.RegraDeNegocioException se não encontrado
      */
-    UsuarioDTO buscarPorCpf(String cpf);
+    UsuarioRequestDTO buscarPorCpf(String cpf);
 
     /**
      * Redefine a senha de um usuário.
@@ -118,9 +113,7 @@ public interface UsuarioService {
      */
     void redefinirSenha(UUID uuid, String novaSenha);
 
-    // -------------------------------------------------------------------------
-    // Regras de Negócio — Ciclo de Vida da Conta
-    // -------------------------------------------------------------------------
+    /**Regras de Negócio — Ciclo de Vida da Conta**/
 
     /**
      * Ativa a conta de um usuário (define {@code ativo = true}).
@@ -162,6 +155,6 @@ public interface UsuarioService {
      *
      * @param username username a ser verificado
      * @throws com.sisco.escola.exception.ErroValidacaoException se o username já existir
-     */
     void validarUsuario(String usuario);
+     */
 }

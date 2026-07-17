@@ -8,15 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Optional;
 
 /**TESTE DE INTEGRACAO**/
 
 @DataJpaTest
-//@Profile("test")
+//@ActiveProfiles("test")
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UsuarioRepositoryTest {
 
     @Autowired
@@ -28,10 +31,14 @@ public class UsuarioRepositoryTest {
     @DisplayName("email encontrado")
     public void deveVerificarAExistenciaDeUmEmail(){
         /*cenario*/
+    	String email = "usuario@gmail.com";
+        
         Usuario usuario = criarUsuario();
         testEntityManager.persist(usuario);
+        
         /*execução*/
-        boolean verificarEmail = usuarioRepository.existsByEmail("usuario@gmail.com");
+        boolean verificarEmail = usuarioRepository.existsByEmail(email);
+        
         /*verificação*/
         Assertions.assertThat(verificarEmail).isTrue();
     }
@@ -108,7 +115,7 @@ public class UsuarioRepositoryTest {
         Assertions.assertThat(recuperarUsuario.getNomeCompleto()).isEqualTo("Cleber Garzaro"); /*comparação*/
         Assertions.assertThat(recuperarUsuario.getCpf()).isEqualTo("111.444.777-35");
         Assertions.assertThat(recuperarUsuario.getUsuario()).isEqualTo("garzaro74");
-        Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("clebergarzaro74@gmail.com");
+        Assertions.assertThat(recuperarUsuario.getEmail()).isEqualTo("usuario@gmail.com");
         Assertions.assertThat(recuperarUsuario.getSenha()).isEqualTo("Senha@123");
         Assertions.assertThat(recuperarUsuario.getDataCadastro()).isNotNull();
     }

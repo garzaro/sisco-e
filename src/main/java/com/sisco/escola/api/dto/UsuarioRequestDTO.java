@@ -64,5 +64,5 @@ public class UsuarioRequestDTO {
 
     private Instant dataCadastro;
 
-    private Boolean ativo;
+    private Boolean isAtivo;
 }

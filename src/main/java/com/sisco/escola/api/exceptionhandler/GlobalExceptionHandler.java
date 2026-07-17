@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,40 +22,39 @@ import java.util.List;
 
 /**
  * Tratamento centralizado de exceções para toda a API REST.
+ * 
+ * Fluxo: {@code Controller → Exceção lançada → GlobalExceptionHandler → ApiError (JSON)}
+ * 
+ * Estende {@link ResponseEntityExceptionHandler} para sobrescrever apenas os métodos
+ * necessários e garantir que o envelope de resposta seja sempre {@link ApiError}.
  *
- * <p>Fluxo: {@code Controller → Exceção lançada → GlobalExceptionHandler → ApiError (JSON)}</p>
+ * Regras obrigatórias aplicadas
+ * {@code @RestControllerAdvice} — escopo REST, serialização JSON automática.
+ * Nenhum stack trace é exposto no corpo da resposta em produção.
+ * Exceções inesperadas são registradas com {@code log.error()} via SLF4J.
+ * Mensagens de validação originam-se das anotações do modelo
+ * ({@code @NotBlank}, {@code @Email}, etc.) em {@code Usuario.java}.
+ * Status HTTP definido via {@link HttpStatus} no retorno — sem {@code @ResponseStatus}.
+ * {@code UsuarioController} não contém nenhum bloco {@code try/catch}.
+ * 
+ * Mapeamento de status HTTP
+ * 
+ * 400 Bad Request  — requisição malformada / corpo ilegível
+ * 401 Unauthorized — credenciais inválidas ou ausentes
+ * 409 Conflict     — violação de unicidade (email, CPF, username)
+ * 422 Unprocessable Entity  — regra de negócio violada ou recurso não encontrado
+ * 500 Internal Server Error  — erro inesperado (fallback)
  *
- * <p>Estende {@link ResponseEntityExceptionHandler} para sobrescrever apenas os métodos
- * necessários e garantir que o envelope de resposta seja sempre {@link ApiError}.</p>
- *
- * <h2>Regras obrigatórias aplicadas</h2>
- * <ul>
- *   <li>{@code @RestControllerAdvice} — escopo REST, serialização JSON automática.</li>
- *   <li>Nenhum stack trace é exposto no corpo da resposta em produção.</li>
- *   <li>Exceções inesperadas são registradas com {@code log.error()} via SLF4J.</li>
- *   <li>Mensagens de validação originam-se das anotações do modelo
- *       ({@code @NotBlank}, {@code @Email}, etc.) em {@code Usuario.java}.</li>
- *   <li>Status HTTP definido via {@link HttpStatus} no retorno — sem {@code @ResponseStatus}.</li>
- *   <li>{@code UsuarioController} não contém nenhum bloco {@code try/catch}.</li>
- * </ul>
- *
- * <h2>Mapeamento de status HTTP</h2>
- * <ul>
- *   <li><b>400 Bad Request</b>            — requisição malformada / corpo ilegível</li>
- *   <li><b>401 Unauthorized</b>           — credenciais inválidas ou ausentes</li>
- *   <li><b>409 Conflict</b>               — violação de unicidade (email, CPF, username)</li>
- *   <li><b>422 Unprocessable Entity</b>   — regra de negócio violada ou recurso não encontrado</li>
- *   <li><b>500 Internal Server Error</b>  — erro inesperado (fallback)</li>
- * </ul>
+ * ✅ Mapeia todas as exceções necessárias
+ * ✅ Usa SLF4J corretamente
+ * ✅ Não expõe stack trace em produção
+ * ✅ Status HTTP adequados (409, 422, 401, 500)
+ * 
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    // -------------------------------------------------------------------------
-    // Constantes — URIs semânticas conforme RFC 7807 (Problem Details for HTTP APIs)
-    // -------------------------------------------------------------------------
-
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {    
+         
     private static final String BASE_URI            = "https://sisco.com.br/erros";
     private static final String URI_VALIDACAO_CAMPO = BASE_URI + "/validacao-de-campo";
     private static final String URI_CONFLITO        = BASE_URI + "/conflito-de-dados";
@@ -66,23 +66,48 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String MSG_ERRO_GENERICO =
             "Ocorreu um erro interno. Tente novamente ou entre em contato com o suporte.";
 
-    // =========================================================================
-    // 1. MethodArgumentNotValidException — erros de @Valid em @RequestBody
-    //    Sobrescreve o comportamento padrão do ResponseEntityExceptionHandler.
-    //    Status: 422 Unprocessable Entity
-    // =========================================================================
+    /**
+     * BadCredentialsException — credenciais inválidas (email ou senha incorretos).
+     * Lançada por: authenticationManager.authenticate() no AuthController.
+     * Status: 401 Unauthorized
+     *
+     * Mensagem genérica por segurança (evita enumerar usuários).
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException ex) {
+        log.warn("Tentativa de login com credenciais inválidas");
+
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .timestamp(Instant.now())
+                .tipo(URI_AUTENTICACAO)
+                .titulo("Falha na autenticação")
+                .detalhe("Email ou senha inválidos. Verifique suas credenciais.")
+                .mensagemUsuario("Email ou senha inválidos. Verifique suas credenciais.")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
+
+   /**
+    * MethodArgumentNotValidException — erros de @Valid em @RequestBody
+    * 
+    * Sobrescreve o comportamento padrão do ResponseEntityExceptionHandler.
+    * Status: 422 Unprocessable Entity
+    * 
+    * **/
 
     /**
      * Trata falhas de Bean Validation ({@code @Valid} no controller).
      *
-     * <p>Itera sobre todos os {@link FieldError}s coletados pelo Spring MVC e
+     * Itera sobre todos os {@link FieldError}s coletados pelo Spring MVC e
      * popula a lista {@code campos} do {@link ApiError}. As mensagens de erro
      * são lidas diretamente das anotações do modelo — {@code @NotBlank},
      * {@code @Email}, {@code @Size}, {@code @Pattern}, etc. — definidas em
-     * {@code Usuario.java} e {@code UsuarioDTO.java}.</p>
+     * {@code Usuario.java} e {@code UsuarioRequestDTO.java}.
      *
-     * <p>Status {@code 422}: o payload foi recebido e compreendido, mas não pode
-     * ser processado por conter dados que violam as constraints declaradas.</p>
+     * Status {@code 422}: o payload foi recebido e compreendido, mas não pode
+     * ser processado por conter dados que violam as constraints declaradas.
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -94,9 +119,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         List<ApiError.Campo> camposComErro = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fe -> ApiError.Campo.builder()
-                        .nome(fe.getField())
-                        .mensagem(fe.getDefaultMessage())   // mensagem vem da anotação no modelo
+                .map(campoErro -> ApiError.Campo.builder()
+                        .nome(campoErro.getField())
+                        .mensagem(campoErro.getDefaultMessage())   // mensagem vem da anotação no modelo
                         .build())
                 .toList();
         ApiError apiError = ApiError.builder()
@@ -112,16 +137,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.unprocessableEntity().body(apiError);
     }
 
-    // =========================================================================
-    // 2. ErroValidacaoException — violação de unicidade (email, CPF, username)
-    //    Lançada em: UsuarioServiceImpl.validarEmail / validarCpf / validarUsername
-    //    Status: 409 Conflict
-    // =========================================================================
-
     /**
+     * ErroValidacaoException — violação de unicidade (email, CPF, username)
+     * Lançada em: UsuarioServiceImpl.validarEmail / validarCpf / validarUsername
+     * Status: 409 Conflict
+     * 
      * Trata violações de unicidade nos campos de {@link com.sisco.escola.model.entity.Usuario}.
      *
-     * <p>Lançada pelo serviço quando e-mail, CPF ou username já estão em uso.</p>
+     * Lançada pelo serviço quando e-mail, CPF ou username já estão em uso.
      */
     @ExceptionHandler(ErroValidacaoException.class)
     public ResponseEntity<ApiError> handleErroValidacao(ErroValidacaoException ex) {
@@ -137,17 +160,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
-    // =========================================================================
-    // 3. ErroAutenticacaoException — credenciais inválidas
-    //    Lançada em: UsuarioServiceImpl.autenticar
-    //    Status: 401 Unauthorized
-    // =========================================================================
-
-    /**
+    /** Status: 401 Unauthorized
      * Trata falhas de autenticação (e-mail não cadastrado ou senha incorreta).
-     *
-     * <p>A mensagem ao usuário é propositalmente genérica para evitar a enumeração
-     * de usuários (user enumeration attack).</p>
+     * mensagem genérica para evitar user enumeration attack
      */
     @ExceptionHandler(ErroAutenticacaoException.class)
     public ResponseEntity<ApiError> handleErroAutenticacao(ErroAutenticacaoException ex) {
@@ -157,19 +172,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .tipo(URI_AUTENTICACAO)
                 .titulo("Falha na autenticação")
                 .detalhe(ex.getMessage())
-                .mensagemUsuario("E-mail ou senha inválidos. Verifique suas credenciais.")
+                .mensagemUsuario("Dados de login inválidos. Verifique suas credenciais.")
                 .build();
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
-    // =========================================================================
-    // 4. RegraDeNegocioException — recurso não encontrado / estado inválido
-    //    Lançada em: UsuarioServiceImpl.encontrarOuLancarErro, buscarPorEmail, etc.
-    //    Status: 422 Unprocessable Entity
-    // =========================================================================
-
-    /**
+    /**Status: 422 Unprocessable Entity
      * Trata violações de regras de negócio: recurso não encontrado por ID,
      * e-mail, CPF ou username; estado de conta inválido para a operação.
      *
