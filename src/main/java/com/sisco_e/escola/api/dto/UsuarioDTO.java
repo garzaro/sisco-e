@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 //import validator_domain_core.validation.AllowedDomain;
 
 @Builder
@@ -24,9 +25,9 @@ public class UsuarioDTO {
     private String nomeCompleto;
         
     @NotBlank(message = "{usuario.cpf.notblank}")
-    @Size(max = 14)
+    @CPF(message = "{usuario.cpf.invalido}")
+    @Size(max = 11, message = "{usuario.cpf.size}")
     @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$", message = "{usuario.cpf.pattern}")
-//    @CpfValido
     private String cpf;
 
     @NotBlank(message = "{usuario.username.notblank}")
@@ -41,7 +42,7 @@ public class UsuarioDTO {
     private String email;
 
     @NotBlank(message = "{usuario.senha.notblank}")
-    @Size(min = 8, max = 120, message = "{usuario.senha.size}")
+    @Size(min = 6, max = 255, message = "{usuario.senha.size}")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])" +
                     "(?=.*\\d)(?=.*[@$!%*?&])" +

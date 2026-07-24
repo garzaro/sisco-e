@@ -4,20 +4,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.sisco_e.escola.api.dto.UsuarioDTO;
+import com.sisco_e.escola.exception.RegraNegocioException;
+import com.sisco_e.escola.mapper.UsuarioMapper;
+import com.sisco_e.escola.model.entity.Usuario;
+import com.sisco_e.escola.model.repository.UsuarioRepository;
 import com.sisco_e.escola.service.UsuarioService;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-
-import com.sisco_e.escola.api.dto.UsuarioDTO;
-import com.sisco_e.escola.exception.RegraNegocioException;
-import com.sisco_e.escola.model.entity.Usuario;
-import com.sisco_e.escola.mapper.UsuarioMapper;
-import com.sisco_e.escola.model.repository.UsuarioRepository;
-
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +23,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
-	
+
 	/**
 	 * new ( 16, 32, 1, 16, 3 );
-	 * **/ 
-	private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8(); 
+	 * **/
+	private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
 	@Override
 	public UsuarioDTO autenticar(String email, String senha) {
@@ -42,7 +40,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		/** se existe **/
 		validarEmail(usuarioDto.getEmail());
 		validarCpf(usuarioDto.getCpf());
-		// Codifica antes de mapear para a entidade
+		/**Codifica antes de mapear para a entidade**/
 		usuarioDto.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
 		/** agora que está convertido... **/
 		Usuario entity = usuarioMapper.DtoToEntity(usuarioDto);

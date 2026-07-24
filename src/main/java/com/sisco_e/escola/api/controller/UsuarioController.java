@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/usuario")
+@RequestMapping("/api/auth") //usuario
 @RequiredArgsConstructor
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
     /**
-     * Cadastra um novo usuário.
-     * O DTO é validado pelo Bean Validation antes de chegar ao serviço.
      * Erros de validação e conflito são tratados pelo GlobalExceptionHandler por exemplo.
+     * O Controller apenas recebe o DTO e delega ao Service. Nao deve saber dos detalhes da entidade e servico
+     * Cadastra um novo usuário.
      */
-    @PostMapping
+    @PostMapping("/join/sign-up")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDto){
 
         UsuarioDTO criarUsuario = usuarioService.cadastrarUsuario(usuarioDto);
