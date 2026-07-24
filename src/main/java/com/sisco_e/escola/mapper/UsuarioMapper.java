@@ -35,6 +35,6 @@ public interface UsuarioMapper {
      * @param entity entidade JPA
      * @return DTO sem o campo senha
      */
-    @Mapping(target = "senha", ignore = true)
+    @Mapping(target = "password", ignore = true)
     UsuarioDTO entityToDto(Usuario entity);
 }

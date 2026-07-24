@@ -1,6 +1,5 @@
 package com.sisco_e.escola.api.dto;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
@@ -11,14 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import validator_domain_core.validation.AllowedDomain;
+//import validator_domain_core.validation.AllowedDomain;
 
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDTO {
-	private UUID id;
+	private UUID uuid;
 
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 120, message = "{usuario.nome.size}")
@@ -32,13 +31,13 @@ public class UsuarioDTO {
 
     @NotBlank(message = "{usuario.username.notblank}")
     @Size(max = 120, message = "{usuario.username.size}")
-    private String usuario;
+    private String username;
 
     @NotBlank(message = "{usuario.email.notblank}")
     @Email(message = "{usuario.email.valid}")
     @Size(max = 120, message = "{usuario.email.size}")
     @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
-    @AllowedDomain
+//    @AllowedDomain - refazer o anotation
     private String email;
 
     @NotBlank(message = "{usuario.senha.notblank}")
@@ -49,12 +48,6 @@ public class UsuarioDTO {
                     "[A-Za-z\\d@$!%*?&]{6,}$",
             message = "{usuario.senha.pattern}"
     )
-    private String senha;
-
-    private Instant dataCadastro;
-
-//    private Boolean ativo;
-    
-//   private Set<String> roles;
+    private String password;   
 
 }

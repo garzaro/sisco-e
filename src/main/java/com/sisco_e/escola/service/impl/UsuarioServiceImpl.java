@@ -25,14 +25,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
-
-	private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8(); // new ( 16,
-																											// 32, 1,
-																											// 16, 3 );
+	
+	/**
+	 * new ( 16, 32, 1, 16, 3 );
+	 * **/ 
+	private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8(); 
 
 	@Override
 	public UsuarioDTO autenticar(String email, String senha) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -43,10 +43,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 		validarEmail(usuarioDto.getEmail());
 		validarCpf(usuarioDto.getCpf());
 		// Codifica antes de mapear para a entidade
-		usuarioDto.setSenha(passwordEncoder.encode(usuarioDto.getSenha()));
+		usuarioDto.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
 		/** agora que está convertido... **/
 		Usuario entity = usuarioMapper.DtoToEntity(usuarioDto);
-		entity.setAtivo(true);
+		entity.setIsAtivo(true);
 		/** ...chamo o repository para salvar o dto convertido para entidade **/
 		Usuario salvarUsuario = usuarioRepository.save(entity);
 		return usuarioMapper.entityToDto(salvarUsuario);
@@ -75,7 +75,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public List<UsuarioDTO> buscarTodosOsUsuariosCadastradosNaBaseDeDados() {
+	public List<UsuarioDTO> buscarTodosOsUsuariosCadastrados() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -135,7 +135,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public UsuarioDTO atualizarInformacoesDePerfilDoUsuario(UsuarioDTO usuario) throws IllegalAccessException {
+	public UsuarioDTO atualizarPerfilUsuario(UsuarioDTO usuario) {
 		// TODO Auto-generated method stub
 		return null;
 	}

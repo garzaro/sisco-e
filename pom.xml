@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version>
+		<version>4.0.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sisco.escola</groupId>
@@ -155,16 +155,28 @@
 			<artifactId>password4j</artifactId>
 			<version>1.6.3</version>
 		</dependency>
+		<!-- Source: https://mvnrepository.com/artifact/org.hibernate/hibernate-envers -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-envers</artifactId>
+			<version>7.4.4.Final</version>
+			<type>pom</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-envers</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
-		<!--Lib criada para validar dominio de email-->
-		<dependency>
-			<groupId>validator-domain-core</groupId>
-			<artifactId>validator-domain-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+<!--		&lt;!&ndash;Lib criada para validar dominio de email&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>validator-domain-core</groupId>-->
+<!--			<artifactId>validator-domain-core</artifactId>-->
+<!--			<version>0.0.1-SNAPSHOT</version>-->
+<!--		</dependency>-->
 		<!-- Necessário para as anotações do Jakarta (Constraint, Payload, etc) -->
 		<dependency>
 			<groupId>jakarta.validation</groupId>

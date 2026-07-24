@@ -13,10 +13,9 @@ import java.util.Optional;
 public interface UsuarioService {
 //	UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO);
 	
-	/*Autenticar o usuario na base*/
+	/*Autenticao do usuario na base*/
 	UsuarioDTO autenticar(String email, String senha);
 
-	/*Salvar o usuario na base*/
 	UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDto);
 
 	/**validar ver se ja existe usuario na base*/
@@ -25,14 +24,14 @@ public interface UsuarioService {
     /*ver se existe o email ou email na base*/
     void validarEmail(String email);
     
-    /*ver se existe o email ou cpf na base*/
+    /*ver se existe o cpf na base*/
     void validarCpf(String cpf);
 
 	/*Buscar todos os usuarios cadastrados na base de dados*/
-	List<UsuarioDTO> buscarTodosOsUsuariosCadastradosNaBaseDeDados();
+	List<UsuarioDTO> buscarTodosOsUsuariosCadastrados();
 
 	/*Buscar o usuario por id na base*/
-	Optional<UsuarioDTO> buscarUsuarioPorId(UUID id);
+	Optional<UsuarioDTO> buscarUsuarioPorId(UUID uuid);
 	
 	/*atualizar o usuario*/
 	UsuarioDTO atualizarUsuario(UsuarioDTO usuario);
@@ -50,15 +49,15 @@ public interface UsuarioService {
 	List<UsuarioDTO> buscarUsuarioPorParteDoNome(String parteDoNome);
 	
 	/*Deletar o usuario da base*/
-	void deletarUsuario(UUID id);
+	void deletarUsuario(UUID uuid);
 	
 	/*Obter o usuario por id na base*/
-	Optional<UsuarioDTO> obterUsuarioPorId(UUID id);
+	Optional<UsuarioDTO> obterUsuarioPorId(UUID uuid);
 	
 	/*Obter o usuario por cpf na base*/
 	Optional<UsuarioDTO> obterUsuarioPorCpf(String cpf);
 	
 	/*Atualizar as informações do usuario*/
-	UsuarioDTO atualizarInformacoesDePerfilDoUsuario(UsuarioDTO usuario) throws IllegalAccessException;
+	UsuarioDTO atualizarPerfilUsuario(UsuarioDTO usuario);
 
 }

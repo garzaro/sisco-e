@@ -13,26 +13,20 @@ import com.sisco_e.escola.model.entity.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
-	// Métodos de existência para validação
+	 
     boolean existsByEmail(String email);
-    
- // Métodos de existência para validação
+  
     boolean existsByCpf(String cpf);
 
-    // Query Methods básicos
     Optional<Usuario> findByNomeCompleto(String nomeCompleto);
        
-    // Mantido por compatibilidade com UsuarioServiceImpl.findByemail
-    Optional<Usuario> findByemail(String email);
+    Optional<Usuario> findByEmail(String email);
 
-    Optional<Usuario> findByUsuario(String usuario);
+    Optional<Usuario> findByUsername(String username);
 
     Optional<Usuario> findByCpf(String cpf);    
 
-    // Método para autenticação
-    Optional<Usuario> findByEmailAndSenha(String email, String senha);
-
-    // Busca por parte do nome (Query Method padrão)
+    /**Busca por parte do nome (Query Method padrão)**/ 
     List<Usuario> findByNomeCompletoContainingIgnoreCase(String parteNome);
 
     /**
