@@ -2,6 +2,7 @@ package com.sisco_e.escola.security;
 
 import java.io.IOException;
 
+import com.sisco_e.escola.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;

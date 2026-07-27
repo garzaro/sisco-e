@@ -4,6 +4,7 @@ import com.sisco_e.escola.model.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -16,20 +17,6 @@ import java.util.Map;
  * para autenticar cada requisição.
  */
 public interface JwtService {
-    /**
-     * Gera um token JWT com apenas o {@code username} do {@link UserDetails} como subject.
-     * Usado internamente pelo filtro de autenticação e pelo endpoint de login.
-     */
-    String gerarToken(UserDetails userDetails);
-
-    /**
-     * Gera um token JWT enriquecido para um {@link Usuario}, incluindo claims extras:
-     * {@code id}, {@code cpf}, {@code nome_usuario} e {@code nome}.
-     */
-    String gerarToken(Usuario usuario);
-
-    /** Gera um token com claims extras adicionais ao payload. */
-    String gerarTokenComClaims(Map<String, Object> extraClaims, UserDetails userDetails);
 
     /**
      * Retorna o login (e-mail / username) armazenado no subject do token.
@@ -39,11 +26,17 @@ public interface JwtService {
     String extrairUsernameToken(String token);
 
     /**
-     * Alias de {@link #extrairUsernameToken}, preservado para compatibilidade.
-     *
-     * @throws RuntimeException se o token for inválido ou expirado
+     * Gera um token JWT com apenas o {@code username} do {@link UserDetails} como subject.
+     * Usado internamente pelo filtro de autenticação e pelo endpoint de login.
      */
-    String getUserLogin(String token);
+    String gerarToken(UserDetails userDetails);
+
+    /**
+     * Gera um token JWT enriquecido para um {@link Usuario}, incluindo claims extras:
+     * {@code id}, {@code cpf}, {@code nome_usuario} e {@code nome}.
+     *Gera um token com claims extras adicionais ao payload.
+     * */
+    String gerarTokenComClaims(Map<String, Object> extraClaims, UserDetails userDetails);
 
     /**
      * Retorna {@code true} se o token for válido, não expirado e pertencer ao
@@ -51,11 +44,9 @@ public interface JwtService {
      */
     boolean isTokenValido(String token, UserDetails userDetails);
 
-    /**
-     * Parseia e retorna todas as claims do token.
-     *
-     * @throws ExpiredJwtException se o token estiver expirado
-     * @throws RuntimeException    com mensagem "Token JWT inválido — …" para demais erros
-     */
-    Claims obterClaims(String token);
+    boolean isTokenExpired(String token);
+
+    Date extractExpiration(String token);
+
+    Claims extractAllClaims(String token);
 }

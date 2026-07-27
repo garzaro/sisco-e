@@ -5,10 +5,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sisco_e.escola.api.dto.UsuarioDTO;
+import com.sisco_e.escola.exception.EmailAlreadyExistsException;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.UsuarioMapper;
 import com.sisco_e.escola.model.entity.Usuario;
@@ -23,11 +24,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
-
-	/**
-	 * new ( 16, 32, 1, 16, 3 );
-	 * **/
-	private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+	private final PasswordEncoder passwordEncoder; // Injetado via construtor
 
 	@Override
 	public UsuarioDTO autenticar(String email, String senha) {
@@ -60,7 +57,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public void validarEmail(String email) {
 		boolean existeEmail = usuarioRepository.existsByEmail(email);
 		if (existeEmail) {
-			throw new RegraNegocioException("{dados.duplicados.nao.permitido}");
+			throw new EmailAlreadyExistsException("Email já cadastrado.");
 		}
 	}
 	
