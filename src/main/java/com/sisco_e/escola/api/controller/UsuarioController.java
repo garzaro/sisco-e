@@ -1,5 +1,7 @@
 package com.sisco_e.escola.api.controller;
 
+import com.sisco_e.escola.api.dto.AuthResponse;
+
 import com.sisco_e.escola.api.dto.UsuarioDTO;
 import com.sisco_e.escola.service.JwtService;
 import com.sisco_e.escola.service.UsuarioService;
@@ -8,11 +10,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+/**auth***/
 
 @RestController
 @RequestMapping("/api/auth") //usuario
@@ -35,4 +42,18 @@ public class UsuarioController {
         UsuarioDTO criarUsuario = usuarioService.cadastrarUsuario(usuarioDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(criarUsuario);
     }
+
+
+//     @PostMapping("/login")
+//     public ResponseEntity<AuthResponse> login(@RequestBody @Valid UsuarioDto request) {
+//         Authentication authentication = authenticationManager.authenticate(
+//                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+//         );
+
+//         // If authentication is successful, load UserDetails and generate token
+//         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+//         String jwtToken = jwtService.gerarToken(userDetails);
+// //        log.info("Usuário logado com sucesso: {}", request.getEmail());
+//         return ResponseEntity.ok(new AuthResponse(jwtToken, "Bearer"));
+//     }
 }

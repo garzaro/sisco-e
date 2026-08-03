@@ -34,7 +34,14 @@
 		 <dependency>
 			 <groupId>org.springframework.boot</groupId>
          	<artifactId>spring-boot-starter-web</artifactId>
-     	</dependency>           
+     	</dependency>     
+     	<!--Email com domions permitidos-->
+     	<dependency>
+     		<groupId>com.alowed-domain</groupId>
+    		<artifactId>dominios-permitidos</artifactId>
+    		<version>0.0.1-SNAPSHOT</version>
+		</dependency>    
+          
 		<!-- Core -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -214,6 +221,11 @@
 			<artifactId>spring-dotenv</artifactId>
 			<version>4.0.0</version>
 		</dependency>
+		<!-- <dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
+		</dependency> -->
 		<dependency>
 			<groupId>org.passay</groupId>
 			<artifactId>passay</artifactId>

@@ -22,16 +22,22 @@ public class JwtServiceImpl implements JwtService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
-    /** Identifica o emissor — validado no parse para evitar tokens de outros sistemas. */
+    /**
+     * Identifica o emissor — validado no parse para evitar tokens de outros
+     * sistemas.
+     */
     private static final String ISSUER = "financas-api";
 
     private final SecretKey signingKey;
     private final long expirationMs;
 
     public JwtServiceImpl(
-            @Value("${JWT.SECRET}") String secret,
-            @Value("${JWT.EXPIRATION-MS}") long expirationMs
-    ) {
+            @Value("${JWT_SECRET}") String secret,
+            @Value("${JWT_EXPIRATION_MS}") long expirationMs) {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException("JWT_SECRET não configurado");
+        }
+
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.expirationMs = expirationMs;
     }

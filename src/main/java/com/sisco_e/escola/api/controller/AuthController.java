@@ -1,8 +1,8 @@
 package com.sisco_e.escola.api.controller;
 
 import com.sisco_e.escola.api.dto.AuthResponse;
-import com.sisco_e.escola.api.dto.LoginRequest;
-import com.sisco_e.escola.api.dto.RegisterRequest;
+import com.sisco_e.escola.api.dto.LoginRequestDto;
+import com.sisco_e.escola.api.dto.RegisterRequestDto;
 import com.sisco_e.escola.service.JwtService;
 import com.sisco_e.escola.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -32,21 +32,21 @@ public class AuthController {
     private final UsuarioService usuarioService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequestDto request) {
 
-        log.info("Novo usuário registrado com sucesso: {}", request.email());
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequestDto request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.senha())
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
         // If authentication is successful, load UserDetails and generate token
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
-        String jwtToken = jwtService.generateToken(userDetails);
+        String jwtToken = jwtService.gerarToken(userDetails);
         log.info("Usuário logado com sucesso: {}", request.email());
         return ResponseEntity.ok(new AuthResponse(jwtToken, "Bearer"));
     }

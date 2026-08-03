@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sisco_e.escola.api.dto.UsuarioDTO;
-import com.sisco_e.escola.exception.EmailAlreadyExistsException;
+import com.sisco_e.escola.exception.CpfAlreadyExistsException;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.UsuarioMapper;
 import com.sisco_e.escola.model.entity.Usuario;
@@ -21,7 +21,7 @@ import jakarta.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
-	
+
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
 	private final PasswordEncoder passwordEncoder; // Injetado via construtor
@@ -37,11 +37,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 		/** se existe **/
 		validarEmail(usuarioDto.getEmail());
 		validarCpf(usuarioDto.getCpf());
-		/**Codifica antes de mapear para a entidade**/
+		usuarioDto.setIsAtivo(true);
+		/** Codifica antes de mapear para a entidade **/
 		usuarioDto.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
 		/** agora que está convertido... **/
 		Usuario entity = usuarioMapper.DtoToEntity(usuarioDto);
-		entity.setIsAtivo(true);
+		// entity.setIsAtivo(true);
 		/** ...chamo o repository para salvar o dto convertido para entidade **/
 		Usuario salvarUsuario = usuarioRepository.save(entity);
 		return usuarioMapper.entityToDto(salvarUsuario);
@@ -57,15 +58,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public void validarEmail(String email) {
 		boolean existeEmail = usuarioRepository.existsByEmail(email);
 		if (existeEmail) {
-			throw new EmailAlreadyExistsException("Email já cadastrado.");
+			throw new RegraNegocioException("Dados duplicados não permitido");
 		}
 	}
-	
+
 	@Override
 	public void validarCpf(String cpf) {
 		boolean existeCpf = usuarioRepository.existsByCpf(cpf);
 		if (existeCpf) {
-			throw new RegraNegocioException("{dados.duplicados.nao.permitido}");
+			throw new CpfAlreadyExistsException("Dados duplicados não permitido");
 		}
 	}
 
@@ -127,7 +128,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Optional<UsuarioDTO> obterUsuarioPorCpf(String cpf) {
 		// TODO Auto-generated method stub
 		return Optional.empty();
-	}
+	}	
 
 	@Override
 	public UsuarioDTO atualizarPerfilUsuario(UsuarioDTO usuario) {

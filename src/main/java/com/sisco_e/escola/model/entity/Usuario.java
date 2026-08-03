@@ -30,12 +30,12 @@ public class Usuario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_usuario")
-    private UUID id;
+    private UUID uuid;
 
     @Column(name = "nome_completo", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
     private String nomeCompleto;
     	
-    @Column(name = "usuario", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
+    @Column(name = "username", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
     private String username;
 
     @Column(name = "cpf", unique = true, columnDefinition = "CHARACTER VARYING(11)")
@@ -44,7 +44,7 @@ public class Usuario {
 	@Column(name = "email", nullable = false, unique = true, columnDefinition = "CHARACTER VARYING(120)")
 	private String email;
 	
-	@Column(name = "senha", nullable = false, columnDefinition = "CHARACTER VARYING(255)")
+	@Column(name = "password", nullable = false, columnDefinition = "CHARACTER VARYING(255)")
 	private String password;
 	
 	@CreationTimestamp

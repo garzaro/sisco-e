@@ -3,18 +3,17 @@ package com.sisco_e.escola.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-
 import com.sisco_e.escola.api.dto.UsuarioDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public interface UsuarioService {
-//	UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO);
+//	UsuarioDto cadastrarUsuario(UsuarioDto UsuarioDto);
 	
 	/*Autenticao do usuario na base*/
-	UsuarioDTO autenticar(String email, String senha);
+	UsuarioDTO autenticar(String email, String password);
 
 	UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDto);
 

@@ -1,54 +1,49 @@
 package com.sisco_e.escola.api.dto;
-
-import java.util.UUID;
+ 
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
-//import validator_domain_core.validation.AllowedDomain;
+import com.alowed_domain.validation.AllowedDomains;
 
-@Builder
-@Data
+
+/**
+ * Todo: Implementar a validação de domínio de e-mail usando a anotação @AllowedDomains
+ * **/
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UsuarioDTO {
-	private UUID uuid;
-
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 120, message = "{usuario.nome.size}")
     private String nomeCompleto;
-        
+
     @NotBlank(message = "{usuario.cpf.notblank}")
     @CPF(message = "{usuario.cpf.invalido}")
     @Size(max = 11, message = "{usuario.cpf.size}")
-    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$", message = "{usuario.cpf.pattern}")
     private String cpf;
 
     @NotBlank(message = "{usuario.username.notblank}")
     @Size(max = 120, message = "{usuario.username.size}")
-    private String username;
+    String username;
 
     @NotBlank(message = "{usuario.email.notblank}")
-    @Email(message = "{usuario.email.valid}")
+    @Email(message = "{usuario.email.valido}")
     @Size(max = 120, message = "{usuario.email.size}")
-    @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
-//    @AllowedDomain - refazer o anotation
-    private String email;
+    @AllowedDomain
+    String email;
 
     @NotBlank(message = "{usuario.senha.notblank}")
     @Size(min = 6, max = 255, message = "{usuario.senha.size}")
-    @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])" +
-                    "(?=.*\\d)(?=.*[@$!%*?&])" +
-                    "[A-Za-z\\d@$!%*?&]{6,}$",
-            message = "{usuario.senha.pattern}"
-    )
-    private String password;   
-
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])" +
+            "(?=.*\\d)(?=.*[@$!%*?&])" +
+            "[A-Za-z\\d@$!%*?&]{6,}$",
+            message = "{usuario.senha.pattern}")
+    String password;
+    Boolean isAtivo;
 }
