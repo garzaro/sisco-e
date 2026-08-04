@@ -25,7 +25,7 @@ import org.hibernate.envers.Audited;
 @Setter
 @Builder
 @Entity
-@Table(name = "usuario",  schema = "siscoescola")
+@Table(name = "tb_usuario",  schema = "siscoescola")
 public class Usuario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
