@@ -23,14 +23,12 @@ public interface EscolaRepository extends JpaRepository<Escola, UUID> {
 
 	List<Escola> findByMunicipio(String municipio);
 
-	List<Escola> findByEstado(String estado);
-
-	List<Escola> findByCidade(String cidade);
+	List<Escola> findByEstado(String estado);	
 
 	List<Escola> findByTipoEscola(TipoEscola tipoEscola);
 
 	List<Escola> findByNomeEscolaContainingIgnoreCase(String parteNomeEscola);
 
-	List<Escola> findByCidadeAndEstado(String cidade, String estado);
+	List<Escola> findByMunicipioAndEstado(String municipio, String estado);
 
 }

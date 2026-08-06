@@ -23,13 +23,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/escolas")
+@RequestMapping("/api/escola")
 @RequiredArgsConstructor
 public class EscolaController {
 
 	private final EscolaService escolaService;
 
-	@PostMapping
+	@PostMapping("/reg/unidade")
 	public ResponseEntity<EscolaDTO> cadastrarEscola(@RequestBody @Valid EscolaDTO escolaDto) {
 		EscolaDTO escolaCriada = escolaService.cadastrarEscola(escolaDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(escolaCriada);
@@ -62,11 +62,6 @@ public class EscolaController {
 	@GetMapping("/estado")
 	public ResponseEntity<List<EscolaDTO>> buscarEscolaPorEstado(@RequestParam String estado) {
 		return ResponseEntity.ok(escolaService.buscarEscolaPorEstado(estado));
-	}
-
-	@GetMapping("/cidade")
-	public ResponseEntity<List<EscolaDTO>> buscarEscolaPorCidade(@RequestParam String cidade) {
-		return ResponseEntity.ok(escolaService.buscarEscolaPorCidade(cidade));
 	}
 
 	@GetMapping("/tipo")

@@ -35,7 +35,7 @@ public class UsuarioDTO {
     @NotBlank(message = "{usuario.email.notblank}")
     @Email(message = "{usuario.email.valido}")
     @Size(max = 120, message = "{usuario.email.size}")
-    @AllowedDomain
+    @AllowedDomains
     String email;
 
     @NotBlank(message = "{usuario.senha.notblank}")

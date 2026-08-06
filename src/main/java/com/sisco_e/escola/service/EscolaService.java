@@ -26,8 +26,6 @@ public interface EscolaService {
 
 	List<EscolaDTO> buscarEscolaPorEstado(String estado);
 
-	List<EscolaDTO> buscarEscolaPorCidade(String cidade);
-
 	List<EscolaDTO> buscarEscolaPorTipo(TipoEscola tipoEscola);
 
 	List<EscolaDTO> buscarEscolaPorParteDoNome(String parteNomeEscola);

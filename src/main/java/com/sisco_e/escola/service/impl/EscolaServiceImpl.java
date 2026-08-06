@@ -29,9 +29,6 @@ public class EscolaServiceImpl implements EscolaService {
 	public EscolaDTO cadastrarEscola(EscolaDTO escolaDto) {
 		validarEscola(escolaDto);
 		Escola entity = escolaMapper.DtoToEntity(escolaDto);
-		if (entity.getIsAtivo() == null) {
-			entity.setIsAtivo(true);
-		}
 		Escola escolaSalva = escolaRepository.save(entity);
 		return escolaMapper.entityToDto(escolaSalva);
 	}
@@ -75,11 +72,6 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
-	public List<EscolaDTO> buscarEscolaPorCidade(String cidade) {
-		return escolaRepository.findByCidade(cidade).stream().map(escolaMapper::entityToDto).toList();
-	}
-
-	@Override
 	public List<EscolaDTO> buscarEscolaPorTipo(TipoEscola tipoEscola) {
 		return escolaRepository.findByTipoEscola(tipoEscola).stream().map(escolaMapper::entityToDto).toList();
 	}
@@ -101,17 +93,17 @@ public class EscolaServiceImpl implements EscolaService {
 		Escola escolaExistente = escolaRepository.findById(escolaDto.getUuid())
 			.orElseThrow(() -> new RegraNegocioException("Escola não encontrada para atualização"));
 
-		Optional<Escola> escolaComMesmoCodigo = escolaRepository.findByCodigoEscola(escolaDto.getCodigoEscola());
-		if (escolaComMesmoCodigo.isPresent()
-			&& !escolaComMesmoCodigo.get().getUuid().equals(escolaDto.getUuid())) {
-			throw new RegraNegocioException("Verifique o código da escola e tente novamente!");
-		}
+		// boolean duplicada = escolaRepository.existsByNomeEscola(escolaDto.getNomeEscola(),
+		// 	escolaDto.getCidade(), escolaDto.getEstado(), escolaDto.getUuid());
+
+		// if (duplicada) {
+		// 	throw new RegraNegocioException("Já existe escola com esse nome na cidade e estado informados");
+		// }
 
 		escolaExistente.setNomeEscola(escolaDto.getNomeEscola());
 		escolaExistente.setCodigoEscola(escolaDto.getCodigoEscola());
 		escolaExistente.setMunicipio(escolaDto.getMunicipio());
 		escolaExistente.setEstado(escolaDto.getEstado());
-		escolaExistente.setCidade(escolaDto.getCidade());
 		escolaExistente.setCep(escolaDto.getCep());
 		escolaExistente.setLogradouro(escolaDto.getLogradouro());
 		escolaExistente.setTipoEscola(escolaDto.getTipoEscola());
