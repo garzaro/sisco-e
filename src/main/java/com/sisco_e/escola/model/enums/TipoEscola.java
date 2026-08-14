@@ -1,4 +1,4 @@
-package com.sisco_e.escola.model.entity;
+package com.sisco_e.escola.model.enums;
 
 public enum TipoEscola {
 	PUBLICA,

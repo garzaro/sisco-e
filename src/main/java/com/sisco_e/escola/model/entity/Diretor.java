@@ -34,7 +34,7 @@ public class Diretor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "id_diretor")
+	@Column(name = "uuid")
 	private UUID uuid;
 
 	@Column(name = "nome_diretor", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
@@ -59,7 +59,7 @@ public class Diretor {
 	private Instant dataFimMandato;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "uuid_escola", nullable = false, unique = true)
+	@JoinColumn(name = "escola_uuid", nullable = false, unique = true)
 	private Escola escola;
 
 	@Column(name = "is_ativo", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")

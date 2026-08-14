@@ -29,7 +29,7 @@ import org.hibernate.envers.Audited;
 public class Usuario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_usuario")
+    @Column(name = "uuid")
     private UUID uuid;
 
     @Column(name = "nome_completo", nullable = false, columnDefinition = "CHARACTER VARYING(120)")

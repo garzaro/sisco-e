@@ -77,7 +77,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Optional<UsuarioDTO> buscarUsuarioPorId(UUID id) {
+	public Optional<UsuarioDTO> buscarUsuarioPorId(UUID uuid) {
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
@@ -113,13 +113,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public void deletarUsuario(UUID id) {
+	public void deletarUsuario(UUID uuid) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public Optional<UsuarioDTO> obterUsuarioPorId(UUID id) {
+	public Optional<UsuarioDTO> obterUsuarioPorId(UUID uuid) {
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}

@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.UUID;
+
 import org.hibernate.validator.constraints.br.CPF;
 import com.alowed_domain.validation.AllowedDomains;
 
@@ -19,6 +22,8 @@ import com.alowed_domain.validation.AllowedDomains;
 @AllArgsConstructor
 @Builder
 public class UsuarioDTO {
+	private UUID uuid;
+	
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 120, message = "{usuario.nome.size}")
     private String nomeCompleto;

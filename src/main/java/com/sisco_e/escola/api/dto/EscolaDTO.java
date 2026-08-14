@@ -2,7 +2,7 @@ package com.sisco_e.escola.api.dto;
 
 import java.util.UUID;
 
-import com.sisco_e.escola.model.entity.TipoEscola;
+import com.sisco_e.escola.model.enums.TipoEscola;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

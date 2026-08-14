@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sisco_e.escola.api.dto.EscolaDTO;
-import com.sisco_e.escola.model.entity.TipoEscola;
+import com.sisco_e.escola.model.enums.TipoEscola;
 import com.sisco_e.escola.service.EscolaService;
 
 import jakarta.validation.Valid;

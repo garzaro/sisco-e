@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.sisco_e.escola.model.entity.Escola;
-import com.sisco_e.escola.model.entity.TipoEscola;
+import com.sisco_e.escola.model.enums.TipoEscola;
 
 @Repository
 public interface EscolaRepository extends JpaRepository<Escola, UUID> {

@@ -52,7 +52,7 @@ public class DiretorDTO {
 	private Instant dataFimMandato;
 
 	@NotNull(message = "{diretor.escola.notnull}")
-	private UUID uuidEscola;
+	private UUID escolaUuid;
 
 	private Boolean isAtivo;
 }

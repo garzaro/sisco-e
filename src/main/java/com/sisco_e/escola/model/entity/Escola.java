@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 
+import com.sisco_e.escola.model.enums.TipoEscola;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Entity;
@@ -35,7 +37,7 @@ public class Escola {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "id_escola")
+	@Column(name = "uuid")
 	private UUID uuid;
 
 	@Column(name = "nome_escola", nullable = false, columnDefinition = "CHARACTER VARYING(120)")

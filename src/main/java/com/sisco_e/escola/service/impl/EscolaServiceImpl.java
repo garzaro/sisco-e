@@ -10,7 +10,7 @@ import com.sisco_e.escola.api.dto.EscolaDTO;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.EscolaMapper;
 import com.sisco_e.escola.model.entity.Escola;
-import com.sisco_e.escola.model.entity.TipoEscola;
+import com.sisco_e.escola.model.enums.TipoEscola;
 import com.sisco_e.escola.model.repository.EscolaRepository;
 import com.sisco_e.escola.service.EscolaService;
 

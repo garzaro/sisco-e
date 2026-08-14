@@ -5,23 +5,21 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.sisco_e.escola.api.dto.DiretorDTO;
-import com.sisco_e.escola.model.entity.Diretor;
+import com.sisco_e.escola.api.dto.ContratoInternetDTO;
+import com.sisco_e.escola.model.entity.ContratoInternet;
 
 @Mapper(componentModel = "spring",
 		nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
 		nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-public interface DiretorMapper {
+public interface ContratoInternetMapper {
 
-	@Mapping(target = "cpfDiretor", source = "cpf")
-	@Mapping(target = "emailCorporativo", source = "email")
 	@Mapping(target = "escola", ignore = true)
+	@Mapping(target = "provedor", ignore = true)
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
-	Diretor DtoToEntity(DiretorDTO dto);
+	ContratoInternet DtoToEntity(ContratoInternetDTO dto);
 
-	@Mapping(target = "cpf", source = "cpfDiretor")
-	@Mapping(target = "email", source = "emailCorporativo")
-	@Mapping(target = "escolaUuid", source = "escola.uuid")
-	DiretorDTO entityToDto(Diretor entity);
+	@Mapping(target = "uuidEscola", source = "escola.uuid")
+	@Mapping(target = "uuidProvedor", source = "provedor.uuid")
+	ContratoInternetDTO entityToDto(ContratoInternet entity);
 }

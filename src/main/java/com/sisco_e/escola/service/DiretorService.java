@@ -25,5 +25,5 @@ public interface DiretorService {
 
 	Optional<DiretorDTO> buscarDiretorPorEmailPessoal(String emailPessoal);
 
-	Optional<DiretorDTO> buscarDiretorPorEscola(UUID uuidEscola);
+	Optional<DiretorDTO> buscarDiretorPorEscola(UUID escolaUuid);
 }

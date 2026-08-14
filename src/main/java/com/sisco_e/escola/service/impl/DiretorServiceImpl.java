@@ -31,7 +31,7 @@ public class DiretorServiceImpl implements DiretorService {
 	public DiretorDTO cadastrarDiretor(DiretorDTO diretorDto) {
 		validarDiretor(diretorDto);
         /**Isso evita tentar vincular um diretor a uma escola fantasma**/
-		Escola escola = escolaRepository.findById(diretorDto.getUuidEscola())
+		Escola escola = escolaRepository.findById(diretorDto.getEscolaUuid())
 			.orElseThrow(() -> new RegraNegocioException("Escola não encontrada para vínculo com diretor"));
 
 		Diretor diretor = diretorMapper.DtoToEntity(diretorDto);
@@ -67,7 +67,7 @@ public class DiretorServiceImpl implements DiretorService {
 			throw new RegraNegocioException("Verifique o e-mail pessoal do diretor e tente novamente!");
 		}
 
-		if (diretorRepository.existsByEscolaUuid(diretorDto.getUuidEscola())) {
+		if (diretorRepository.existsByEscolaUuid(diretorDto.getEscolaUuid())) {
 			throw new RegraNegocioException("Já existe diretor vinculado a esta escola!");
 		}
 	}

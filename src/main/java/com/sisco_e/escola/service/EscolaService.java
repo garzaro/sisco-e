@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.sisco_e.escola.api.dto.EscolaDTO;
-import com.sisco_e.escola.model.entity.TipoEscola;
+import com.sisco_e.escola.model.enums.TipoEscola;
 
 @Service
 public interface EscolaService {
