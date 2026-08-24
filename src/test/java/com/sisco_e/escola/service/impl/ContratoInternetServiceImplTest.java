@@ -60,7 +60,7 @@ class ContratoInternetServiceImplTest {
 		ProvedorInternet provedor = ProvedorInternet.builder()
 			.nomeProvedor(nomeProvedor)
 			.cnpj("00000000" + sufixo)
-			.telefone("1199999" + sufixo.substring(0, 4))
+			.canalSuportePrioritario("1199999" + sufixo.substring(0, 4))
 			.build();
 		return provedorInternetRepository.save(provedor);
 	}

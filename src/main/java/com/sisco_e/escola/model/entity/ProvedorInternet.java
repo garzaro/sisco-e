@@ -29,7 +29,7 @@ public class ProvedorInternet {
 	private UUID uuid;
 
 	@Column(name = "nome_provedor", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
-	private String razaoSocialProvedor;
+	private String nomeProvedor;
 
 	@Column(name = "cnpj", nullable = false, columnDefinition = "CHARACTER VARYING(20)")
 	private String cnpj;
@@ -38,4 +38,3 @@ public class ProvedorInternet {
 	private String canalSuportePrioritario;
 
 }
-

@@ -33,8 +33,6 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequestDto request) {
-
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

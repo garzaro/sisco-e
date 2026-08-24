@@ -46,7 +46,7 @@ public class DiretorDTO {
 	@Size(max = 120, message = "{diretor.email.pessoal.size}")
 	private String emailPessoal;
 
-	@NotNull
+	@NotNull(message = "{diretor.data.posse.obrigatoria}")
 	private Instant dataPosse;
 
 	private Instant dataFimMandato;
