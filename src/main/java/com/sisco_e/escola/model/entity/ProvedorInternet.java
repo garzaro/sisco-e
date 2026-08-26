@@ -20,12 +20,12 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
-@Table(name = "tab_provedor_net", schema = "siscoescola")
+@Table(name = "tb_provedor_net", schema = "siscoescola")
 public class ProvedorInternet {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "uuid")
+	@Column(name = "uuid_provedor")
 	private UUID uuid;
 
 	@Column(name = "nome_provedor", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
@@ -35,6 +35,6 @@ public class ProvedorInternet {
 	private String cnpj;
 
 	@Column(name = "telefone", nullable = false, columnDefinition = "CHARACTER VARYING(20)")
-	private String canalSuportePrioritario;
+	private String telefone;
 
 }

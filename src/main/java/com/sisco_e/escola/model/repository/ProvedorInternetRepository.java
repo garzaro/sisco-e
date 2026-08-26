@@ -18,7 +18,7 @@ public interface ProvedorInternetRepository extends JpaRepository<ProvedorIntern
 
     boolean existsByCnpj(String cnpj);
 
-    boolean existsByCanalSuportePrioritario(String canalSuportePrioritario);
+    boolean existsByTelefone(String telefone);
 
     Optional<ProvedorInternet> findByNomeProvedor(String nomeProvedor);
 
@@ -38,10 +38,10 @@ public interface ProvedorInternetRepository extends JpaRepository<ProvedorIntern
         SELECT p
         FROM ProvedorInternet p
         WHERE p.cnpj = :cnpj
-          AND p.canalSuportePrioritario = :canalSuportePrioritario
+          AND p.telefone = :telefone
         """)
-    Optional<ProvedorInternet> buscarPorCnpjECanalSuportePrioritario(
+    Optional<ProvedorInternet> buscarPorCnpjETelefone(
             @Param("cnpj") String cnpj,
-            @Param("canalSuportePrioritario") String canalSuportePrioritario);
+            @Param("telefone") String telefone);
  
 }

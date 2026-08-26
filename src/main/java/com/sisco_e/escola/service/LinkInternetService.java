@@ -21,6 +21,8 @@ public interface LinkInternetService {
 
 	List<LinkInternet> buscarLinksPorContratoEAtivo(UUID contratoUuid, Boolean isAtivo);
 
+	List<LinkInternet> buscarLinksPorIpWanOuDns(String termo);
+
 	LinkInternet atualizarLinkInternet(LinkInternet linkInternet);
 
 	void deletarLinkInternet(UUID uuid);

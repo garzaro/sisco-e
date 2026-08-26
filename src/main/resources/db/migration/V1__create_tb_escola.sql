@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS siscoescola;
 
 CREATE TABLE IF NOT EXISTS siscoescola.tb_escola (
-    id_escola UUID PRIMARY KEY,
+    uuid_escola UUID PRIMARY KEY,
     nome_escola CHARACTER VARYING(120) NOT NULL,
     codigo_escola CHARACTER VARYING(120) NOT NULL,
     municipio CHARACTER VARYING(120) NOT NULL,

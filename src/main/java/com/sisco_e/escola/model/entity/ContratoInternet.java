@@ -34,7 +34,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
-@Table(name = "tab_contrato_net", schema = "siscoescola",
+@Table(name = "tb_contrato_net", schema = "siscoescola",
 	uniqueConstraints = @UniqueConstraint(name = "uk_contratos_internet_escola_provedor_data",
 		columnNames = { "uuid_escola", "uuid_provedor", "data_contratacao" }))
 public class ContratoInternet {

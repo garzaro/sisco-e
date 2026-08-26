@@ -34,7 +34,7 @@ public class Diretor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "uuid")
+	@Column(name = "uuid_diretor")
 	private UUID uuid;
 
 	@Column(name = "nome_diretor", nullable = false, columnDefinition = "CHARACTER VARYING(120)")

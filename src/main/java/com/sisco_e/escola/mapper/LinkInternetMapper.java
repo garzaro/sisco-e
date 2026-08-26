@@ -14,10 +14,14 @@ import com.sisco_e.escola.model.entity.LinkInternet;
 public interface LinkInternetMapper {
 
 	@Mapping(target = "contratoInternet", ignore = true)
+	@Mapping(target = "provedorInternet", ignore = true)
+	@Mapping(target = "escola", ignore = true)
+	@Mapping(target = "ipPublico", source = "ipWan")
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
 	LinkInternet DtoToEntity(LinkInternetDTO dto);
 
 	@Mapping(target = "uuidContratoInternet", source = "contratoInternet.uuid")
+	@Mapping(target = "ipWan", source = "ipPublico")
 	LinkInternetDTO entityToDto(LinkInternet entity);
 }

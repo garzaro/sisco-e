@@ -32,6 +32,6 @@ public class ProvedorInternetDTO {
 	
 	@NotBlank(message = "{provedor.telefone.notblank}")
 	@Size(min= 10, max= 11, message = "{provedor.telfone.size}")	
-	private String canalSuportePrioritario;
+	private String telefone;
 
 }

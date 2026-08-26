@@ -41,7 +41,7 @@ public class ProvedorInternetServiceImpl implements ProvedorInternetService {
             throw new RegraNegocioException("Já existe um provedor com os dados informados!");
         }
         if (provedorInternetRepository
-                .existsByCanalSuportePrioritario(provedorInternetDto.getCanalSuportePrioritario())){
+                .existsByTelefone(provedorInternetDto.getTelefone())){
             throw new RegraNegocioException("O contato pertence a outro provedor!");
         }
     }
@@ -84,7 +84,7 @@ public class ProvedorInternetServiceImpl implements ProvedorInternetService {
                 .orElseThrow(() -> new RegraNegocioException("Provedor não encontrado para atualização"));
         provedor.setNomeProvedor(provedorInternetDto.getNomeProvedor());
         provedor.setCnpj(provedorInternetDto.getCnpj());
-        provedor.setCanalSuportePrioritario(provedorInternetDto.getCanalSuportePrioritario());
+        provedor.setTelefone(provedorInternetDto.getTelefone());
         return provedorInternetMapper.entityToDto(provedorInternetRepository.save(provedor));
     }
 
