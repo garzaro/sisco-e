@@ -27,9 +27,9 @@ public class ContratoInternetController {
 
 	private final ContratoInternetService contratoInternetService;
 
-	@PostMapping
+	@PostMapping("/reg/contrato")
 	public ResponseEntity<ContratoInternetDTO> contratar(@RequestBody @Valid ContratoInternetDTO dto) {
-		ContratoInternetDTO criado = contratoInternetService.contratar(
+		ContratoInternetDTO criado = contratoInternetService.registrarContrato(
 				dto.getUuidEscola(), dto.getUuidProvedor(),
 				dto.getDataContratacao(), dto.getVelocidade(), dto.getValorMensal());
 		return ResponseEntity.status(HttpStatus.CREATED).body(criado);
