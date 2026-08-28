@@ -8,6 +8,7 @@ import com.sisco_e.escola.model.enums.StatusContrato;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +36,10 @@ public class ContratoInternetDTO {
 
 	@NotBlank(message = "{contrato.velocidade.notblank}")
 	private String velocidade;
+
+	@Positive(message = "{contrato.valor.mensal.maior.que.zero}")
+	@NotNull(message = "{contrato.valor.mensal.notnull}")
 	private BigDecimal valorMensal;
+
 	private StatusContrato status;
 }

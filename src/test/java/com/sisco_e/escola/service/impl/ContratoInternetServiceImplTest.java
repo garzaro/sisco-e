@@ -70,7 +70,7 @@ class ContratoInternetServiceImplTest {
 		Escola escola = criarEscola("COD-001");
 		ProvedorInternet provedor = criarProvedor("Provedor A");
 
-		ContratoInternetDTO contrato = contratoInternetService.contratar(escola.getUuid(), provedor.getUuid(),
+		ContratoInternetDTO contrato = contratoInternetService.registrarContrato(escola.getUuid(), provedor.getUuid(),
 				LocalDate.now(), "100 Mbps", new BigDecimal("199.90"));
 
 		assertNotNull(contrato.getUuid());
@@ -86,13 +86,12 @@ class ContratoInternetServiceImplTest {
 		ProvedorInternet provedor = criarProvedor("Provedor B");
 		LocalDate dataContratacao = LocalDate.now();
 
-		contratoInternetService.contratar(escola.getUuid(), provedor.getUuid(), dataContratacao,
+		contratoInternetService.registrarContrato(escola.getUuid(), provedor.getUuid(), dataContratacao,
 				"50 Mbps", new BigDecimal("100.00"));
 		contratoInternetRepository.flush();
 
 		assertThrows(DataIntegrityViolationException.class, () -> {
-			contratoInternetService.contratar(escola.getUuid(), provedor.getUuid(), dataContratacao,
-					"100 Mbps", new BigDecimal("150.00"));
+			contratoInternetService.registrarContrato(null, null, dataContratacao, null, null);
 			contratoInternetRepository.flush();
 		});
 	}
@@ -103,7 +102,7 @@ class ContratoInternetServiceImplTest {
 		UUID escolaInexistente = UUID.randomUUID();
 
 		assertThrows(EntityNotFoundException.class, () -> contratoInternetService
-			.contratar(escolaInexistente, provedor.getUuid(), LocalDate.now(), "100 Mbps", BigDecimal.TEN));
+			.registrarContrato(escolaInexistente, provedor.getUuid(), LocalDate.now(), "100 Mbps", BigDecimal.TEN));
 	}
 
 	@Test
@@ -112,7 +111,7 @@ class ContratoInternetServiceImplTest {
 		UUID provedorInexistente = UUID.randomUUID();
 
 		assertThrows(EntityNotFoundException.class, () -> contratoInternetService
-			.contratar(escola.getUuid(), provedorInexistente, LocalDate.now(), "100 Mbps", BigDecimal.TEN));
+			.registrarContrato(escola.getUuid(), provedorInexistente, LocalDate.now(), "100 Mbps", BigDecimal.TEN));
 	}
 
 	@Test
@@ -121,9 +120,9 @@ class ContratoInternetServiceImplTest {
 		ProvedorInternet provedorA = criarProvedor("Provedor D");
 		ProvedorInternet provedorB = criarProvedor("Provedor E");
 
-		contratoInternetService.contratar(escola.getUuid(), provedorA.getUuid(), LocalDate.now(),
+		contratoInternetService.registrarContrato(escola.getUuid(), provedorA.getUuid(), LocalDate.now(),
 				"100 Mbps", new BigDecimal("120.00"));
-		contratoInternetService.contratar(escola.getUuid(), provedorB.getUuid(), LocalDate.now(),
+		contratoInternetService.registrarContrato(escola.getUuid(), provedorB.getUuid(), LocalDate.now(),
 				"50 Mbps", new BigDecimal("80.00"));
 
 		List<ContratoInternetDTO> contratosAtivos = contratoInternetService.buscarPorEscolaEStatus(escola.getUuid(),

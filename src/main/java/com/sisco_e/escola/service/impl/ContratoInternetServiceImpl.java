@@ -78,6 +78,7 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 		 * fail-fast nas dependencias
 		 * Separação de responsabilidade: buscar → montar → persistir → mapear
 		 **/
+		validarValorMensal(valorMensal);
 		//idiomatico
 		Escola escola = escolaRepository.findById(uuidEscola)
 				.orElseThrow(() ->
@@ -117,6 +118,14 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 	public List<ContratoInternetDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status) {
 		return contratoInternetRepository.findByEscola_UuidAndStatus(uuidEscola, status)
 				.stream().map(contratoInternetMapper::entityToDto).toList();
+	}
+	 /**interno**/
+	private void validarValorMensal(BigDecimal valorMensal) {
+		boolean valorInvalido = valorMensal == null || valorMensal.compareTo(BigDecimal.ZERO) <= 0;
+
+		if (valorInvalido) {
+			throw new RegraNegocioException("O valor mensal do contrato deve ser maior que zero!!!");
+		}
 	}
 
 //	Conceitual - verboso e sem ganho real

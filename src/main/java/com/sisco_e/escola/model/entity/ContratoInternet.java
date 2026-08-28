@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.validation.constraints.Positive;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -61,6 +62,7 @@ public class ContratoInternet {
     @Column(name = "velocidade", nullable = false)
 	private String velocidade;
 
+	@Positive
 	@Column(name = "valor_mensal", nullable = false, columnDefinition = "NUMERIC(10,2)")
 	private BigDecimal valorMensal;
 
