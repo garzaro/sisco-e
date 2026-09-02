@@ -16,7 +16,9 @@ public interface ContratoInternetService {
 			LocalDate dataContratacao,
 			String velocidade,
 			BigDecimal valorMensal
-	);	
+	);
+	
+	void validarContrato(ContratoInternetDTO contratoDto);
 
 	List<ContratoInternetDTO> buscarContratosAtivosComEscolaEProvedor();
 

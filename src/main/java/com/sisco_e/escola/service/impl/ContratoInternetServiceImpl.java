@@ -69,44 +69,57 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 	@Transactional
 	@Override
 	public ContratoInternetDTO registrarContrato(
-			UUID uuidEscola,
-			UUID uuidProvedor,
-			LocalDate dataContratacao,
-			String velocidade,
-			BigDecimal valorMensal) {
-		/**
-		 * fail-fast nas dependencias
-		 * Separação de responsabilidade: buscar → montar → persistir → mapear
-		 **/
-		validarValorMensal(valorMensal);
-		//idiomatico
-		Escola escola = escolaRepository.findById(uuidEscola)
-				.orElseThrow(() ->
-						new EntityNotFoundException("Escola não encontrada para vínculo com o contrato!"));
-		//idiomatico
-		ProvedorInternet provedorInternet = provedorInternetRepository.findById(uuidProvedor)
-				.orElseThrow(() ->
-						new EntityNotFoundException("Provedor não encontrado para vínculo com o contrato!"));
+			 UUID uuidEscola,
+			 UUID uuidProvedor,
+			 LocalDate dataContratacao,
+			 String velocidade,
+			 BigDecimal valorMensal)
+			{
 		
-		boolean contratoDuplicado = contratoInternetRepository
-	            .existsByEscolaAndProvedorAndDataContratacao(escola, provedorInternet, dataContratacao);
-		/**amo evitar I/O dentro de condicional - chamar o repository dentro do if - credo**/
-		if (contratoDuplicado) {
-			throw new RegraNegocioException("Já existe um contrato para esta escola, provedor e data de contratação");
-		}
-
-		ContratoInternet contrato = ContratoInternet.builder()
-				.escola(escola)
-				.provedor(provedorInternet)
-				.dataContratacao(dataContratacao)
-				.velocidade(velocidade)
-				.valorMensal(valorMensal)
-				.status(StatusContrato.ATIVO)
-				.build();
-
-		ContratoInternet contratoRegistrado = contratoInternetRepository.save(contrato);
-		return contratoInternetMapper.entityToDto(contratoRegistrado);
 	}	
+// SEGUIR COM ESTE PDARO PARA IMPLEMENTAÇÃO DO REGISTRARCONTRATO, 
+// DEPPOIS DAR UMA OLHADA NO DIRETOR SERVICE IMPLEMENTATION PARA VERIFICAR
+//  COMO VALIDAR OS CAMPOS, E DEPOIS IMPLEMENTAR O VALIDARCONTRATO PORQUE TEM
+//   MATRIULA LA PRA VALIDAR DEVE SER UNICA
+
+// 	@Override
+// public ADTO cadastrarA(ADTO aDto) {
+
+//     validarA(aDto);
+
+//     A a = aMapper.DtoToEntity(aDto);
+
+//     a.setIsAtivo(
+//         Boolean.TRUE.equals(aDto.getIsAtivo()) ||
+//         aDto.getIsAtivo() == null
+//     );
+
+//     A aSalvo = aRepository.save(a);
+
+//     return aMapper.entityToDto(aSalvo);
+// }
+
+// @Override
+// public void validarA(ADTO aDto) {
+
+//     cRepository.findById(aDto.getCUuid())
+//         .orElseThrow(() ->
+//             new RegraNegocioException("C não existe")
+//         );
+
+//     bRepository.findById(aDto.getBUuid())
+//         .orElseThrow(() ->
+//             new RegraNegocioException("B não existe")
+//         );
+// }
+
+
+
+
+
+
+
+
 
 	@Override
 	public List<ContratoInternetDTO> buscarContratosAtivosComEscolaEProvedor() {
@@ -128,9 +141,57 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 		}
 	}
 
+	 @Override
+	 public void validarContrato(ContratoInternetDTO contratoDto) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'validarContrato'");
+	 }
+
 //	Conceitual - verboso e sem ganho real
 //	Optional<Escola> escolaOpt = escolaRepository.findById(uuidEscola);
 //	Escola escola = escolaOpt.orElseThrow(() ->
 //	        new EntityNotFoundException("Escola não encontrada para vínculo com o contrato!"));
 
 }
+
+
+//public ContratoInternetDTO registrarContrato(
+//		UUID uuidEscola,
+//		UUID uuidProvedor,
+//		LocalDate dataContratacao,
+//		String velocidade,
+//		BigDecimal valorMensal)
+//{
+//	/**
+//	 * fail-fast nas dependencias
+//	 * Separação de responsabilidade: buscar → montar → persistir → mapear
+//	 **/
+//	validarValorMensal(valorMensal);
+//	//idiomatico
+//	Escola escola = escolaRepository.findById(uuidEscola)
+//			.orElseThrow(() ->
+//					new EntityNotFoundException("Escola não encontrada para vínculo com o contrato!"));
+//	//idiomatico
+//	ProvedorInternet provedorInternet = provedorInternetRepository.findById(uuidProvedor)
+//			.orElseThrow(() ->
+//					new EntityNotFoundException("Provedor não encontrado para vínculo com o contrato!"));
+//
+//	boolean contratoDuplicado = contratoInternetRepository
+//			.existsByEscolaAndProvedorAndDataContratacao(escola, provedorInternet, dataContratacao);
+//	/**amo evitar I/O dentro de condicional - chamar o repository dentro do if - credo**/
+//	if (contratoDuplicado) {
+//		throw new RegraNegocioException("Já existe um contrato para esta escola, provedor e data de contratação!");
+//	}
+//
+//	ContratoInternet contrato = ContratoInternet.builder()
+//			.escola(escola)
+//			.provedor(provedorInternet)
+//			.dataContratacao(dataContratacao)
+//			.velocidade(velocidade)
+//			.valorMensal(valorMensal)
+//			.status(StatusContrato.ATIVO)
+//			.build();
+//
+//	ContratoInternet contratoRegistrado = contratoInternetRepository.save(contrato);
+//	return contratoInternetMapper.entityToDto(contratoRegistrado);
+//}

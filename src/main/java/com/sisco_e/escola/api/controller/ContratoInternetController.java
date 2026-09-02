@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sisco_e.escola.api.dto.ApiResponse;
 import com.sisco_e.escola.api.dto.ContratoInternetDTO;
+import com.sisco_e.escola.api.dto.DiretorDTO;
 import com.sisco_e.escola.model.enums.StatusContrato;
 import com.sisco_e.escola.service.ContratoInternetService;
 
@@ -21,19 +23,28 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/contratos")
+@RequestMapping("/api/contrato")
 @RequiredArgsConstructor
 public class ContratoInternetController {
 
 	private final ContratoInternetService contratoInternetService;
 
 	@PostMapping("/reg/contrato")
-	public ResponseEntity<ContratoInternetDTO> contratar(@RequestBody @Valid ContratoInternetDTO dto) {
+	public ResponseEntity<ApiResponse<ContratoInternetDTO>> contratar(@RequestBody @Valid ContratoInternetDTO dto) {
 		ContratoInternetDTO criado = contratoInternetService.registrarContrato(
 				dto.getUuidEscola(), dto.getUuidProvedor(),
 				dto.getDataContratacao(), dto.getVelocidade(), dto.getValorMensal());
-		return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(ApiResponse.success(
+					"Contrato de internet registrado com sucesso!",
+					criado));
 	}
+
+	// @PostMapping("/reg/dir")
+	// public ResponseEntity<DiretorDTO> cadastrarDiretor(@RequestBody @Valid DiretorDTO diretorDto) {
+	// 	DiretorDTO diretorCriado = diretorService.cadastrarDiretor(diretorDto);
+	// 	return ResponseEntity.status(HttpStatus.CREATED).body(diretorCriado);
+	// }
 
 	@GetMapping("/ativos")
 	public ResponseEntity<List<ContratoInternetDTO>> listarAtivos() {

@@ -18,6 +18,12 @@ import com.sisco_e.escola.service.DiretorService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * TODO-list
+ * [] Tirar o IO de dentro das condicionais no validação de diretor
+ * []
+ * **/
+
 @Service
 @RequiredArgsConstructor
 public class DiretorServiceImpl implements DiretorService {
@@ -57,6 +63,10 @@ public class DiretorServiceImpl implements DiretorService {
 		if (diretorRepository.existsByCpfDiretor(diretorDto.getCpf())) {
 			throw new RegraNegocioException("Verifique o CPF do diretor e tente novamente!");
 		}
+
+		// if (diretorRepository.existsByMatricula(diretorDto.getMatricula())) {
+		// 	throw new RegraNegocioException("Verifique a matrícula do diretor e tente novamente!");
+		// }
 
 		if (diretorRepository.existsByEmailCorporativo(diretorDto.getEmail())) {
 			throw new RegraNegocioException("Verifique o e-mail do diretor e tente novamente!");

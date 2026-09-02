@@ -16,6 +16,8 @@ public interface DiretorRepository extends JpaRepository<Diretor, UUID> {
 	boolean existsByEmailCorporativo(String emailCorporativo);
 
 	boolean existsByEmailPessoal(String emailPessoal);
+
+	boolean existsByMatricula(String matricula);
     
     /**impede que seja cadastrado mais de um diretor na mesma escola**/
 	boolean existsByEscolaUuid(UUID escolaUuid);
