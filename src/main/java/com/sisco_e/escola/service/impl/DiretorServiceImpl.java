@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * TODO-list
  * [] Tirar o IO de dentro das condicionais no validação de diretor
- * []
+ * [] Validar matricula
  * **/
 
 @Service
@@ -64,9 +64,9 @@ public class DiretorServiceImpl implements DiretorService {
 			throw new RegraNegocioException("Verifique o CPF do diretor e tente novamente!");
 		}
 
-		// if (diretorRepository.existsByMatricula(diretorDto.getMatricula())) {
-		// 	throw new RegraNegocioException("Verifique a matrícula do diretor e tente novamente!");
-		// }
+		 if (diretorRepository.existsByMatriculaFuncional(diretorDto.getMatriculaFuncional())) {
+		 	throw new RegraNegocioException("Verifique a matrícula do diretor e tente novamente!");
+		 }
 
 		if (diretorRepository.existsByEmailCorporativo(diretorDto.getEmail())) {
 			throw new RegraNegocioException("Verifique o e-mail do diretor e tente novamente!");

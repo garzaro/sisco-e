@@ -19,6 +19,11 @@ import com.sisco_e.escola.service.DiretorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * TODO-list
+ * [] Ver o problema da matricula
+ * **/
+
 @RestController
 @RequestMapping("/api/diretor")
 @RequiredArgsConstructor

@@ -49,9 +49,9 @@ public class EscolaDTO {
 	@NotBlank
 	@Size(max = 8)
 	private String cep;
-
-	@NotNull(message = "{tipo.escola.notnull}")
-	private TipoEscola tipoEscola;
-
-	private Boolean isAtivo;
+	
+	@NotNull(message = "{escola.tipo.escola.notnull}")
+	@NotBlank(message = "{escola.tipo.escola.invalido}")
+	@Size(max = 20)
+	private TipoEscola tipoEscola;	
 }

@@ -78,7 +78,5 @@ public class Escola {
 	@UpdateTimestamp
 	@Column(nullable = false)
 	private Instant dataAtualizacao;
-
-	
 	
 }

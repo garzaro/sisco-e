@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
  * 
  * [] Validar uuid da escola (nulo, inválido, ou uuid de outra escola)
  * [] Validar uuid do provedor (nulo, inválido, ou uuid de outro provedor)
+ * [] Validar a matricula unica
  * [] Contrato da escola A na escola B, validar
  * [] Validar adição de contrato em escola com contrato ativo
  * [] Contrato vencido, desativar automaticamente ou manualmente
@@ -68,58 +69,15 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 
 	@Transactional
 	@Override
-	public ContratoInternetDTO registrarContrato(
-			 UUID uuidEscola,
-			 UUID uuidProvedor,
-			 LocalDate dataContratacao,
-			 String velocidade,
-			 BigDecimal valorMensal)
-			{
-		
-	}	
-// SEGUIR COM ESTE PDARO PARA IMPLEMENTAÇÃO DO REGISTRARCONTRATO, 
-// DEPPOIS DAR UMA OLHADA NO DIRETOR SERVICE IMPLEMENTATION PARA VERIFICAR
-//  COMO VALIDAR OS CAMPOS, E DEPOIS IMPLEMENTAR O VALIDARCONTRATO PORQUE TEM
-//   MATRIULA LA PRA VALIDAR DEVE SER UNICA
+	public ContratoInternetDTO cadastrarContrato(ContratoInternetDTO contratoDto){
+		validarContrato(contratoDto);
 
-// 	@Override
-// public ADTO cadastrarA(ADTO aDto) {
+		ContratoInternet contrato = contratoInternetMapper.dtoToEntity(contratoDto);
+		contrato.setStatus(StatusContrato.ATIVO);
 
-//     validarA(aDto);
-
-//     A a = aMapper.DtoToEntity(aDto);
-
-//     a.setIsAtivo(
-//         Boolean.TRUE.equals(aDto.getIsAtivo()) ||
-//         aDto.getIsAtivo() == null
-//     );
-
-//     A aSalvo = aRepository.save(a);
-
-//     return aMapper.entityToDto(aSalvo);
-// }
-
-// @Override
-// public void validarA(ADTO aDto) {
-
-//     cRepository.findById(aDto.getCUuid())
-//         .orElseThrow(() ->
-//             new RegraNegocioException("C não existe")
-//         );
-
-//     bRepository.findById(aDto.getBUuid())
-//         .orElseThrow(() ->
-//             new RegraNegocioException("B não existe")
-//         );
-// }
-
-
-
-
-
-
-
-
+		ContratoInternet contratoSalvo = contratoInternetRepository.save(contrato);
+		return contratoInternetMapper.entityToDto(contratoSalvo);
+	}
 
 	@Override
 	public List<ContratoInternetDTO> buscarContratosAtivosComEscolaEProvedor() {
@@ -141,11 +99,33 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 		}
 	}
 
-	 @Override
-	 public void validarContrato(ContratoInternetDTO contratoDto) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'validarContrato'");
-	 }
+	@Override
+	public void validarContrato(ContratoInternetDTO contratoDto) {
+		if (contratoDto == null) {
+			throw new RegraNegocioException(
+				"Dados do contrato não informados!");
+		}
+
+		escolaRepository.findById(contratoDto.getUuidEscola()).orElseThrow(() ->
+				new EntityNotFoundException(
+						"Escola não encontrada para vínculo com o contrato!")
+		);
+
+		provedorInternetRepository.findById(contratoDto.getUuidProvedor()).orElseThrow(() ->
+				new EntityNotFoundException(
+						"Provedor não encontrado para vínculo com o contrato!")
+		);
+
+		boolean contratoDuplicado = contratoInternetRepository
+				.existsByEscolaAndProvedorAndDataContratacao(
+						contratoDto.getUuidEscola(),
+						contratoDto.getUuidProvedor(),
+						contratoDto.getDataContratacao());
+		/**evitar I/O dentro de condicional - chamar o repository dentro do if - credo**/
+		if (contratoDuplicado) {
+			throw new RegraNegocioException("Já existe um contrato para esta escola, provedor e data de contratação!");
+		}
+	}
 
 //	Conceitual - verboso e sem ganho real
 //	Optional<Escola> escolaOpt = escolaRepository.findById(uuidEscola);
@@ -195,3 +175,50 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 //	ContratoInternet contratoRegistrado = contratoInternetRepository.save(contrato);
 //	return contratoInternetMapper.entityToDto(contratoRegistrado);
 //}
+//
+//if (contratoDto.getUuidEscola() == null) {
+//		throw new RegraNegocioException(
+//				"A escola deve ser informada!");
+//		}
+//
+//				if (contratoDto.getUuidProvedor() == null) {
+//		throw new RegraNegocioException(
+//				"O provedor deve ser informado!");
+//		}
+//
+//				if (contratoDto.getDataContratacao() == null) {
+//		throw new RegraNegocioException(
+//				"A data de contratação deve ser informada!");
+//		}
+//
+//				if (contratoDto.getVelocidade() == null
+//		|| contratoDto.getVelocidade().isBlank()) {
+//		throw new RegraNegocioException(
+//				"A velocidade do contrato deve ser informada!");
+//		}
+//
+//				if (contratoDto.getValorMensal() == null
+//		|| contratoDto.getValorMensal().compareTo(BigDecimal.ZERO) <= 0) {
+//		throw new RegraNegocioException(
+//				"O valor mensal do contrato deve ser maior que zero!");
+//		}
+
+
+
+
+// 	@Override
+// public ADTO cadastrarA(ADTO aDto) {
+
+//     validarA(aDto);
+
+//     A a = aMapper.DtoToEntity(aDto);
+
+//     a.setIsAtivo(
+//         Boolean.TRUE.equals(aDto.getIsAtivo()) ||
+//         aDto.getIsAtivo() == null
+//     );
+
+//     A aSalvo = aRepository.save(a);
+
+//     return aMapper.entityToDto(aSalvo);
+// }

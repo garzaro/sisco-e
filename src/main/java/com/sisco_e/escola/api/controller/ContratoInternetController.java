@@ -31,20 +31,12 @@ public class ContratoInternetController {
 
 	@PostMapping("/reg/contrato")
 	public ResponseEntity<ApiResponse<ContratoInternetDTO>> contratar(@RequestBody @Valid ContratoInternetDTO dto) {
-		ContratoInternetDTO criado = contratoInternetService.registrarContrato(
-				dto.getUuidEscola(), dto.getUuidProvedor(),
-				dto.getDataContratacao(), dto.getVelocidade(), dto.getValorMensal());
+		ContratoInternetDTO contratoCriado = contratoInternetService.cadastrarContrato(dto);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(ApiResponse.success(
 					"Contrato de internet registrado com sucesso!",
-					criado));
+					contratoCriado));
 	}
-
-	// @PostMapping("/reg/dir")
-	// public ResponseEntity<DiretorDTO> cadastrarDiretor(@RequestBody @Valid DiretorDTO diretorDto) {
-	// 	DiretorDTO diretorCriado = diretorService.cadastrarDiretor(diretorDto);
-	// 	return ResponseEntity.status(HttpStatus.CREATED).body(diretorCriado);
-	// }
 
 	@GetMapping("/ativos")
 	public ResponseEntity<List<ContratoInternetDTO>> listarAtivos() {

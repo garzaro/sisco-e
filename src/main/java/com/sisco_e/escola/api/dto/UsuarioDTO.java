@@ -3,6 +3,7 @@ package com.sisco_e.escola.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -28,7 +29,7 @@ public class UsuarioDTO {
     @Size(max = 120, message = "{usuario.nome.size}")
     private String nomeCompleto;
 
-    @NotBlank(message = "{usuario.cpf.notblank}")
+    @NotNull(message = "{usuario.cpf.notblank}") // nao renderiza, o @CPF sobrepoe
     @CPF(message = "{usuario.cpf.invalido}")
     @Size(max = 11, message = "{usuario.cpf.size}")
     private String cpf;

@@ -10,13 +10,7 @@ import com.sisco_e.escola.model.enums.StatusContrato;
 
 public interface ContratoInternetService {
 
-	ContratoInternetDTO registrarContrato(
-			UUID uuidEscola,
-			UUID uuidProvedor,
-			LocalDate dataContratacao,
-			String velocidade,
-			BigDecimal valorMensal
-	);
+	ContratoInternetDTO cadastrarContrato(ContratoInternetDTO contratoDto);
 	
 	void validarContrato(ContratoInternetDTO contratoDto);
 

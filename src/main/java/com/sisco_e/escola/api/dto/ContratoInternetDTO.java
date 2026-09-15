@@ -40,6 +40,4 @@ public class ContratoInternetDTO {
 	@Positive(message = "{contrato.valor.mensal.maior.que.zero}")
 	@NotNull(message = "{contrato.valor.mensal.notnull}")
 	private BigDecimal valorMensal;
-
-	private StatusContrato status;
 }

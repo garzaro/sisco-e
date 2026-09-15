@@ -17,7 +17,7 @@ public interface ContratoInternetMapper {
 	@Mapping(target = "provedor", ignore = true)
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
-	ContratoInternet DtoToEntity(ContratoInternetDTO dto);
+	ContratoInternet dtoToEntity(ContratoInternetDTO dto);
 
 	@Mapping(target = "uuidEscola", source = "escola.uuid")
 	@Mapping(target = "uuidProvedor", source = "provedor.uuid")

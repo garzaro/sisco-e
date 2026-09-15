@@ -4,21 +4,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.sisco_e.escola.model.entity.ContratoInternet;
-import com.sisco_e.escola.model.entity.Escola;
-import com.sisco_e.escola.model.entity.ProvedorInternet;
 import com.sisco_e.escola.model.enums.StatusContrato;
 
 @Repository
 public interface ContratoInternetRepository extends JpaRepository<ContratoInternet, UUID> {
 	
 	boolean existsByEscolaAndProvedorAndDataContratacao(
-			Escola escola,
-			ProvedorInternet provedorInternet,
+			UUID escola,
+			UUID provedorInternet,
 			LocalDate dataContratacao
 			);
 
@@ -32,5 +31,4 @@ public interface ContratoInternetRepository extends JpaRepository<ContratoIntern
 	List<ContratoInternet> findContratosAtivosComEscolaEProvedor();
 
 	List<ContratoInternet> findByEscola_UuidAndStatus(UUID escolaUuid, StatusContrato status);
-
 }
