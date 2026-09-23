@@ -18,6 +18,13 @@ import com.sisco_e.escola.service.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * TODOD-list
+ * [] Validar usuario
+ * [x] Validar cpf
+ * [x] Validar email
+ * **/
+
 @Service
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
@@ -58,7 +65,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public void validarEmail(String email) {
 		boolean existeEmail = usuarioRepository.existsByEmail(email);
 		if (existeEmail) {
-			throw new RegraNegocioException("Dados duplicados não permitido");
+			throw new RegraNegocioException("Verifique seu email. Dado não permitido para cadastro.");
 		}
 	}
 
@@ -66,7 +73,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public void validarCpf(String cpf) {
 		boolean existeCpf = usuarioRepository.existsByCpf(cpf);
 		if (existeCpf) {
-			throw new CpfAlreadyExistsException("Dados duplicados não permitido");
+			throw new CpfAlreadyExistsException("verifique seu CPF, Dado não permitido para cadastro.");
 		}
 	}
 

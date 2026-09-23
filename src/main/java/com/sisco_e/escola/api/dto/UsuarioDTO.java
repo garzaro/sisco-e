@@ -11,11 +11,12 @@ import lombok.*;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
-import com.alowed_domain.validation.AllowedDomains;
+//import com.alowed_domain.validation.AllowedDomains;
 
 
 /**
- * Todo: Implementar a validação de domínio de e-mail usando a anotação @AllowedDomains
+ * Todo-list
+ * [] Implementar a validação de domínio de e-mail usando a anotação @AllowedDomains
  * **/
 @Getter
 @Setter
@@ -41,7 +42,9 @@ public class UsuarioDTO {
     @NotBlank(message = "{usuario.email.notblank}")
     @Email(message = "{usuario.email.valido}")
     @Size(max = 120, message = "{usuario.email.size}")
-    @AllowedDomains
+    @Pattern(regexp = "^.+@(gmail\\.com|outlook\\.com)$",
+            message = "Este domínio de e-mail não é permitido para cadastro!")
+//    @AllowedDomains
     String email;
 
     @NotBlank(message = "{usuario.senha.notblank}")
