@@ -4,6 +4,7 @@ import com.sisco_e.escola.model.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,34 +20,38 @@ import java.util.Map;
 public interface JwtService {
 
     /**
-     * Retorna o login (e-mail / username) armazenado no subject do token.
-     *
-     * @throws RuntimeException se o token for inválido ou expirado
-     */
-    String extrairUsernameToken(String token);
-
-    /**
      * Gera um token JWT com apenas o {@code username} do {@link UserDetails} como subject.
      * Usado internamente pelo filtro de autenticação e pelo endpoint de login.
      */
-    String gerarToken(UserDetails userDetails);
+    String generateToken(UserDetails userDetails);
 
-    /**
-     * Gera um token JWT enriquecido para um {@link Usuario}, incluindo claims extras:
-     * {@code id}, {@code cpf}, {@code nome_usuario} e {@code nome}.
-     *Gera um token com claims extras adicionais ao payload.
-     * */
-    String gerarTokenComClaims(Map<String, Object> extraClaims, UserDetails userDetails);
+    String generateRefreshToken(UserDetails userDetails);
 
     /**
      * Retorna {@code true} se o token for válido, não expirado e pertencer ao
      * {@code userDetails} informado.
      */
-    boolean isTokenValido(String token, UserDetails userDetails);
+    boolean isTokenValid(String token, UserDetails userDetails);
+
+    /**
+     * Retorna o login (e-mail / username) armazenado no subject do token.
+     *
+     * @throws RuntimeException se o token for inválido ou expirado
+     */
+    String extractUsername(String token);
 
     boolean isTokenExpired(String token);
 
     Date extractExpiration(String token);
 
     Claims extractAllClaims(String token);
+
+    Key getSigningKey();
+
+    /**
+     * Gera um token JWT enriquecido para um {@link Usuario}, incluindo claims extras:
+     * {@code id}, {@code cpf}, {@code nome_usuario} e {@code nome}.
+     *Gera um token com claims extras adicionais ao payload.
+     * */
+    String generateTokenWithAllClaims(Map<String, Object> extraClaims, UserDetails userDetails);
 }

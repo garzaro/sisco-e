@@ -1,59 +1,33 @@
 package com.sisco_e.escola.api.controller;
 
-import com.sisco_e.escola.api.dto.AuthResponse;
-
-import com.sisco_e.escola.api.dto.UsuarioDTO;
-import com.sisco_e.escola.service.JwtService;
-import com.sisco_e.escola.service.UsuarioService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**auth***/
+/**Controlador do dominio/recurso de usuario
+ *
+ * [] Atualizar dados cadastrais (PUT /users/me ou /users/{id})
+ * [] Cadastro de usuario
+ * [] Alterar senha (enquanto já está logado)
+ * [] Alterar senha (enquanto não logado)
+ * [] Listar usuários (se for um painel administrativo)
+ * [] Buscar dados do próprio perfil (GET /users/me)
+ *
+ * /users/me          -> UserController (Retorna os dados do usuário logado)
+ * /users/profile     -> UserController (Atualiza endereço, nome, etc.)
+ * /users/{id}        -> UserController (Busca ou deleta usuário - Admin)
+ * **/
 
 @RestController
-@RequestMapping("/api/auth") //usuario
+@RequestMapping("/api/usuario") //usuario
 @RequiredArgsConstructor
 public class UsuarioController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-    private final UsuarioService usuarioService;
-
-    /**
-     * Erros de validação e conflito são tratados pelo GlobalExceptionHandler por exemplo.
-     * O Controller apenas recebe o DTO e delega ao Service. Nao deve saber dos detalhes da entidade e servico
-     * Cadastra um novo usuário.
-     */
-    @PostMapping("/join/sign-up")
-    public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDto){
-
-        UsuarioDTO criarUsuario = usuarioService.cadastrarUsuario(usuarioDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(criarUsuario);
-    }
-
-
-//     @PostMapping("/login")
-//     public ResponseEntity<AuthResponse> login(@RequestBody @Valid UsuarioDto request) {
-//         Authentication authentication = authenticationManager.authenticate(
-//                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-//         );
-
-//         // If authentication is successful, load UserDetails and generate token
-//         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-//         String jwtToken = jwtService.gerarToken(userDetails);
-// //        log.info("Usuário logado com sucesso: {}", request.getEmail());
-//         return ResponseEntity.ok(new AuthResponse(jwtToken, "Bearer"));
-//     }
+//    @GetMapping("/me")
+//    public ResponseEntity<UserResponseDTO> getMyProfile(Principal principal) {
+//        // 'principal.getName()' retorna o e-mail ou username que estava no Token JWT!
+//        String email = principal.getName();
+//
+//        // Busca no banco e retorna os dados do usuário logado
+//        // ...
+//    }
 }

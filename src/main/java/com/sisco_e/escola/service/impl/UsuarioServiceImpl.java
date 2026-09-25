@@ -19,10 +19,14 @@ import com.sisco_e.escola.service.UsuarioService;
 import jakarta.transaction.Transactional;
 
 /**
- * TODOD-list
+ * TODO-list
  * [] Validar usuario
  * [x] Validar cpf
  * [x] Validar email
+ * [] Autenticar usuario
+ *
+ *  Sou o Gemini CLI, seu assistente de engenharia de software. Estou aqui para auxiliar na automação de tarefas, investigação de código e suporte ao desenvolvimento do seu projeto, sempre priorizando segurança, padrões técnicos
+ *   e boas práticas. Como posso ajudar você hoje?
  * **/
 
 @Service

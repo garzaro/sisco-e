@@ -34,7 +34,7 @@
 		 <dependency>
 			 <groupId>org.springframework.boot</groupId>
          	<artifactId>spring-boot-starter-web</artifactId>
-     	</dependency>     
+     	</dependency>
      	<!--Email com domions permitidos-->
      	<dependency>
      		<groupId>com.alowed-domain</groupId>
@@ -42,6 +42,10 @@
     		<version>0.0.1-SNAPSHOT</version>
 		</dependency>    
           
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 		<!-- Core -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -192,6 +196,13 @@
 <!--			<artifactId>validator-domain-core</artifactId>-->
 <!--			<version>0.0.1-SNAPSHOT</version>-->
 <!--		</dependency>-->
+			
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-test</artifactId>
+			<scope>test</scope>
+		</dependency>			
+		
 		<!-- Necessário para as anotações do Jakarta (Constraint, Payload, etc) -->
 		<dependency>
 			<groupId>jakarta.validation</groupId>
@@ -282,6 +293,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

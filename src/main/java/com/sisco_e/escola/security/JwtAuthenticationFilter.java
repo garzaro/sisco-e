@@ -22,7 +22,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**Isso é um filtro para interceptar cada solicitação para verificar se ela é autenticada**/
+/** Filtro de Requisição JWT (JwtFilter)
+ * O filtro intercepta cada requisição HTTP, verifica se o cabeçalho Authorization contém
+ * um token Bearer, valida-o e injeta a autenticação no contexto do Spring Security.
+ * **/
 
 @Component
 @RequiredArgsConstructor
@@ -43,26 +46,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	)throws ServletException, IOException {
 		logger.debug("AuthTokenFilter chamado pela URI: {}", request.getRequestURI());
 
-		//Inicio do filtro
+		/**Inicio do filtro
+		 * Se o header não existir, ou não começar com "Bearer ",
+		 * pula este filtro e vai para o próximo
+		 * **/
 		final String authHeader = request.getHeader("Authorization");
 		if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-			//Se o header não existir, ou não começar com "Bearer ", pula este filtro e vai para o próximo
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		/**Verificar se o header existe e começa com "Bearer "**/
+		/**Verificar se o header existe e começa com "Bearer " - BEARER_PREFIX.length()**/
 		String jwt;
-		jwt = authHeader.substring(BEARER_PREFIX.length());
+		jwt = authHeader.substring(7);
 
-		String pegaEmailDoUsuario;
+		String getuserEmail;
 
 		try {
 			/**Extrai o username/email embutido no token JWT -jwt**/
-			pegaEmailDoUsuario = jwtService.extrairUsernameToken(jwt);
+			getuserEmail = jwtService.extractUsername(jwt);
 
 		} catch (ExpiredJwtException | MalformedJwtException ex) {
-			logger.error("Não é possível definir a autenticação do usuário. {}", ALREADY_FILTERED_SUFFIX);
+			logger.error("Não é possível definir a autenticação do usuário.");
 			/**Log crítico: token malformado/expirado é um evento de segurança relevante**/
 			logger.error("Token expirado ou inválido: {}", ex.getMessage());
 			/**Continua a execução para o próximo filtro na cadeia de filtros do Spring Security**/
@@ -78,11 +83,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		/**Só autentica se houver email e o contexto ainda não tiver autenticação**/
 		SecurityContext context = SecurityContextHolder.getContext();
-		if(pegaEmailDoUsuario != null && context.getAuthentication() == null) {
+		if(getuserEmail != null && context.getAuthentication() == null) {
 			/**Carrega os dados do usuário a partir da base (garante que ele existe e está ativo)**/
-			UserDetails userDetails = userDetailsService.loadUserByUsername(pegaEmailDoUsuario);
+			UserDetails userDetails = this.userDetailsService.loadUserByUsername(getuserEmail);
 			/**o que ta na base e o extraido deve ser igual**/
-			if (jwtService.isTokenValido(jwt, userDetails)) {
+			if (jwtService.isTokenValid(jwt, userDetails)) {
 				UsernamePasswordAuthenticationToken authToken =
 						new UsernamePasswordAuthenticationToken(
 								userDetails,

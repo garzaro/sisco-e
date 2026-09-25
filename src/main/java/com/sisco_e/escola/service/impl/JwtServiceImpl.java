@@ -4,6 +4,8 @@ import com.sisco_e.escola.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,73 +14,73 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+/**
+ * Esta implementação é responsável por assinar o token usando uma chave secreta,
+ * extrair o nome de usuário (subject) e validar se o token expirou ou é inválido.
+ * **/
 
 @Service
 public class JwtServiceImpl implements JwtService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
-    /**
-     * Identifica o emissor — validado no parse para evitar tokens de outros
-     * sistemas.
-     */
-    private static final String ISSUER = "financas-api";
-
     private final SecretKey signingKey;
     private final long expirationMs;
+    private final long expirationRefeshToken;
 
     public JwtServiceImpl(
-            @Value("${JWT_SECRET}") String secret,
-            @Value("${JWT_EXPIRATION_MS}") long expirationMs) {
+            @Value("${app.security.jwt.jwtSecretKey}") String secret,
+            @Value("${app.security.jwt.jwtExpirationMs}") long expirationMs,
+            @Value("${app.security.jwt.refresh-expiration}") long expirationRefeshToken
+    ){
         if (secret == null || secret.isBlank()) {
-            throw new IllegalArgumentException("JWT_SECRET não configurado");
+            throw new IllegalArgumentException("JWT Secret Key não configurada. Verifique as variáveis de ambiente!");
         }
-
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.expirationMs = expirationMs;
+        this.expirationRefeshToken = expirationRefeshToken;
     }
 
     @Override
-    public String extrairUsernameToken(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+    public String generateToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, expirationMs);
     }
 
     @Override
-    public String gerarToken(UserDetails userDetails) {
-        return gerarTokenComClaims(new HashMap<>(), userDetails);
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, expirationRefeshToken);
     }
 
-    @Override
-    public String gerarTokenComClaims(Map<String, Object> extraClaims, UserDetails userDetails) {
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + expirationMs);
+    private String buildToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails,
+            long expiration
+    ) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
-                .issuedAt(now)
-                .expiration(expiration)
-                .signWith(signingKey)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSigningKey())
                 .compact();
     }
 
     @Override
-    public boolean isTokenValido(String token, UserDetails userDetails) {
-        try {
-            final String username = extrairUsernameToken(token);
-            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-        } catch (ExpiredJwtException ex) {
-            logger.warn("Tentativa de uso de token expirado para o usuário: {}", ex.getClaims().getSubject());
-            return false;
-        }
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    @Override
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     @Override
@@ -91,6 +93,11 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
     @Override
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
@@ -98,5 +105,15 @@ public class JwtServiceImpl implements JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    @Override
+    public Key getSigningKey() {
+        return this.signingKey;
+    }
+
+    @Override
+    public String generateTokenWithAllClaims(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return buildToken(extraClaims, userDetails, expirationMs);
     }
 }
