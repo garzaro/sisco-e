@@ -24,6 +24,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**este cara captura as excessões**/
+
 @RestControllerAdvice
 @Slf4j
 @RequiredArgsConstructor
@@ -50,6 +52,12 @@ public class GlobalExceptionHandler {
         log.warn("Tentativa de login falha: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas.");
     }
+
+//    @ExceptionHandler({BadCredentialsException.class, CredenciaisInvalidasException.class})
+//    public ResponseEntity<ErroDTO> credenciaisInvalidas() {
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                .body(new ErroDTO("Credenciais inválidas"));
+//    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {

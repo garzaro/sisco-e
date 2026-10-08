@@ -5,11 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record LoginRequestDto(
-        @NotBlank(message = "{email.obrigatorio}")
-        @Email(message = "{email.invalido}") 
+        @NotBlank(message = "{usuario.email.notblank}")
+        @Email(message = "{usuario.email.valido}")
         String email,
         
-        @NotBlank(message = "{senha.obrigatoria}")
-        @Size(min = 6, message = "{senha.min.caracteres}")
+        @NotBlank(message = "{usuario.senha.notblank}")
+        @Size(min = 6, message = "{usuario.senha.size}")
         String password
 ) {}
+
+/**
+ * TODO-LIST
+ * [] Verificar erro interno do servidor ao fazer o login
+ * **/

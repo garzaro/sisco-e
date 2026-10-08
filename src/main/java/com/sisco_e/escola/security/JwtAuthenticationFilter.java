@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		try {
 			/**Extrai o username/email embutido no token JWT -jwt**/
-			getuserEmail = jwtService.extractUsername(jwt);
+			getuserEmail = String.valueOf(jwtService.obterClaims(jwt));
 
 		} catch (ExpiredJwtException | MalformedJwtException ex) {
 			logger.error("Não é possível definir a autenticação do usuário.");

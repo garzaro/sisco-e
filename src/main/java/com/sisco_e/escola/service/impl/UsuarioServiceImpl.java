@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,14 @@ import com.sisco_e.escola.service.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
+import javax.security.auth.login.CredentialNotFoundException;
+
 /**
  * TODO-list
  * [] Validar usuario
  * [x] Validar cpf
  * [x] Validar email
- * [] Autenticar usuario
+ * [x] Autenticar usuario
  *
  *  Sou o Gemini CLI, seu assistente de engenharia de software. Estou aqui para auxiliar na automação de tarefas, investigação de código e suporte ao desenvolvimento do seu projeto, sempre priorizando segurança, padrões técnicos
  *   e boas práticas. Como posso ajudar você hoje?
@@ -37,9 +40,19 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private final UsuarioMapper usuarioMapper;
 	private final PasswordEncoder passwordEncoder; // Injetado via construtor
 
+	/**fazendo de forma manual ate a implemteção do com oauthenticationManager **/
 	@Override
-	public UsuarioDTO autenticar(String email, String senha) {
-		return null;
+	public UsuarioDTO autenticar(String email, String password) {
+		Usuario usuario = usuarioRepository.findByEmail(email)
+				.orElseThrow(() -> new BadCredentialsException("Verifique seu email"));
+
+		boolean senhaValida = passwordEncoder.matches(password, usuario.getPassword());
+
+		if (!senhaValida) {
+			throw new BadCredentialsException("Verifique sua senha");
+		}
+
+		return usuarioMapper.entityToDto(usuario);
 	}
 
 	@Override

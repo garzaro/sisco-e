@@ -1,293 +1,349 @@
 package com.sisco_e.escola.service.impl;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.junit.jupiter.api.BeforeEach;
+import io.jsonwebtoken.security.WeakKeyException;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Stream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Testes Unitários — JwtServiceImpl
- *
- * Estratégia: POJO puro, sem contexto Spring.
- * Os campos @Value são injetados via ReflectionTestUtils antes de cada teste.
- *
- * Cenários cobertos:
- *  1. Geração de token (não nulo, não vazio)
- *  2. Extração de username (subject correto)
- *  3. Extração de data de expiração
- *  4. Validação de token válido → true
- *  5. Validação com usuário diferente → false
- *  6. Token expirado → isTokenExpired lança ExpiredJwtException
- *  7. Token expirado → isTokenValid lança ExpiredJwtException
- *  8. Token adulterado → lança exceção de assinatura
- *  9. generateTokenWithAllClaims carrega claims extras corretamente
- * 10. generateRefreshToken usa janela de refresh maior
- */
-@DisplayName("JwtServiceImpl — Testes Unitários")
+@DisplayName("JwtServiceImpl - Testes Unitários")
 class JwtServiceImplTest {
 
-    /*
-     * Segredo mínimo de 256 bits (HMAC-SHA256).
-     * Em produção vem de ${spring.app.jwtSecretKey}.
-     */
-    private static final String SECRET =
-            "12345678901234567890123456789012"; // 32 chars → 256 bits
+    private static final String SECRET_32 = "0123456789abcdef0123456789abcdef"; // 32 bytes
+    private static final String SECRET_64 = SECRET_32.repeat(2); // 64 bytes
+    private static final long EXPIRATION = 60000;
+    private static final long REFRESH_EXPIRATION = 120000;
 
-    /** 5 minutos em milissegundos */
-    private static final long EXPIRATION_MS      = 5 * 60 * 1_000L;
-    /** 7 dias em milissegundos */
-    private static final long REFRESH_EXPIRATION = 7 * 24 * 60 * 60 * 1_000L;
-
-    private JwtServiceImpl jwtService;
-    private UserDetails usuarioPadrao;
-
-    @BeforeEach
-    void setUp() {
-        jwtService = new JwtServiceImpl();
-        ReflectionTestUtils.setField(jwtService, "secretKey",         SECRET);
-        ReflectionTestUtils.setField(jwtService, "jwtExpiration",     EXPIRATION_MS);
-        ReflectionTestUtils.setField(jwtService, "refreshExpiration", REFRESH_EXPIRATION);
-
-        usuarioPadrao = User.withUsername("usuario@gmail.com")
-                .password("SenhaCriptografada")
-                .authorities(Collections.emptyList())
-                .build();
+    private JwtServiceImpl createService(String secret) {
+        return new JwtServiceImpl(secret, EXPIRATION, REFRESH_EXPIRATION);
     }
 
-    // =========================================================================
-    // 1. Geração de Token
-    // =========================================================================
-    @Nested
-    @DisplayName("1. Geração de Token")
-    class GeracaoToken {
-
-        @Test
-        @DisplayName("generateToken — deve retornar uma string não nula e não vazia")
-        void deveGerarTokenNaoNuloENaoVazio() {
-            String token = jwtService.generateToken(usuarioPadrao);
-
-            assertThat(token)
-                    .isNotNull()
-                    .isNotBlank()
-                    .contains(".");            // formato JWT: header.payload.signature
-        }
-
-        @Test
-        @DisplayName("generateToken — dois tokens seguidos devem ser diferentes (issuedAt varia)")
-        void deveGerarTokensDiferentesEmChamadasConsecutivas() throws InterruptedException {
-            String token1 = jwtService.generateToken(usuarioPadrao);
-            Thread.sleep(1010); // garante issuedAt em segundos diferente
-            String token2 = jwtService.generateToken(usuarioPadrao);
-
-            assertThat(token1).isNotEqualTo(token2);
-        }
-
-        @Test
-        @DisplayName("generateRefreshToken — deve retornar token não vazio")
-        void deveGerarRefreshTokenNaoVazio() {
-            String refreshToken = jwtService.generateRefreshToken(usuarioPadrao);
-
-            assertThat(refreshToken).isNotNull().isNotBlank();
-        }
-
-        @Test
-        @DisplayName("generateTokenWithAllClaims — claims extras devem estar no payload")
-        void deveGerarTokenComClaimsExtras() {
-            Map<String, Object> extraClaims = new HashMap<>();
-            extraClaims.put("id",           "uuid-123");
-            extraClaims.put("nome_usuario", "João Silva");
-
-            String token = jwtService.generateTokenWithAllClaims(extraClaims, usuarioPadrao);
-
-            Claims claims = jwtService.extractAllClaims(token);
-            assertThat(claims.get("id",           String.class)).isEqualTo("uuid-123");
-            assertThat(claims.get("nome_usuario", String.class)).isEqualTo("João Silva");
-        }
+    private UserDetails createUser(String username) {
+        return new User(username, "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
-    // =========================================================================
-    // 2. Extração de Claims
-    // =========================================================================
-    @Nested
-    @DisplayName("2. Extração de Claims")
-    class ExtracaoClaims {
+    // --- 3.1 Construtor ---
 
-        @Test
-        @DisplayName("extractUsername — deve retornar o email inserido como subject")
-        void deveExtrairUsernameCorreto() {
-            String token = jwtService.generateToken(usuarioPadrao);
-
-            String username = jwtService.extractUsername(token);
-
-            assertThat(username).isEqualTo("usuario@gmail.com");
-        }
-
-        @Test
-        @DisplayName("extractExpiration — deve retornar data futura dentro da janela de expiração")
-        void deveExtrairDataDeExpiracaoFutura() {
-            long antes = System.currentTimeMillis();
-            String token = jwtService.generateToken(usuarioPadrao);
-
-            Date expiration = jwtService.extractExpiration(token);
-
-            assertThat(expiration.getTime())
-                    .isGreaterThan(antes)
-                    .isLessThanOrEqualTo(antes + EXPIRATION_MS + 1_000L); // margem 1s
-        }
-
-        @Test
-        @DisplayName("extractAllClaims — subject deve corresponder ao username")
-        void deveExtrairTodasAsClaimsComSubjectCorreto() {
-            String token = jwtService.generateToken(usuarioPadrao);
-
-            Claims claims = jwtService.extractAllClaims(token);
-
-            assertThat(claims.getSubject()).isEqualTo("usuario@gmail.com");
-            assertThat(claims.getExpiration()).isAfter(new Date());
-        }
+    @Test
+    @DisplayName("C-01 a C-03: secret null, vazio ou em branco deve lançar IllegalArgumentException")
+    void construtor_SecretInvalido_LancaExcecao() {
+        assertThatThrownBy(() -> new JwtServiceImpl(null, EXPIRATION, REFRESH_EXPIRATION))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new JwtServiceImpl("", EXPIRATION, REFRESH_EXPIRATION))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new JwtServiceImpl("   ", EXPIRATION, REFRESH_EXPIRATION))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    // =========================================================================
-    // 3. Validação de Token
-    // =========================================================================
-    @Nested
-    @DisplayName("3. Validação de Token")
-    class ValidacaoToken {
-
-        @Test
-        @DisplayName("isTokenValid — token legítimo deve retornar true")
-        void tokenLegitimodeveSerValido() {
-            String token = jwtService.generateToken(usuarioPadrao);
-
-            boolean valido = jwtService.isTokenValid(token, usuarioPadrao);
-
-            assertThat(valido).isTrue();
-        }
-
-        @Test
-        @DisplayName("isTokenValid — token pertencente a outro usuário deve retornar false")
-        void tokenDeOutroUsuarioDeveSerInvalido() {
-            UserDetails outroUsuario = User.withUsername("outro@gmail.com")
-                    .password("outrasenha")
-                    .authorities(Collections.emptyList())
-                    .build();
-
-            String token = jwtService.generateToken(outroUsuario);
-
-            // valida token de 'outroUsuario' contra 'usuarioPadrao'
-            boolean valido = jwtService.isTokenValid(token, usuarioPadrao);
-
-            assertThat(valido).isFalse();
-        }
-
-        @Test
-        @DisplayName("isTokenExpired — token recém gerado não deve estar expirado")
-        void tokenValidoNaoDeveEstarExpirado() {
-            String token = jwtService.generateToken(usuarioPadrao);
-
-            assertThat(jwtService.isTokenExpired(token)).isFalse();
-        }
+    @Test
+    @DisplayName("C-04: secret com menos de 32 bytes deve lançar WeakKeyException")
+    void construtor_SecretCurto_LancaExcecao() {
+        String curto = "1234567890123456789012345678901"; // 31 bytes
+        assertThatThrownBy(() -> createService(curto))
+                .isInstanceOf(WeakKeyException.class);
     }
 
-    // =========================================================================
-    // 4. Token Expirado
-    // =========================================================================
-    @Nested
-    @DisplayName("4. Token Expirado")
-    class TokenExpirado {
-
-        /**
-         * Constrói um token com expiração no passado diretamente via JJWT,
-         * sem sleep ou mocks de relógio — abordagem determinística.
-         */
-        private String gerarTokenExpirado(UserDetails userDetails) {
-            byte[] keyBytes = Decoders.BASE64.decode(
-                    Base64.getEncoder().encodeToString(SECRET.getBytes()));
-            SecretKey chave = Keys.hmacShaKeyFor(keyBytes);
-
-            return Jwts.builder()
-                    .subject(userDetails.getUsername())
-                    .issuedAt(new Date(System.currentTimeMillis()  - 10_000L))  // 10 s atrás
-                    .expiration(new Date(System.currentTimeMillis() - 1_000L))  // 1 s atrás
-                    .signWith(chave)
-                    .compact();
-        }
-
-        @Test
-        @DisplayName("isTokenExpired — token expirado deve lançar ExpiredJwtException")
-        void tokenExpiradoDeveLancarExpiredJwtExceptionAoVerificarExpiracao() {
-            String tokenExpirado = gerarTokenExpirado(usuarioPadrao);
-
-            assertThatThrownBy(() -> jwtService.isTokenExpired(tokenExpirado))
-                    .isInstanceOf(ExpiredJwtException.class);
-        }
-
-        @Test
-        @DisplayName("isTokenValid — token expirado deve lançar ExpiredJwtException")
-        void tokenExpiradoDeveLancarExpiredJwtExceptionAoValidar() {
-            String tokenExpirado = gerarTokenExpirado(usuarioPadrao);
-
-            assertThatThrownBy(() -> jwtService.isTokenValid(tokenExpirado, usuarioPadrao))
-                    .isInstanceOf(ExpiredJwtException.class);
-        }
-
-        @Test
-        @DisplayName("extractUsername — token expirado deve lançar ExpiredJwtException")
-        void tokenExpiradoDeveLancarExcecaoAoExtrairUsername() {
-            String tokenExpirado = gerarTokenExpirado(usuarioPadrao);
-
-            assertThatThrownBy(() -> jwtService.extractUsername(tokenExpirado))
-                    .isInstanceOf(ExpiredJwtException.class);
-        }
+    @Test
+    @DisplayName("C-05: secret com 32 bytes deve construir e usar HS256")
+    void construtor_32Bytes_ConstruiEUSAHS256() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateToken(createUser("user@test.com"));
+        
+        Jws<Claims> jws = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(SECRET_32.getBytes(UTF_8)))
+                .build()
+                .parseSignedClaims(token);
+        
+        assertThat(jws.getHeader().getAlgorithm()).isEqualTo("HS256");
     }
 
-    // =========================================================================
-    // 5. Token Adulterado / Assinatura Inválida
-    // =========================================================================
-    @Nested
-    @DisplayName("5. Token Adulterado / Assinatura Inválida")
-    class TokenAdulterado {
+    @Test
+    @DisplayName("C-06: 64 bytes deve usar HS512")
+    void construtor_64Bytes_UsaHS512() {
+        JwtServiceImpl service = createService(SECRET_64);
+        String token = service.generateToken(createUser("user@test.com"));
+        
+        Jws<Claims> jws = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(SECRET_64.getBytes(UTF_8)))
+                .build()
+                .parseSignedClaims(token);
+        
+        assertThat(jws.getHeader().getAlgorithm()).isEqualTo("HS512");
+    }
 
-        @Test
-        @DisplayName("extractUsername — token com assinatura modificada deve lançar exceção")
-        void tokenComAssinaturaAlteradaDeveLancarExcecao() {
-            String token = jwtService.generateToken(usuarioPadrao);
+    @Test
+    @DisplayName("C-08: tokens de instâncias com mesmo secret devem ser aceitos mutuamente")
+    void construtor_MesmoSecret_AceitaToken() {
+        JwtServiceImpl service1 = createService(SECRET_32);
+        JwtServiceImpl service2 = createService(SECRET_32);
+        
+        UserDetails user = createUser("user@test.com");
+        String token = service1.generateToken(user);
+        
+        assertThat(service2.isTokenValid(token, user)).isTrue();
+    }
 
-            // Altera o último caractere da assinatura
-            String tokenAdulterado = token.substring(0, token.length() - 1) + "X";
+    @Test
+    @DisplayName("C-09: tokens de instâncias com secrets diferentes devem ser rejeitados")
+    void construtor_SecretsDiferentes_RejeitaToken() {
+        JwtServiceImpl service1 = createService(SECRET_32);
+        JwtServiceImpl service2 = createService(SECRET_32.replace('0', '1'));
+        
+        UserDetails user = createUser("user@test.com");
+        String token = service1.generateToken(user);
+        
+        assertThat(service2.isTokenValid(token, user)).isFalse();
+    }
 
-            assertThatThrownBy(() -> jwtService.extractUsername(tokenAdulterado))
-                    .isInstanceOf(Exception.class);
-        }
+    // --- 3.2 generateToken ---
 
-        @Test
-        @DisplayName("extractUsername — token com payload Base64 diferente deve lançar exceção")
-        void tokenComPayloadAlteradoDeveLancarExcecao() {
-            String token  = jwtService.generateToken(usuarioPadrao);
-            String[] partes = token.split("\\.");
+    @Test
+    @DisplayName("G-01: sub deve ser o username")
+    void generateToken_UserDetailsComum_SubCorreto() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("alvo@test.com");
+        String token = service.generateToken(user);
+        
+        assertThat(service.obterUserDetailsLogin(token)).isEqualTo("alvo@test.com");
+    }
 
-            String payloadCorrompido = partes[0] + ".INVALIDO." + partes[2];
+    @Test
+    @DisplayName("G-04: não deve conter PII (cpf, nome completo)")
+    void generateToken_SemPII() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateToken(createUser("user@test.com"));
+        
+        Claims claims = service.obterClaims(token);
+        assertThat(claims).doesNotContainKeys("cpf", "nome completo");
+        // O código real inclui a claim "horaExpiração", validar que está presente
+        assertThat(claims).containsKey("horaExpiração");
+    }
 
-            assertThatThrownBy(() -> jwtService.extractUsername(payloadCorrompido))
-                    .isInstanceOf(Exception.class);
-        }
+    @Test
+    @DisplayName("G-07: round-trip generateToken -> isTokenValid")
+    void generateToken_RoundTrip_Valido() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+        String token = service.generateToken(user);
+        
+        assertThat(service.isTokenValid(token, user)).isTrue();
+    }
+
+    @Test
+    @DisplayName("G-09: token deve ter 3 partes")
+    void generateToken_TresPartes() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateToken(createUser("user@test.com"));
+        
+        assertThat(token.split("\\.")).hasSize(3);
+    }
+
+    // --- 3.3 generateRefreshToken ---
+
+    @Test
+    @DisplayName("R-01: generateRefreshToken deve retornar token não nulo")
+    void generateRefreshToken_RetornaToken() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String result = service.generateRefreshToken(createUser("user@test.com"));
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("R-02: refresh token deve ter subject correto")
+    void generateRefreshToken_SubjectCorreto() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("refresh@test.com");
+        String token = service.generateRefreshToken(user);
+
+        assertThat(service.obterUserDetailsLogin(token)).isEqualTo("refresh@test.com");
+    }
+
+    @Test
+    @DisplayName("R-03: refresh token deve ter expiração maior que access token")
+    void generateRefreshToken_ExpiracaoMaior() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+
+        String accessToken = service.generateToken(user);
+        String refreshToken = service.generateRefreshToken(user);
+
+        Claims accessClaims = service.obterClaims(accessToken);
+        Claims refreshClaims = service.obterClaims(refreshToken);
+
+        assertThat(refreshClaims.getExpiration().getTime())
+                .isGreaterThan(accessClaims.getExpiration().getTime());
+    }
+
+    @Test
+    @DisplayName("R-04: refresh token deve ter 3 partes")
+    void generateRefreshToken_TresPartes() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateRefreshToken(createUser("user@test.com"));
+
+        assertThat(token.split("\\.")).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("R-05: refresh token não deve conter horaExpiração claim")
+    void generateRefreshToken_SemHoraExpiracao() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateRefreshToken(createUser("user@test.com"));
+
+        Claims claims = service.obterClaims(token);
+        assertThat(claims).doesNotContainKey("horaExpiração");
+    }
+
+    // --- 3.4 obterClaims ---
+
+    @Test
+    @DisplayName("O-01: token válido retorna claims corretos")
+    void obterClaims_TokenValido_RetornaClaims() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+        String token = service.generateToken(user);
+        
+        Claims claims = service.obterClaims(token);
+        assertThat(claims.getSubject()).isEqualTo("user@test.com");
+        assertThat(claims.getIssuedAt()).isBeforeOrEqualTo(new Date());
+        assertThat(claims.getExpiration()).isAfter(new Date());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidTokens")
+    @DisplayName("O-02 a O-08, O-16: tokens malformados ou inválidos devem lançar exceção")
+    void obterClaims_TokensInvalidos_LancaExcecao(String invalidToken) {
+        JwtServiceImpl service = createService(SECRET_32);
+        assertThatThrownBy(() -> service.obterClaims(invalidToken))
+                .isInstanceOfAny(JwtException.class, IllegalArgumentException.class);
+    }
+
+    static Stream<String> invalidTokens() {
+        return Stream.of(
+            null,
+            "",
+            "   ",
+            "abc",
+            "a.b",
+            "a.b.c.d",
+            "@@@.@@@.@@@",
+            "Bearer valid.token.here"
+        );
+    }
+
+    @Test
+    @DisplayName("O-10: token assinado com outra chave lança SignatureException")
+    void obterClaims_ChaveErrada_LancaSignatureException() {
+        JwtServiceImpl service = createService(SECRET_32);
+        
+        String tokenOutraChave = Jwts.builder()
+                .subject("user")
+                .signWith(Keys.hmacShaKeyFor(SECRET_64.getBytes(UTF_8)))
+                .compact();
+        
+        assertThatThrownBy(() -> service.obterClaims(tokenOutraChave))
+                .isInstanceOf(SignatureException.class);
+    }
+
+    @Test
+    @DisplayName("O-14: token expirado lança ExpiredJwtException")
+    void obterClaims_Expirado_LancaExpiredJwtException() {
+        JwtServiceImpl service = createService(SECRET_32);
+        
+        String tokenExpirado = Jwts.builder()
+                .subject("user")
+                .expiration(Date.from(Instant.now().minusSeconds(3600)))
+                .signWith(Keys.hmacShaKeyFor(SECRET_32.getBytes(UTF_8)))
+                .compact();
+        
+        assertThatThrownBy(() -> service.obterClaims(tokenExpirado))
+                .isInstanceOf(ExpiredJwtException.class);
+    }
+
+    // --- 3.5 isTokenValid ---
+
+    @Test
+    @DisplayName("V-01: token válido, sub igual -> true")
+    void isTokenValid_Valido_True() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+        String token = service.generateToken(user);
+        
+        assertThat(service.isTokenValid(token, user)).isTrue();
+    }
+
+    @Test
+    @DisplayName("V-02: token válido, username diferente -> false")
+    void isTokenValid_UsernameDiferente_False() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user1 = createUser("user1@test.com");
+        UserDetails user2 = createUser("user2@test.com");
+        String token = service.generateToken(user1);
+        
+        assertThat(service.isTokenValid(token, user2)).isFalse();
+    }
+
+    @Test
+    @DisplayName("V-04: token expirado -> false")
+    void isTokenValid_Expirado_False() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+        
+        String tokenExpirado = Jwts.builder()
+                .subject(user.getUsername())
+                .expiration(Date.from(Instant.now().minusSeconds(3600)))
+                .signWith(Keys.hmacShaKeyFor(SECRET_32.getBytes(UTF_8)))
+                .compact();
+        
+        assertThat(service.isTokenValid(tokenExpirado, user)).isFalse();
+    }
+
+    @Test
+    @DisplayName("V-06: token sem sub -> false")
+    void isTokenValid_SemSub_False() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+        
+        String tokenSemSub = Jwts.builder()
+                .expiration(Date.from(Instant.now().plusSeconds(3600)))
+                .signWith(Keys.hmacShaKeyFor(SECRET_32.getBytes(UTF_8)))
+                .compact();
+        
+        assertThat(service.isTokenValid(tokenSemSub, user)).isFalse();
+    }
+
+    @Test
+    @DisplayName("V-07: null, vazio -> false")
+    void isTokenValid_NullVazio_False() {
+        JwtServiceImpl service = createService(SECRET_32);
+        UserDetails user = createUser("user@test.com");
+        
+        assertThat(service.isTokenValid(null, user)).isFalse();
+        assertThat(service.isTokenValid("", user)).isFalse();
+        assertThat(service.isTokenValid("   ", user)).isFalse();
+    }
+
+    @Test
+    @DisplayName("V-09: userDetails null -> false")
+    void isTokenValid_UserDetailsNull_False() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateToken(createUser("user@test.com"));
+        
+        assertThat(service.isTokenValid(token, null)).isFalse();
     }
 }

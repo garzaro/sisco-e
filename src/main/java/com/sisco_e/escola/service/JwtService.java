@@ -2,11 +2,8 @@ package com.sisco_e.escola.service;
 
 import com.sisco_e.escola.model.entity.Usuario;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.security.Key;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * Contrato do serviço JWT da aplicação.
@@ -14,13 +11,14 @@ import java.util.Map;
  * Geração de tokens assinados com HMAC-SHA
  * Extração e validação de claims
  * Verificação de assinatura, ISSUER e expiração
+ * Retornar o login do usuario
  * O {@link com.cleber.financas.security.JwtAuthenticationFilter} consome este serviço
  * para autenticar cada requisição.
  */
 public interface JwtService {
 
     /**
-     * Gera um token JWT com apenas o {@code username} do {@link UserDetails} como subject.
+     * Gera e retorna um token JWT com dado do usuario como subject e outras infomrações.
      * Usado internamente pelo filtro de autenticação e pelo endpoint de login.
      */
     String generateToken(UserDetails userDetails);
@@ -28,30 +26,19 @@ public interface JwtService {
     String generateRefreshToken(UserDetails userDetails);
 
     /**
-     * Retorna {@code true} se o token for válido, não expirado e pertencer ao
-     * {@code userDetails} informado.
+     * retornar todas as informações contidas no token, - subject, nome, id, etc...
+     * ao decodificar verifica se o usuario possui acesso a api
+     **/
+    Claims obterClaims(String token);
+
+    /**
+     * Retorna {@code true} se o token for válido, não expirado e pertencer ao usuário.
      */
     boolean isTokenValid(String token, UserDetails userDetails);
 
     /**
-     * Retorna o login (e-mail / username) armazenado no subject do token.
-     *
-     * @throws RuntimeException se o token for inválido ou expirado
-     */
-    String extractUsername(String token);
-
-    boolean isTokenExpired(String token);
-
-    Date extractExpiration(String token);
-
-    Claims extractAllClaims(String token);
-
-    Key getSigningKey();
-
-    /**
-     * Gera um token JWT enriquecido para um {@link Usuario}, incluindo claims extras:
-     * {@code id}, {@code cpf}, {@code nome_usuario} e {@code nome}.
-     *Gera um token com claims extras adicionais ao payload.
-     * */
-    String generateTokenWithAllClaims(Map<String, Object> extraClaims, UserDetails userDetails);
+     * atraves do token retorna detalhes do usaurio que esta tentando acessar a aplicação
+     * douglas colocuu String
+     **/
+    String obterUserDetailsLogin(String token);
 }
