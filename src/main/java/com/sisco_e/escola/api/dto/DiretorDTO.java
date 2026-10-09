@@ -33,7 +33,7 @@ public class DiretorDTO {
 	@Size(max = 11, message = "{diretor.cpf.size}")
 	private String cpf;
 
-	@NotNull(message = "{diretor.matricula.notblank}")
+	@NotNull(message = "{diretor.matricula.notnull}")
 	@Size(min = 5, max = 10, message = "{diretor.matricula.size}")
 	private String matriculaFuncional;
 
@@ -46,7 +46,7 @@ public class DiretorDTO {
 	@Size(max = 120, message = "{diretor.email.pessoal.size}")
 	private String emailPessoal;
 
-	@NotNull(message = "{diretor.data.posse.obrigatoria}")
+	@NotNull(message = "{diretor.data.posse}")
 	private Instant dataPosse;
 
 	private Instant dataFimMandato;

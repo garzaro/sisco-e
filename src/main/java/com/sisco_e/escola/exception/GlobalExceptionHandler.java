@@ -5,19 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.QueryTimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.sisco_e.escola.model.enums.TipoEscola;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-
-import com.sisco_e.escola.model.enums.TipoEscola;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -53,12 +52,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas.");
     }
 
-//    @ExceptionHandler({BadCredentialsException.class, CredenciaisInvalidasException.class})
-//    public ResponseEntity<ErroDTO> credenciaisInvalidas() {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                .body(new ErroDTO("Credenciais inválidas"));
-//    }
-
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
@@ -83,6 +76,48 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    /** JSON malformado, corpo vazio ou tipo de campo inválido -> 400 em vez de 500. **/
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn("Corpo da requisição ilegível: {}", ex.getMessage());
+        return buildErrorResponse("erro.requisicao.corpo.invalido", HttpStatus.BAD_REQUEST);
+    }
+
+    /** Content-Type não suportado (ex.: text/plain no login) -> 415 em vez de 500. **/
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex) {
+        log.warn("Tipo de conteúdo não suportado: {}", ex.getContentType());
+        return buildErrorResponse("erro.requisicao.tipo.conteudo.nao.suportado", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    /** Método HTTP não suportado (ex.: GET /sign-in) -> 405 em vez de 500. **/
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        log.warn("Método HTTP não suportado: {}", ex.getMethod());
+        return buildErrorResponse("erro.requisicao.metodo.nao.suportado", HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    /**
+     * Falha de infraestrutura (Redis fora do ar - RedisConnectionFailureException -
+     * ou banco inacessível) -> 503 em vez de 500, indicando que é problema temporário do servidor.
+     * DataAccessResourceFailureException é a superclasse de ambos os casos.
+     **/
+    @ExceptionHandler(DataAccessResourceFailureException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessResourceFailure(DataAccessResourceFailureException ex) {
+        log.error("Falha de acesso a recurso de dados (Redis/banco): {}", ex.getMessage(), ex);
+        return buildErrorResponse("erro.servico.indisponivel", HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    /**
+     * Tempo esgotado ao acessar recurso de dados (ex.: Redis caiu com a conexão já aberta ->
+     * RedisCommandTimeoutException -> QueryTimeoutException) -> 503 em vez de 500.
+     **/
+    @ExceptionHandler(QueryTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleQueryTimeout(QueryTimeoutException ex) {
+        log.error("Tempo esgotado ao acessar recurso de dados (Redis/banco): {}", ex.getMessage());
+        return buildErrorResponse("erro.servico.indisponivel", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     /** Handler de exceções genérico para quaisquer outras exceções inesperadas. **/

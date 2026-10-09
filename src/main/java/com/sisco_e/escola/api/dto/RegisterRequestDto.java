@@ -24,7 +24,7 @@ public record RegisterRequestDto(
         String username,
 
         @NotBlank(message = "{usuario.email.notblank}")
-        @Email(message = "{usuario.email.valid}")
+        @Email(message = "{usuario.email.valido}")
         @Size(max = 120, message = "{usuario.email.size}")
         @Pattern(regexp = "^[\\w-\\.]+@[\\w-\\.]+\\.[a-z]{2,}$")
 //    @AllowedDomain - refazer o anotation
