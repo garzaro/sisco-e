@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS siscoescola.tb_contrato_net (
     data_cadastro TIMESTAMP WITH TIME ZONE NOT NULL,
     data_atualizacao TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT uk_contratos_internet_escola_provedor_data UNIQUE (uuid_escola, uuid_provedor, data_contratacao),
+    CONSTRAINT uk_contrato_net_tripla UNIQUE (uuid_contrato_net, uuid_escola, uuid_provedor),
     CONSTRAINT fk_contrato_net_escola FOREIGN KEY (uuid_escola)
         REFERENCES siscoescola.tb_escola (uuid_escola) ON DELETE CASCADE,
     CONSTRAINT fk_contrato_net_provedor FOREIGN KEY (uuid_provedor)

@@ -15,12 +15,9 @@ CREATE TABLE IF NOT EXISTS siscoescola.tb_link_internet (
     data_atualizacao TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT uk_link_internet_contrato_net UNIQUE (uuid_contrato_net),
     CONSTRAINT uk_link_internet_ip_publico UNIQUE (ip_publico),
-    CONSTRAINT fk_link_internet_contrato FOREIGN KEY (uuid_contrato_net)
-        REFERENCES siscoescola.tb_contrato_net (uuid_contrato_net),
-    CONSTRAINT fk_link_internet_provedor FOREIGN KEY (uuid_provedor)
-        REFERENCES siscoescola.tb_provedor_net (uuid_provedor),
-    CONSTRAINT fk_link_internet_escola FOREIGN KEY (uuid_escola)
-        REFERENCES siscoescola.tb_escola (uuid_escola)
+    CONSTRAINT fk_link_internet_contrato_triplo FOREIGN KEY (uuid_contrato_net, uuid_escola, uuid_provedor)
+        REFERENCES siscoescola.tb_contrato_net (uuid_contrato_net, uuid_escola, uuid_provedor)
+        ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_link_internet_provedor_uuid

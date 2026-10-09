@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS siscoescola.tb_escola (
     bairro CHARACTER VARYING(255),
     tipo_escola CHARACTER VARYING(30) NOT NULL,
     is_ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    data_cadastro TIMESTAMP NOT NULL,
-    data_atualizacao TIMESTAMP NOT NULL,
+    data_cadastro TIMESTAMP WITH TIME ZONE NOT NULL,
+    data_atualizacao TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT uk_tb_escola_codigo_escola UNIQUE (codigo_escola)
 );
