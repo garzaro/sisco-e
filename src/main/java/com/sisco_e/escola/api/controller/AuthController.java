@@ -3,6 +3,7 @@ package com.sisco_e.escola.api.controller;
 
 
 
+import com.sisco_e.escola.api.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,10 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sisco_e.escola.api.dto.JwtResponse;
-import com.sisco_e.escola.api.dto.LoginRequestDto;
-import com.sisco_e.escola.api.dto.RefreshTokenRequest;
-import com.sisco_e.escola.api.dto.UsuarioDTO;
 import com.sisco_e.escola.model.entity.RefreshToken;
 import com.sisco_e.escola.model.repository.RefreshTokenRepository;
 import com.sisco_e.escola.service.JwtService;
@@ -57,10 +54,13 @@ public class AuthController {
      * Cadastra um novo usuário.
      */
     @PostMapping("/join/sign-up")
-    public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDto){
+    public ResponseEntity<ApiResponse<UsuarioDTO>> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDto){
 
         UsuarioDTO criarUsuario = usuarioService.cadastrarUsuario(usuarioDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(criarUsuario);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(
+                        "Usuário criado com sucesso!",
+                criarUsuario));
     }
 
     @PostMapping("/sign-in")
