@@ -60,11 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String jwt;
 		jwt = authHeader.substring(7);
 
-		String getuserEmail;
+ 	String getUserEmail;
 
-		try {
-			/**Extrai o username/email embutido no token JWT -jwt**/
-			getuserEmail = String.valueOf(jwtService.obterClaims(jwt));
+ 	try {
+ 		/**Extrai o username/email (subject) embutido no token JWT  jwtService. obterUserDetailsLogin(jwt);**/
+ 		getUserEmail = jwtService.obterUserDetailsLogin(jwt);
 
 		} catch (ExpiredJwtException | MalformedJwtException ex) {
 			logger.error("Não é possível definir a autenticação do usuário.");
@@ -83,9 +83,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		/**Só autentica se houver email e o contexto ainda não tiver autenticação**/
 		SecurityContext context = SecurityContextHolder.getContext();
-		if(getuserEmail != null && context.getAuthentication() == null) {
+		if(getUserEmail != null && context.getAuthentication() == null) {
 			/**Carrega os dados do usuário a partir da base (garante que ele existe e está ativo)**/
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(getuserEmail);
+			UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUserEmail);
 			/**o que ta na base e o extraido deve ser igual**/
 			if (jwtService.isTokenValid(jwt, userDetails)) {
 				UsernamePasswordAuthenticationToken authToken =
