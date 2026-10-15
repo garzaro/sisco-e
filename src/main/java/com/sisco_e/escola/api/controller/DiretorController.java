@@ -3,6 +3,7 @@ package com.sisco_e.escola.api.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +33,12 @@ public class DiretorController {
 	private final DiretorService diretorService;
 
 	@PostMapping("/reg/dir")
-	public ResponseEntity<DiretorDTO> cadastrarDiretor(@RequestBody @Valid DiretorDTO diretorDto) {
+	public ResponseEntity<ApiResponse<DiretorDTO>> cadastrarDiretor(@RequestBody @Valid DiretorDTO diretorDto) {
 		DiretorDTO diretorCriado = diretorService.cadastrarDiretor(diretorDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(diretorCriado);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(ApiResponse.success(
+						"Diretor cadastrado com sucesso!",
+						diretorCriado));
 	}
 
 	@GetMapping
