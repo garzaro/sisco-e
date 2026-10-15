@@ -1,7 +1,6 @@
 package com.sisco_e.escola.security;
 
 import com.sisco_e.escola.service.JwtService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -85,8 +84,8 @@ class JwtAuthenticationFilterTest {
     void doFilter_TokenExpirado_ContinuaCadeiaENaoAutentica() throws ServletException, IOException {
         String token = "expirado.token.a";
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
-        // O filtro chama jwtService.obterClaims(jwt) que lança ExpiredJwtException quando token expirado
-        when(jwtService.obterClaims(token)).thenThrow(new ExpiredJwtException(null, null, "expired"));
+        // O filtro chama jwtService.obterUserDetailsLogin(jwt) que lança ExpiredJwtException quando token expirado
+        when(jwtService.obterUserDetailsLogin(token)).thenThrow(new ExpiredJwtException(null, null, "expired"));
 
         filter.doFilterInternal(request, response, filterChain);
 
@@ -105,17 +104,9 @@ class JwtAuthenticationFilterTest {
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
 
-        // O filtro chama jwtService.obterClaims(jwt), converte o resultado para String via String.valueOf()
-        // O resultado do String.valueOf(claims) é usado como getuserEmail
-        // Para que o fluxo funcione, precisamos que o Claims mock retorne algo que, ao
-        // passar por String.valueOf(), gere um valor não-nulo que será usado no loadUserByUsername.
-        Claims mockClaims = mock(Claims.class);
-        when(jwtService.obterClaims(token)).thenReturn(mockClaims);
-
-        // String.valueOf(mockClaims) vai produzir a representação toString() do mock
-        // O filtro usará esse valor como email para buscar o usuário
-        String claimsAsString = String.valueOf(mockClaims);
-        when(userDetailsService.loadUserByUsername(claimsAsString)).thenReturn(user);
+        // O filtro chama jwtService.obterUserDetailsLogin(jwt) que retorna o subject (email) do token
+        when(jwtService.obterUserDetailsLogin(token)).thenReturn(email);
+        when(userDetailsService.loadUserByUsername(email)).thenReturn(user);
         when(jwtService.isTokenValid(token, user)).thenReturn(true);
 
         filter.doFilterInternal(request, response, filterChain);

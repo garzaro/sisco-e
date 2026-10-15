@@ -27,6 +27,7 @@ class JwtServiceImplTest {
 
     private static final String SECRET_32 = "0123456789abcdef0123456789abcdef"; // 32 bytes
     private static final String SECRET_64 = SECRET_32.repeat(2); // 64 bytes
+    private static final String SECRET_32_OUTRA = "fedcba9876543210fedcba9876543210"; // 32 bytes, chave distinta
     private static final long EXPIRATION = 60000;
     private static final long REFRESH_EXPIRATION = 120000;
 
@@ -253,7 +254,7 @@ class JwtServiceImplTest {
         
         String tokenOutraChave = Jwts.builder()
                 .subject("user")
-                .signWith(Keys.hmacShaKeyFor(SECRET_64.getBytes(UTF_8)))
+                .signWith(Keys.hmacShaKeyFor(SECRET_32_OUTRA.getBytes(UTF_8)))
                 .compact();
         
         assertThatThrownBy(() -> service.obterClaims(tokenOutraChave))
