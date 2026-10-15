@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,9 +14,9 @@ import com.sisco_e.escola.model.enums.StatusContrato;
 @Repository
 public interface ContratoInternetRepository extends JpaRepository<ContratoInternet, UUID> {
 	
-	boolean existsByEscolaAndProvedorAndDataContratacao(
-			UUID escola,
-			UUID provedorInternet,
+	boolean existsByEscola_UuidAndProvedor_UuidAndDataContratacao(
+			UUID uuidEscola,
+			UUID uuidProvedorInternet,
 			LocalDate dataContratacao
 			);
 
