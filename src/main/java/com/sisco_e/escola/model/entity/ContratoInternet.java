@@ -78,3 +78,18 @@ public class ContratoInternet {
 	@Column(name = "data_atualizacao", nullable = false)
 	private Instant dataAtualizacao;
 }
+
+
+//
+//2. uniqueConstraints = @UniqueConstraint(...)
+//Esta é a parte mais importante para o que ela resolve.
+//O Problema que resolve: Imagine que uma escola (uuid_escola)
+// contrata um provedor de internet (uuid_provedor) em uma
+// determinada data (data_contratacao). Sem essa restrição,
+// o sistema (ou um erro de lógica, ou requisições duplicadas
+// enviadas sem querer) poderia permitir salvar dois registros
+// idênticos para a mesma escola, com o mesmo provedor e na mesma data.
+// Isso geraria duplicidade de contratos e inconsistência financeira/operacional.
+
+//A Solução: O banco de dados passa a ser o "último firewall" da sua aplicação.
+// Ele cria uma Constraint de Chave Única Composta (UNIQUE).
