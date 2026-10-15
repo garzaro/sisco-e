@@ -43,7 +43,7 @@ public class Escola {
 	@Column(name = "nome_escola", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
 	private String nomeEscola;
 
-    @Column(name = "codigo_escola", nullable = false, unique = true, columnDefinition = "CHARACTER VARYING(120)")
+    @Column(name = "codigo_escola", nullable = false, unique = true, columnDefinition = "CHARACTER VARYING(10)")
 	private String codigoEscola;
 
 	@Column(name = "municipio", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
@@ -65,7 +65,7 @@ public class Escola {
 	private Diretor diretor;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "tipo_escola", nullable = false, columnDefinition = "CHARACTER VARYING(30)")
+	@Column(name = "tipo_escola", nullable = false, columnDefinition = "CHARACTER VARYING(20)")
 	private TipoEscola tipoEscola;
 
     @Column(name = "is_ativo", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
