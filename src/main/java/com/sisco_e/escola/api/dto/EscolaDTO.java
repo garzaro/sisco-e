@@ -13,6 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ *todo-LIST
+ * [] Tipo escola nulo deve validar o campo nulo ou vazio ou tipo inxistente, Handler lanca mas dificulta a analise do bug
+ * **/
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,7 +40,7 @@ public class EscolaDTO {
 	private String municipio;
 
 	@NotBlank(message = "{escola.estado.notblank}")
-	@Size(min = 2, max = 2)
+	@Size(min = 2, max = 2, message = "{escola.uf.tamanho}")
 	private String estado;	
 
 	@NotBlank
@@ -51,7 +56,7 @@ public class EscolaDTO {
 	private String cep;
 	
 	@NotNull(message = "{escola.tipo.escola.notnull}")
-	@NotBlank(message = "{escola.tipo.escola.invalido}")
-	@Size(max = 20)
-	private TipoEscola tipoEscola;	
+	private TipoEscola tipoEscola;
+
+	Boolean IsAtivo;
 }
