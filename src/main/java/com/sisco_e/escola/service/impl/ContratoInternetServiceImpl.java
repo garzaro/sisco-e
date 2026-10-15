@@ -75,6 +75,16 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 		ContratoInternet contrato = contratoInternetMapper.dtoToEntity(contratoDto);
 		contrato.setStatus(StatusContrato.ATIVO);
 
+		Escola escola = escolaRepository.findById(contratoDto.getUuidEscola())
+				.orElseThrow(() ->
+						new EntityNotFoundException("Escola não encontrada para vínculo com o contrato!"));
+		ProvedorInternet provedor = provedorInternetRepository.findById(contratoDto.getUuidProvedor())
+				.orElseThrow(() ->
+						new EntityNotFoundException("Provedor não encontrado para vínculo com o contrato!"));
+
+		contrato.setEscola(escola);
+		contrato.setProvedor(provedor);
+
 		ContratoInternet contratoSalvo = contratoInternetRepository.save(contrato);
 		return contratoInternetMapper.entityToDto(contratoSalvo);
 	}
@@ -106,18 +116,18 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 				"Dados do contrato não informados!");
 		}
 
-		escolaRepository.findById(contratoDto.getUuidEscola()).orElseThrow(() ->
-				new EntityNotFoundException(
-						"Escola não encontrada para vínculo com o contrato!")
-		);
-
-		provedorInternetRepository.findById(contratoDto.getUuidProvedor()).orElseThrow(() ->
-				new EntityNotFoundException(
-						"Provedor não encontrado para vínculo com o contrato!")
-		);
+//		escolaRepository.findById(contratoDto.getUuidEscola()).orElseThrow(() ->
+//				new EntityNotFoundException(
+//						"Escola não encontrada para vínculo com o contrato!")
+//		);
+//
+//		provedorInternetRepository.findById(contratoDto.getUuidProvedor()).orElseThrow(() ->
+//				new EntityNotFoundException(
+//						"Provedor não encontrado para vínculo com o contrato!")
+//		);
 
 		boolean contratoDuplicado = contratoInternetRepository
-				.existsByEscolaAndProvedorAndDataContratacao(
+				.existsByEscola_UuidAndProvedor_UuidAndDataContratacao(
 						contratoDto.getUuidEscola(),
 						contratoDto.getUuidProvedor(),
 						contratoDto.getDataContratacao());
