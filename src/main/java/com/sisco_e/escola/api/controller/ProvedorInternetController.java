@@ -3,6 +3,7 @@ package com.sisco_e.escola.api.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,11 +29,14 @@ public class ProvedorInternetController {
     private final ProvedorInternetService provedorInternetService;
 
     @PostMapping("/reg/provedor")
-    public ResponseEntity<ProvedorInternetDTO> cadastrarProvedorInternet(
+    public ResponseEntity<ApiResponse<ProvedorInternetDTO>> cadastrarProvedorInternet(
             @RequestBody @Valid ProvedorInternetDTO provedorInternetDto) {
         ProvedorInternetDTO provedorCriado =
                 provedorInternetService.cadastrarProvedorInternet(provedorInternetDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(provedorCriado);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(
+                        "Provedor criado com sucesso!",
+                        provedorCriado));
     }
 
     @GetMapping
