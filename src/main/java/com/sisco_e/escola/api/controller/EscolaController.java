@@ -3,6 +3,7 @@ package com.sisco_e.escola.api.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,9 +31,11 @@ public class EscolaController {
 	private final EscolaService escolaService;
 
 	@PostMapping("/reg/unidade")
-	public ResponseEntity<EscolaDTO> cadastrarEscola(@RequestBody @Valid EscolaDTO escolaDto) {
+	public ResponseEntity<ApiResponse<EscolaDTO>> cadastrarEscola(@RequestBody @Valid EscolaDTO escolaDto) {
 		EscolaDTO escolaCriada = escolaService.cadastrarEscola(escolaDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(escolaCriada);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(ApiResponse.success("Escola criada com sucesso!",
+						escolaCriada));
 	}
 
 	@GetMapping
