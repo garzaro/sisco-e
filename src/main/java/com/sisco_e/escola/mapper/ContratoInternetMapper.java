@@ -13,8 +13,6 @@ import com.sisco_e.escola.model.entity.ContratoInternet;
 		nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface ContratoInternetMapper {
 
-	@Mapping(target = "escola", ignore = true)
-	@Mapping(target = "provedor", ignore = true)
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
 	ContratoInternet dtoToEntity(ContratoInternetDTO dto);
