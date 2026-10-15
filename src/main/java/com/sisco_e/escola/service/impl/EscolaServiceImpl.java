@@ -29,6 +29,8 @@ public class EscolaServiceImpl implements EscolaService {
 	public EscolaDTO cadastrarEscola(EscolaDTO escolaDto) {
 		validarEscola(escolaDto);
 		Escola entity = escolaMapper.DtoToEntity(escolaDto);
+		/** Segue o boolean do domínio: toda escola cadastrada inicia ativa. */
+		entity.setIsAtivo(Boolean.TRUE);
 		Escola escolaSalva = escolaRepository.save(entity);
 		return escolaMapper.entityToDto(escolaSalva);
 	}
