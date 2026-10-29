@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,6 +41,10 @@ class SecurityIntegrationTest {
 
     @MockitoBean
     private ProvedorInternetRepository provedorInternetRepository;
+
+    /** Bean real da aplicação: os testes geram tokens de verdade (mesma chave do contexto). **/
+    @Autowired
+    private JwtService jwtService;
 
     private MockMvc mockMvc;
 
@@ -88,6 +94,51 @@ class SecurityIntegrationTest {
         mockMvc.perform(post("/api/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginJson))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("I-07: rota protegida com access token real deve retornar 200")
+    void rotaProtegida_AccessTokenReal_Retorna200() throws Exception {
+        String email = "user-access@test.com";
+        Usuario usuario = Usuario.builder()
+                .email(email)
+                .password("$argon2id$v=19$m=65536,t=3,p=1$c29tZXNhbHQ$P1/S+8n/S+8n/S+8n/S+8n/S+8n/S+8n/S+8n/S+8")
+                .isAtivo(true)
+                .build();
+        when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
+
+        UserDetails user = User.builder().username(email).password("password").roles("USER").build();
+        String accessToken = jwtService.generateToken(user);
+
+        mockMvc.perform(get("/api/escola")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("I-08: rota protegida com refresh token real deve retornar 401")
+    void rotaProtegida_RefreshTokenReal_Retorna401() throws Exception {
+        String email = "user-refresh@test.com";
+        UserDetails user = User.builder().username(email).password("password").roles("USER").build();
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        mockMvc.perform(get("/api/escola")
+                        .header("Authorization", "Bearer " + refreshToken))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("I-09: /api/auth/refresh com access token no corpo deve retornar 401 (antes do Redis)")
+    void refresh_ComAccessTokenNoCorpo_Retorna401() throws Exception {
+        String email = "user-refresh-body@test.com";
+        UserDetails user = User.builder().username(email).password("password").roles("USER").build();
+        String accessToken = jwtService.generateToken(user);
+
+        String body = "{\"refreshToken\": \"" + accessToken + "\"}";
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andExpect(status().isUnauthorized());
     }
 }

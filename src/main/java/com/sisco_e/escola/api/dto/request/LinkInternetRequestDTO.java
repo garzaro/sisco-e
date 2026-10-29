@@ -1,4 +1,4 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
 
 import java.util.UUID;
 
@@ -13,17 +13,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LinkInternetDTO {
-
-	private UUID uuid;
-	private UUID uuidContratoInternet;
+public class LinkInternetRequestDTO {
 	private String tipoLink;
-	private String ipWan;
-	private String mascaraRede;
-	private String gateway;
-	private String dnsPrimario;
-	private String dnsSecundario;
-	private Integer vlanId;
-	private Boolean isAtivo;
 
+	private String ipWan;
+
+	private String mascaraRede;
+
+	private String gateway;
+
+	private String dnsPrimario;
+
+	private String dnsSecundario;
+
+	private Integer vlanId;
+
+	private UUID uuidContratoInternet;
 }

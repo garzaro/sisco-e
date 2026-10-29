@@ -1,4 +1,4 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
 
 import java.util.UUID;
 
@@ -15,7 +15,7 @@ import lombok.Setter;
 
 /**
  *todo-LIST
- * [] Tipo escola nulo deve validar o campo nulo ou vazio ou tipo inxistente, Handler lanca mas dificulta a analise do bug
+ * [] Tipo escola nulo deve validar o campo nulo ou vazio ou tipo inxistente, Handler lanca (postman) mas dificulta a analise do bug
  * **/
 
 @Getter
@@ -23,9 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EscolaDTO {
-
-	private UUID uuid;
+public class EscolaRequestDTO {
 
 	@NotBlank(message = "{escola.nome.notblank}")
 	@Size(max = 120)
@@ -58,5 +56,5 @@ public class EscolaDTO {
 	@NotNull(message = "{escola.tipo.escola.notnull}")
 	private TipoEscola tipoEscola;
 
-	Boolean IsAtivo;
+	private UUID uuid;
 }

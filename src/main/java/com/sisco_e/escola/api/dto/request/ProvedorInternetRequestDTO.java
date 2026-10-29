@@ -1,4 +1,4 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
 
 import java.util.UUID;
 
@@ -17,10 +17,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProvedorInternetDTO {
-
+public class ProvedorInternetRequestDTO {
 	private UUID uuid;
-	
+
 	@NotBlank(message = "{provedor.nome.notblank}")
 	@Size(max = 120, message = "{provedor.nome.size}")
 	private String nomeProvedor;
@@ -33,5 +32,4 @@ public class ProvedorInternetDTO {
 	@NotBlank(message = "{provedor.telefone.notblank}")
 	@Size(min= 10, max= 11, message = "{provedor.telfone.size}")	
 	private String telefone;
-
 }

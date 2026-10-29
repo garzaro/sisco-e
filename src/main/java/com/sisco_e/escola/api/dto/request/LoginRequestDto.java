@@ -1,18 +1,24 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.*;
 
-public record LoginRequestDto(
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class LoginRequestDto{
         @NotBlank(message = "{usuario.email.notblank}")
         @Email(message = "{usuario.email.valido}")
-        String email,
-        
+        private String email;
+
         @NotBlank(message = "{usuario.senha.notblank}")
         @Size(min = 6, message = "{usuario.senha.size}")
-        String password
-) {}
+        private String password;
+}
 
 /**
  * TODO-LIST

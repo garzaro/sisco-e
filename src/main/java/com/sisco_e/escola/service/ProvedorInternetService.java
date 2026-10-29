@@ -4,27 +4,28 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.sisco_e.escola.api.dto.ProvedorInternetDTO;
+import com.sisco_e.escola.api.dto.request.ProvedorInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ProvedorInternetResponseDTO;
 
 public interface ProvedorInternetService {
 
-	ProvedorInternetDTO cadastrarProvedorInternet(ProvedorInternetDTO provedorInternetDto);
+	ProvedorInternetResponseDTO cadastrarProvedorInternet(ProvedorInternetRequestDTO provedorInternetRequestDto);
 
-	void validarProvedorInternet(ProvedorInternetDTO provedorInternetDto);
+	void validarProvedorInternet(ProvedorInternetRequestDTO provedorInternetRequestDto);
 
-	List<ProvedorInternetDTO> buscarTodosProvedoresInternetCadastrados();
+	List<ProvedorInternetRequestDTO> buscarTodosProvedoresInternetCadastrados();
 
-	Optional<ProvedorInternetDTO> buscarProvedorInternetPorId(UUID uuid);
+	Optional<ProvedorInternetRequestDTO> buscarProvedorInternetPorId(UUID uuid);
 
-	Optional<ProvedorInternetDTO> buscarProvedorInternetPorNome(String nomeProvedor);
+	Optional<ProvedorInternetRequestDTO> buscarProvedorInternetPorNome(String nomeProvedor);
 
-	Optional<ProvedorInternetDTO> buscarProvedorInternetPorCnpj(String cnpj);
+	Optional<ProvedorInternetRequestDTO> buscarProvedorInternetPorCnpj(String cnpj);
 
-	List<ProvedorInternetDTO> buscarProvedoresInternetPorParteDoNome(String parteNomeProvedor);
+	List<ProvedorInternetRequestDTO> buscarProvedoresInternetPorParteDoNome(String parteNomeProvedor);
 
-	ProvedorInternetDTO atualizarProvedorInternet(ProvedorInternetDTO provedorInternetDto);
+	ProvedorInternetRequestDTO atualizarProvedorInternet(ProvedorInternetRequestDTO provedorInternetRequestDto);
 
 	void deletarProvedorInternet(UUID uuid);
 
-	Optional<ProvedorInternetDTO> obterProvedorInternetPorId(UUID uuid);
+	Optional<ProvedorInternetRequestDTO> obterProvedorInternetPorId(UUID uuid);
 }

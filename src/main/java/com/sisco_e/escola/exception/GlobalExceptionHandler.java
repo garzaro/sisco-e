@@ -52,6 +52,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas.");
     }
 
+    /** Refresh token inválido, expirado, de finalidade errada ou não registrado -> 401. **/
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRefreshTokenException(InvalidRefreshTokenException ex) {
+        log.warn("Refresh token rejeitado: {}", ex.getMessage());
+        return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);

@@ -1,10 +1,8 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
-
-import com.sisco_e.escola.model.enums.StatusContrato;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,19 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ContratoInternetDTO {
-
-	private UUID uuid;
-
-	@NotNull(message = "{contrato.uuid.escola.notnull}")
-	private UUID uuidEscola;
-
-	@NotNull(message = "{contrato.uuid.provedor.notnull}")
-	private UUID uuidProvedor;
-
-	@NotNull(message = "{contrato.data.contratacao.notblank}")
-	private LocalDate dataContratacao;
-	private LocalDate dataFimContrato;
+public class ContratoInternetRequestDTO {
 
 	@NotBlank(message = "{contrato.velocidade.notblank}")
 	private String velocidade;
@@ -40,4 +26,14 @@ public class ContratoInternetDTO {
 	@Positive(message = "{contrato.valor.mensal.maior.que.zero}")
 	@NotNull(message = "{contrato.valor.mensal.notnull}")
 	private BigDecimal valorMensal;
+
+ @NotNull(message = "{contrato.data.contratacao.notblank}")
+	private LocalDate dataContratacao;
+	private LocalDate dataFimContrato;
+
+	@NotNull(message = "{contrato.uuid.escola.notnull}")
+	private UUID uuidEscola;
+
+	@NotNull(message = "{contrato.uuid.provedor.notnull}")
+	private UUID uuidProvedor;
 }

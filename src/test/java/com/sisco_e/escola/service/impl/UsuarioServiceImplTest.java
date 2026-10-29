@@ -1,7 +1,9 @@
 package com.sisco_e.escola.service.impl;
 
-import com.sisco_e.escola.api.dto.UsuarioDTO;
-import com.sisco_e.escola.exception.RegraNegocioException;
+import com.sisco_e.escola.api.dto.request.LoginRequestDto;
+import com.sisco_e.escola.api.dto.request.UsuarioRequestDTO;
+import com.sisco_e.escola.api.dto.response.LoginResponseDTO;
+import com.sisco_e.escola.api.dto.response.UsuarioResponseDTO;
 import com.sisco_e.escola.mapper.UsuarioMapper;
 import com.sisco_e.escola.model.entity.Usuario;
 import com.sisco_e.escola.model.repository.UsuarioRepository;
@@ -51,27 +53,30 @@ public class UsuarioServiceImplTest {
     @Test
     public void deveAutenticarComSucesso() {
         // Cenario
+        LoginRequestDto loginRequest = LoginRequestDto.builder().email(email).password(password).build();
         Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
         Mockito.when(passwordEncoder.matches(password, "encoded_password")).thenReturn(true);
-        UsuarioDTO dto = UsuarioDTO.builder().email(email).nomeCompleto("Usuario Teste").build();
-        Mockito.when(usuarioMapper.entityToDto(usuario)).thenReturn(dto);
+        UsuarioResponseDTO responseDto = UsuarioResponseDTO.builder().email(email).nomeCompleto("Usuario Teste").build();
+        Mockito.when(usuarioMapper.entityToDto(usuario)).thenReturn(responseDto);
 
         // Acao
-        UsuarioDTO result = usuarioService.autenticar(email, password);
+        LoginResponseDTO result = usuarioService.autenticar(loginRequest);
 
         // Verificacao
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(email, result.getEmail());
+        Assertions.assertEquals(email, result.getUsuario().getEmail());
+        Assertions.assertEquals("mock-token", result.getToken());
     }
 
     @Test
     public void deveLancarErroQuandoUsuarioNaoEncontrado() {
         // Cenario
+        LoginRequestDto loginRequest = LoginRequestDto.builder().email(email).password(password).build();
         Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         // Acao & Verificacao
         BadCredentialsException exception = Assertions.assertThrows(BadCredentialsException.class, () -> {
-            usuarioService.autenticar(email, password);
+            usuarioService.autenticar(loginRequest);
         });
 
         Assertions.assertEquals("Verifique seu email", exception.getMessage());
@@ -80,12 +85,13 @@ public class UsuarioServiceImplTest {
     @Test
     public void deveLancarErroQuandoSenhaInvalida() {
         // Cenario
+        LoginRequestDto loginRequest = LoginRequestDto.builder().email(email).password(password).build();
         Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
         Mockito.when(passwordEncoder.matches(password, "encoded_password")).thenReturn(false);
 
         // Acao & Verificacao
         BadCredentialsException exception = Assertions.assertThrows(BadCredentialsException.class, () -> {
-            usuarioService.autenticar(email, password);
+            usuarioService.autenticar(loginRequest);
         });
 
         Assertions.assertEquals("Verifique sua senha", exception.getMessage());

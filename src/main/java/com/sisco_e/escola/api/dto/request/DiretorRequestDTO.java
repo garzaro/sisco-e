@@ -1,4 +1,4 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DiretorDTO {
+public class DiretorRequestDTO {
 
 	private UUID uuid;
 
@@ -51,7 +51,6 @@ public class DiretorDTO {
 
 	private Instant dataFimMandato;
 
-	@NotNull(message = "{diretor.escola.notnull}")
 	private UUID escolaUuid;
 
 	private Boolean isAtivo;

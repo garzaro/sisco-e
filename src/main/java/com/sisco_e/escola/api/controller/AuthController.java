@@ -3,7 +3,15 @@ package com.sisco_e.escola.api.controller;
 
 
 
-import com.sisco_e.escola.api.dto.*;
+import com.sisco_e.escola.api.dto.request.LoginRequestDto;
+import com.sisco_e.escola.api.dto.request.RefreshTokenRequest;
+import com.sisco_e.escola.api.dto.request.UsuarioRequestDTO;
+import com.sisco_e.escola.api.dto.response.ApiResponse;
+import com.sisco_e.escola.api.dto.response.LoginResponseDTO;
+import com.sisco_e.escola.api.dto.response.UsuarioResponseDTO;
+import com.sisco_e.escola.exception.InvalidRefreshTokenException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,8 +34,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**controlador de autenticacao
+ * [] Registro / Cadastro inicial (/auth/register), mantê-lo aqui centraliza a porta de entrada.
  * [x] Login (/auth/login)
- * [x] Registro / Cadastro inicial (/auth/register), mantê-lo aqui centraliza a porta de entrada.
  * [] Renovação de Token (/auth/refresh)
  * [] Logout ( qundo houver invalidação de refresh token)
  *
@@ -46,43 +54,69 @@ public class AuthController {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserDetailsService userDetailsService;
-    private final UsuarioService usuarioService;
-
+    
     /**
      * Erros de validação e conflito são tratados pelo GlobalExceptionHandler por exemplo.
      * O Controller apenas recebe o DTO e delega ao Service. Nao deve saber dos detalhes da entidade e servico
      * Cadastra um novo usuário.
      */
     @PostMapping("/join/sign-up")
-    public ResponseEntity<ApiResponse<UsuarioDTO>> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDto){
+    public ResponseEntity<ApiResponse<UsuarioResponseDTO>> cadastrarUsuario(
+            @RequestBody @Valid UsuarioRequestDTO usuarioDto){
 
-        UsuarioDTO criarUsuario = usuarioService.cadastrarUsuario(usuarioDto);
+        UsuarioResponseDTO usuarioCriado = usuarioService.cadastrarUsuario(usuarioDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(
-                        "Usuário criado com sucesso!",
-                criarUsuario));
+                .body(ApiResponse.success("Usuário criado com sucesso!", usuarioCriado));
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<JwtResponse> login(@RequestBody @Valid LoginRequestDto request) {
+    public ResponseEntity<LoginResponseDTO> login(
+        @RequestBody @Valid LoginRequestDto request) {
+        //Autentica o usuário com base no email e senha fornecidos
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+            new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+            )
         );
-
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        // Obtém os detalhes do usuário autenticado
+        Object principal = authentication.getPrincipal();
+        // Verifica se o principal é uma instância de UserDetails
+        if (!(principal instanceof UserDetails userDetails)) {
+            throw new IllegalStateException("A autenticação falhou");
+        }
+        // Gera o access token e o refresh token para o usuário autenticado
         String accessToken = jwtService.generateToken(userDetails);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails);
+        // Cria o DTO de resposta com os tokens e o email do usuário
+        LoginResponseDTO response = LoginResponseDTO.builder()
+                .email(userDetails.getUsername())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .build();
 
-        return ResponseEntity.ok(
-                new JwtResponse(accessToken, refreshToken.getToken(), "Bearer")
-        );
+        return ResponseEntity.ok(response);        
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<JwtResponse> refresh(@RequestBody @Valid RefreshTokenRequest request) {
         String requestRefreshToken = request.refreshToken();
 
-        return refreshTokenService.findByToken(request.refreshToken())
+        /**Validação criptográfica do JWT (assinatura + expiração) antes de qualquer
+         * consulta ao Redis: um token malformado, expirado ou forjado nunca chega lá.**/
+        Claims claims;
+        try {
+            claims = jwtService.obterClaims(requestRefreshToken);
+        } catch (JwtException | IllegalArgumentException ex) {
+            throw new InvalidRefreshTokenException("Refresh token inválido ou expirado!");
+        }
+
+        /**Fail-closed: só refresh token é aceito aqui — um access token no corpo é rejeitado.**/
+        if (!JwtService.TOKEN_TYPE_REFRESH.equals(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class))) {
+            throw new InvalidRefreshTokenException("Token apresentado não é um refresh token!");
+        }
+
+        return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
                 .map(refreshToken -> {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(refreshToken.getEmail());
@@ -94,7 +128,7 @@ public class AuthController {
                     /**Retorna ambos os novos tokens para o cliente**/
                     return ResponseEntity.ok(new JwtResponse(accessToken, novoRefreshToken.getToken(), "Bearer"));
                 })
-                .orElseThrow(() -> new RuntimeException("Refresh token inexistente!"));
+                .orElseThrow(() -> new InvalidRefreshTokenException("Refresh token inexistente!"));
     }
 
     @PostMapping("/logout")

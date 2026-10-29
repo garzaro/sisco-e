@@ -17,10 +17,7 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -29,6 +26,11 @@ import java.util.function.Function;
  *
  * TODO-list
  * [] Verificar o tempo de access token e refreshtoken, ste deve ser maior - 7 dias.
+ * [x] Gerartoken
+ * [] Gerar refresh token
+ * [x] Extracao - obterClaims
+ * [x] Validar token - isTokenValid
+ * [x] Retorno de sub - obterUserDetailsLogin
  * **/
 
 @Service
@@ -54,7 +56,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) { //a impl de UserDetailsService carrega uma instância de UserDetails
         Instant agora =  Instant.now();
         Instant expiracao = agora.plusMillis(expirationMs);
 
@@ -64,12 +66,13 @@ public class JwtServiceImpl implements JwtService {
                 .format(expiracao);
 
         logger.debug("Subject (email) gravado no token: {}", userDetails.getUsername());
-
+        String jti = UUID.randomUUID().toString();
         return Jwts.builder()
+                .id(jti)
                 .issuedAt(Date.from(agora))
                 .expiration(Date.from(expiracao))
                 .subject(userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities())
+                .claim("roles", userDetails.getAuthorities()) //ver necessidade de trasnportar isso no token, ja existe no filtro userDetails.getAuthorities().
                 .claim("horaExpiração", horaFormatada)
                 .signWith(signingKey)
                 .compact();
@@ -85,6 +88,7 @@ public class JwtServiceImpl implements JwtService {
                 .expiration(Date.from(expiracao))
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
+
                 .signWith(signingKey)
                 .compact();
     }
@@ -107,7 +111,7 @@ public class JwtServiceImpl implements JwtService {
             String email = claims.getSubject(); // email gravado na criaçãõ do token
             return email != null
                     && email.equals(userDetails.getUsername()) //email na base de dados
-                    && claims.getExpiration() != null;
+                    && claims.getExpiration() != null; //apenas confirma que existe um valor de expiração no objeto retornado
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

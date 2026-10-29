@@ -4,12 +4,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.request.LoginRequestDto;
+import com.sisco_e.escola.api.dto.request.UsuarioRequestDTO;
+import com.sisco_e.escola.api.dto.response.LoginResponseDTO;
+import com.sisco_e.escola.api.dto.response.UsuarioResponseDTO;
+import com.sisco_e.escola.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.sisco_e.escola.api.dto.UsuarioDTO;
 import com.sisco_e.escola.exception.CpfAlreadyExistsException;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.UsuarioMapper;
@@ -19,17 +25,14 @@ import com.sisco_e.escola.service.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
-import javax.security.auth.login.CredentialNotFoundException;
-
 /**
  * TODO-list
+ * [x] Autenticar usuario
+ * [x] Salvar usuario
  * [] Validar usuario
  * [x] Validar cpf
  * [x] Validar email
- * [x] Autenticar usuario
  *
- *  Sou o Gemini CLI, seu assistente de engenharia de software. Estou aqui para auxiliar na automação de tarefas, investigação de código e suporte ao desenvolvimento do seu projeto, sempre priorizando segurança, padrões técnicos
- *   e boas práticas. Como posso ajudar você hoje?
  * **/
 
 @Service
@@ -39,41 +42,45 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
 	private final PasswordEncoder passwordEncoder; // Injetado via construtor
+	private final JwtService jwtService;
+	private final AuthenticationManager authenticationManager;
 
 	/**fazendo de forma manual ate a implemteção do com oauthenticationManager **/
 	@Override
-	public UsuarioDTO autenticar(String email, String password) {
-		Usuario usuario = usuarioRepository.findByEmail(email)
-				.orElseThrow(() -> new BadCredentialsException("Verifique seu email"));
+	public LoginResponseDTO autenticar(LoginRequestDto loginRequest) {
 
-		boolean senhaValida = passwordEncoder.matches(password, usuario.getPassword());
+		var auth = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						loginRequest.getEmail(),
+						loginRequest.getPassword()));
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String token = jwtService.generateToken(principal);
 
-		if (!senhaValida) {
-			throw new BadCredentialsException("Verifique sua senha");
-		}
-
-		return usuarioMapper.entityToDto(usuario);
+		return LoginResponseDTO.builder()
+				.email(principal.getUsername())
+				.accessToken(token)
+				.build();
 	}
 
 	@Override
 	@Transactional
-	public UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDto) {
+	public UsuarioResponseDTO cadastrarUsuario(UsuarioRequestDTO usuarioRequest) {
 		/** se existe **/
-		validarEmail(usuarioDto.getEmail());
-		validarCpf(usuarioDto.getCpf());
-		usuarioDto.setIsAtivo(true);
+		validarEmail(usuarioRequest.getEmail());
+		validarCpf(usuarioRequest.getCpf());
+//		usuarioRequest.setIsAtivo(true);
 		/** Codifica antes de mapear para a entidade **/
-		usuarioDto.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
+		usuarioRequest.setPassword(passwordEncoder.encode(usuarioRequest.getPassword()));
 		/** agora que está convertido... **/
-		Usuario entity = usuarioMapper.DtoToEntity(usuarioDto);
-		// entity.setIsAtivo(true);
+		Usuario entity = usuarioMapper.DtoToEntity(usuarioRequest);
+		entity.setIsAtivo(true);
 		/** ...chamo o repository para salvar o dto convertido para entidade **/
 		Usuario salvarUsuario = usuarioRepository.save(entity);
 		return usuarioMapper.entityToDto(salvarUsuario);
 	}
 
 	@Override
-	public void validarUsuario(UsuarioDTO usuarioDto) {
+	public void validarUsuario(UsuarioRequestDTO usuarioDto) {
 		// TODO Auto-generated method stub
 
 	}
@@ -95,67 +102,58 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public List<UsuarioDTO> buscarTodosOsUsuariosCadastrados() {
+	public List<UsuarioRequestDTO> buscarTodosOsUsuariosCadastrados() {
+		return null;
+	}
+
+	@Override
+	public Optional<UsuarioRequestDTO> buscarUsuarioPorId(UUID uuid) {
+		return null;
+	}
+
+	@Override
+	public UsuarioRequestDTO atualizarUsuario(UsuarioRequestDTO usuario) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Optional<UsuarioDTO> buscarUsuarioPorId(UUID uuid) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
-
-	@Override
-	public UsuarioDTO atualizarUsuario(UsuarioDTO usuario) {
-		// TODO Auto-generated method stub
+	public Optional<UsuarioRequestDTO> buscarUsuarioPorEmail(String email) {
 		return null;
 	}
 
 	@Override
-	public Optional<UsuarioDTO> buscarUsuarioPorEmail(String email) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public Optional<UsuarioRequestDTO> buscarUsuarioPorNome(String nomeCompleto) {
+		return null;//usuarioRepository.findByNomeCompleto(nomeCompleto).map(usuarioMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<UsuarioDTO> buscarUsuarioPorNome(String nomeCompleto) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public Optional<UsuarioRequestDTO> buscarUsuarioPorCpf(String cpf) {
+		return null;//usuarioRepository.findByCpf(cpf).map(usuarioMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<UsuarioDTO> buscarUsuarioPorCpf(String cpf) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
-
-	@Override
-	public List<UsuarioDTO> buscarUsuarioPorParteDoNome(String parteDoNome) {
-		// TODO Auto-generated method stub
+	public List<UsuarioRequestDTO> buscarUsuarioPorParteDoNome(String parteDoNome) {
 		return null;
 	}
 
 	@Override
 	public void deletarUsuario(UUID uuid) {
-		// TODO Auto-generated method stub
-
+		usuarioRepository.deleteById(uuid);
 	}
 
 	@Override
-	public Optional<UsuarioDTO> obterUsuarioPorId(UUID uuid) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public Optional<UsuarioRequestDTO> obterUsuarioPorId(UUID uuid) {
+		return buscarUsuarioPorId(uuid);
 	}
 
 	@Override
-	public Optional<UsuarioDTO> obterUsuarioPorCpf(String cpf) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public Optional<UsuarioRequestDTO> obterUsuarioPorCpf(String cpf) {
+		return buscarUsuarioPorCpf(cpf);
 	}	
 
 	@Override
-	public UsuarioDTO atualizarPerfilUsuario(UsuarioDTO usuario) {
+	public UsuarioRequestDTO atualizarPerfilUsuario(UsuarioRequestDTO usuario) {
 		// TODO Auto-generated method stub
 		return null;
 	}

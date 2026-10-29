@@ -5,7 +5,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.sisco_e.escola.api.dto.ContratoInternetDTO;
+import com.sisco_e.escola.api.dto.request.ContratoInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ContratoInternetResponseDto;
 import com.sisco_e.escola.model.entity.ContratoInternet;
 
 @Mapper(componentModel = "spring",
@@ -15,9 +16,14 @@ public interface ContratoInternetMapper {
 
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
-	ContratoInternet dtoToEntity(ContratoInternetDTO dto);
+	ContratoInternet dtoToEntity(ContratoInternetRequestDTO dto);
 
 	@Mapping(target = "uuidEscola", source = "escola.uuid")
 	@Mapping(target = "uuidProvedor", source = "provedor.uuid")
-	ContratoInternetDTO entityToDto(ContratoInternet entity);
+	@Mapping(target = "uuid", source = "uuid")
+    ContratoInternetResponseDto entityToDto(ContratoInternet entity);
+
+	@Mapping(target = "uuidEscola", source = "escola.uuid")
+	@Mapping(target = "uuidProvedor", source = "provedor.uuid")
+    ContratoInternetRequestDTO entityToRequestDto(ContratoInternet entity);
 }

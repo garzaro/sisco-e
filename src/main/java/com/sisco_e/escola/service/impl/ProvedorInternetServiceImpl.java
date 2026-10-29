@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.request.ProvedorInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ProvedorInternetResponseDTO;
 import org.springframework.stereotype.Service;
 
-import com.sisco_e.escola.api.dto.ProvedorInternetDTO;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.ProvedorInternetMapper;
 import com.sisco_e.escola.model.entity.ProvedorInternet;
@@ -25,67 +26,67 @@ public class ProvedorInternetServiceImpl implements ProvedorInternetService {
 
     @Override
     @Transactional
-    public ProvedorInternetDTO cadastrarProvedorInternet(ProvedorInternetDTO provedorInternetDto) {
-        validarProvedorInternet(provedorInternetDto);
-        ProvedorInternet provedor = provedorInternetMapper.DtoToEntity(provedorInternetDto);
+    public ProvedorInternetResponseDTO cadastrarProvedorInternet(ProvedorInternetRequestDTO provedorInternetRequestDto) {
+        validarProvedorInternet(provedorInternetRequestDto);
+        ProvedorInternet provedor = provedorInternetMapper.DtoToEntity(provedorInternetRequestDto);
         return provedorInternetMapper.entityToDto(provedorInternetRepository.save(provedor));
     }
 
     @Override
-    public void validarProvedorInternet(ProvedorInternetDTO provedorInternetDto) {
-        if (provedorInternetDto == null) {
+    public void validarProvedorInternet(ProvedorInternetRequestDTO provedorInternetRequestDto) {
+        if (provedorInternetRequestDto == null) {
             throw new RegraNegocioException("Dados do provedor não informados!");
         }
-        if (provedorInternetRepository.existsByNomeProvedor(provedorInternetDto.getNomeProvedor())
-                || provedorInternetRepository.existsByCnpj(provedorInternetDto.getCnpj())) {
+        if (provedorInternetRepository.existsByNomeProvedor(provedorInternetRequestDto.getNomeProvedor())
+                || provedorInternetRepository.existsByCnpj(provedorInternetRequestDto.getCnpj())) {
             throw new RegraNegocioException("Já existe um provedor com os dados informados!");
         }
         if (provedorInternetRepository
-                .existsByTelefone(provedorInternetDto.getTelefone())){
+                .existsByTelefone(provedorInternetRequestDto.getTelefone())){
             throw new RegraNegocioException("O contato pertence a outro provedor!");
         }
     }
 
     @Override
-    public List<ProvedorInternetDTO> buscarTodosProvedoresInternetCadastrados() {
-        return provedorInternetRepository.findAll().stream().map(provedorInternetMapper::entityToDto).toList();
+    public List<ProvedorInternetRequestDTO> buscarTodosProvedoresInternetCadastrados() {
+        return provedorInternetRepository.findAll().stream().map(provedorInternetMapper::entityToRequestDto).toList();
     }
 
     @Override
-    public Optional<ProvedorInternetDTO> buscarProvedorInternetPorId(UUID uuid) {
-        return provedorInternetRepository.findById(uuid).map(provedorInternetMapper::entityToDto);
+    public Optional<ProvedorInternetRequestDTO> buscarProvedorInternetPorId(UUID uuid) {
+        return provedorInternetRepository.findById(uuid).map(provedorInternetMapper::entityToRequestDto);
     }
 
     @Override
-    public Optional<ProvedorInternetDTO> buscarProvedorInternetPorNome(String nomeProvedor) {
-        return provedorInternetRepository.findByNomeProvedor(nomeProvedor).map(provedorInternetMapper::entityToDto);
+    public Optional<ProvedorInternetRequestDTO> buscarProvedorInternetPorNome(String nomeProvedor) {
+        return provedorInternetRepository.findByNomeProvedor(nomeProvedor).map(provedorInternetMapper::entityToRequestDto);
     }
 
     @Override
-    public Optional<ProvedorInternetDTO> buscarProvedorInternetPorCnpj(String cnpj) {
-        return provedorInternetRepository.findByCnpj(cnpj).map(provedorInternetMapper::entityToDto);
+    public Optional<ProvedorInternetRequestDTO> buscarProvedorInternetPorCnpj(String cnpj) {
+        return provedorInternetRepository.findByCnpj(cnpj).map(provedorInternetMapper::entityToRequestDto);
     }
 
     @Override
-    public List<ProvedorInternetDTO> buscarProvedoresInternetPorParteDoNome(String parteNomeProvedor) {
+    public List<ProvedorInternetRequestDTO> buscarProvedoresInternetPorParteDoNome(String parteNomeProvedor) {
         return provedorInternetRepository.findByNomeProvedorContainingIgnoreCase(parteNomeProvedor).stream()
-                .map(provedorInternetMapper::entityToDto)
+                .map(provedorInternetMapper::entityToRequestDto)
                 .toList();
     }
 
     @Override
     @Transactional
-    public ProvedorInternetDTO atualizarProvedorInternet(ProvedorInternetDTO provedorInternetDto) {
-        if (provedorInternetDto == null || provedorInternetDto.getUuid() == null) {
+    public ProvedorInternetRequestDTO atualizarProvedorInternet(ProvedorInternetRequestDTO provedorInternetRequestDto) {
+        if (provedorInternetRequestDto == null || provedorInternetRequestDto.getUuid() == null) {
             throw new RegraNegocioException("Id do provedor é obrigatório para atualização");
         }
 
-        ProvedorInternet provedor = provedorInternetRepository.findById(provedorInternetDto.getUuid())
+        ProvedorInternet provedor = provedorInternetRepository.findById(provedorInternetRequestDto.getUuid())
                 .orElseThrow(() -> new RegraNegocioException("Provedor não encontrado para atualização"));
-        provedor.setNomeProvedor(provedorInternetDto.getNomeProvedor());
-        provedor.setCnpj(provedorInternetDto.getCnpj());
-        provedor.setTelefone(provedorInternetDto.getTelefone());
-        return provedorInternetMapper.entityToDto(provedorInternetRepository.save(provedor));
+        provedor.setNomeProvedor(provedorInternetRequestDto.getNomeProvedor());
+        provedor.setCnpj(provedorInternetRequestDto.getCnpj());
+        provedor.setTelefone(provedorInternetRequestDto.getTelefone());
+        return provedorInternetMapper.entityToRequestDto(provedorInternetRepository.save(provedor));
     }
 
     @Override
@@ -98,7 +99,7 @@ public class ProvedorInternetServiceImpl implements ProvedorInternetService {
     }
 
     @Override
-    public Optional<ProvedorInternetDTO> obterProvedorInternetPorId(UUID uuid) {
+    public Optional<ProvedorInternetRequestDTO> obterProvedorInternetPorId(UUID uuid) {
         return buscarProvedorInternetPorId(uuid);
     }
 }

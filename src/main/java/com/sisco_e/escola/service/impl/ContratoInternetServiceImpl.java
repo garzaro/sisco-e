@@ -1,19 +1,15 @@
 package com.sisco_e.escola.service.impl;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import com.sisco_e.escola.api.dto.DiretorDTO;
-import com.sisco_e.escola.api.dto.EscolaDTO;
+import com.sisco_e.escola.api.dto.request.ContratoInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ContratoInternetResponseDto;
 import com.sisco_e.escola.exception.RegraNegocioException;
-import com.sisco_e.escola.model.entity.Diretor;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import com.sisco_e.escola.api.dto.ContratoInternetDTO;
 import com.sisco_e.escola.mapper.ContratoInternetMapper;
 import com.sisco_e.escola.model.entity.ContratoInternet;
 import com.sisco_e.escola.model.entity.Escola;
@@ -69,7 +65,7 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 
 	@Transactional
 	@Override
-	public ContratoInternetDTO cadastrarContrato(ContratoInternetDTO contratoDto){
+	public ContratoInternetResponseDto cadastrarContrato(ContratoInternetRequestDTO contratoDto){
 		validarContrato(contratoDto);
 
 		ContratoInternet contrato = contratoInternetMapper.dtoToEntity(contratoDto);
@@ -90,15 +86,15 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 	}
 
 	@Override
-	public List<ContratoInternetDTO> buscarContratosAtivosComEscolaEProvedor() {
+	public List<ContratoInternetRequestDTO> buscarContratosAtivosComEscolaEProvedor() {
 		return contratoInternetRepository.findContratosAtivosComEscolaEProvedor()
-				.stream().map(contratoInternetMapper::entityToDto).toList();
+				.stream().map(contratoInternetMapper::entityToRequestDto).toList();
 	}
 
 	@Override
-	public List<ContratoInternetDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status) {
+	public List<ContratoInternetRequestDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status) {
 		return contratoInternetRepository.findByEscola_UuidAndStatus(uuidEscola, status)
-				.stream().map(contratoInternetMapper::entityToDto).toList();
+				.stream().map(contratoInternetMapper::entityToRequestDto).toList();
 	}
 	 /**interno**/
 	private void validarValorMensal(BigDecimal valorMensal) {
@@ -110,7 +106,7 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 	}
 
 	@Override
-	public void validarContrato(ContratoInternetDTO contratoDto) {
+	public void validarContrato(ContratoInternetRequestDTO contratoDto) {
 		if (contratoDto == null) {
 			throw new RegraNegocioException(
 				"Dados do contrato não informados!");

@@ -29,15 +29,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * TODO-list
+ * [] Remover constraint
+ * **/
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
 @Entity
-@Table(name = "tb_contrato_net", schema = "siscoescola",
-	uniqueConstraints = @UniqueConstraint(name = "uk_contratos_internet_escola_provedor_data",
-		columnNames = { "uuid_escola", "uuid_provedor", "data_contratacao" }))
+@Table(name = "tb_contrato_net", schema = "siscoescola")
 public class ContratoInternet {
 
 	@Id

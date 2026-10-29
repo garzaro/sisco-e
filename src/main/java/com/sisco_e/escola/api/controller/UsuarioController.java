@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**Controlador do dominio/recurso de usuario
  *
- * [] Atualizar dados cadastrais (PUT /users/me ou /users/{id})
+ * [] Atualizar dados cadastrais (PUT /users/me ou /users/{uuid})
  * [] Cadastro de usuario
  * [] Alterar senha (enquanto já está logado)
  * [] Alterar senha (enquanto não logado)
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * /users/me          -> UserController (Retorna os dados do usuário logado)
  * /users/profile     -> UserController (Atualiza endereço, nome, etc.)
- * /users/{id}        -> UserController (Busca ou deleta usuário - Admin)
+ * /users/{uuid}        -> UserController (Busca ou deleta usuário - Admin)
  * **/
 
 @RestController

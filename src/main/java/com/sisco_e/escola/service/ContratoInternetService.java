@@ -1,21 +1,19 @@
 package com.sisco_e.escola.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import com.sisco_e.escola.api.dto.ContratoInternetDTO;
+import com.sisco_e.escola.api.dto.request.ContratoInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ContratoInternetResponseDto;
 import com.sisco_e.escola.model.enums.StatusContrato;
 
 public interface ContratoInternetService {
 
-	ContratoInternetDTO cadastrarContrato(ContratoInternetDTO contratoDto);
+	ContratoInternetResponseDto cadastrarContrato(ContratoInternetRequestDTO contratoDto);
 	
-	void validarContrato(ContratoInternetDTO contratoDto);
+	void validarContrato(ContratoInternetRequestDTO contratoDto);
 
-	List<ContratoInternetDTO> buscarContratosAtivosComEscolaEProvedor();
+	List<ContratoInternetRequestDTO> buscarContratosAtivosComEscolaEProvedor();
 
-	List<ContratoInternetDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status);
-
+	List<ContratoInternetRequestDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status);
 }

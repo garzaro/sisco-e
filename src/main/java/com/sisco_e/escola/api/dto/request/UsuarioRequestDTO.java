@@ -1,4 +1,4 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.request;
  
 
 import jakarta.validation.constraints.Email;
@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.br.CPF;
 //import com.alowed_domain.validation.AllowedDomains;
 
 
-/**
+/**CRIACAO DE USUARIO
  * Todo-list
  * [] Implementar a validação de domínio de e-mail usando a anotação @AllowedDomains
  * **/
@@ -23,9 +23,10 @@ import org.hibernate.validator.constraints.br.CPF;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UsuarioDTO {
-	private UUID uuid;
-	
+public class UsuarioRequestDTO {
+
+    private UUID uuid;
+
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 120, message = "{usuario.nome.size}")
     private String nomeCompleto;
@@ -54,5 +55,6 @@ public class UsuarioDTO {
             "[A-Za-z\\d@$!%*?&]{6,}$",
             message = "{usuario.senha.pattern}")
     String password;
-    Boolean isAtivo;
+
+    private Boolean isAtivo;
 }

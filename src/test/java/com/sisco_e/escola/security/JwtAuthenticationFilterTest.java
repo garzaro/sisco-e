@@ -1,6 +1,7 @@
 package com.sisco_e.escola.security;
 
 import com.sisco_e.escola.service.JwtService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -80,18 +81,18 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    @DisplayName("F-05: token expirado não deve propagar exceção e deve retornar 401")
-    void doFilter_TokenExpirado_ContinuaCadeiaENaoAutentica() throws ServletException, IOException {
+    @DisplayName("F-05: token expirado não deve propagar exceção e deve retornar 401 sem continuar a cadeia")
+    void doFilter_TokenExpirado_Retorna401NaoContinuaCadeia() throws ServletException, IOException {
         String token = "expirado.token.a";
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
-        // O filtro chama jwtService.obterUserDetailsLogin(jwt) que lança ExpiredJwtException quando token expirado
-        when(jwtService.obterUserDetailsLogin(token)).thenThrow(new ExpiredJwtException(null, null, "expired"));
+        // O filtro chama jwtService.obterClaims(jwt) que lança ExpiredJwtException quando token expirado
+        when(jwtService.obterClaims(token)).thenThrow(new ExpiredJwtException(null, null, "expired"));
 
         filter.doFilterInternal(request, response, filterChain);
 
-        // O filtro faz doFilter E seta status 401 no catch de ExpiredJwtException
-        verify(filterChain).doFilter(request, response);
+        // Fail-closed: seta 401 e retorna SEM chamar doFilter (mesmo padrão do catch genérico)
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(filterChain, never()).doFilter(request, response);
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
@@ -104,8 +105,11 @@ class JwtAuthenticationFilterTest {
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
 
-        // O filtro chama jwtService.obterUserDetailsLogin(jwt) que retorna o subject (email) do token
-        when(jwtService.obterUserDetailsLogin(token)).thenReturn(email);
+        // O filtro chama jwtService.obterClaims(jwt) uma única vez: subject + claim token_type
+        Claims claims = mock(Claims.class);
+        when(claims.getSubject()).thenReturn(email);
+        when(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class)).thenReturn(JwtService.TOKEN_TYPE_ACCESS);
+        when(jwtService.obterClaims(token)).thenReturn(claims);
         when(userDetailsService.loadUserByUsername(email)).thenReturn(user);
         when(jwtService.isTokenValid(token, user)).thenReturn(true);
 
@@ -114,6 +118,42 @@ class JwtAuthenticationFilterTest {
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
         assertThat(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).isEqualTo(user);
         verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    @DisplayName("F-13: refresh token (token_type REFRESH) em rota protegida deve retornar 401 e não autenticar")
+    void doFilter_RefreshToken_Retorna401NaoAutentica() throws ServletException, IOException {
+        String token = "refresh.token.a";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        Claims claims = mock(Claims.class);
+        when(claims.getSubject()).thenReturn("user@test.com");
+        when(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class)).thenReturn(JwtService.TOKEN_TYPE_REFRESH);
+        when(jwtService.obterClaims(token)).thenReturn(claims);
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(filterChain, never()).doFilter(request, response);
+        verifyNoInteractions(userDetailsService);
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+    }
+
+    @Test
+    @DisplayName("F-14: token sem claim token_type (legado) deve retornar 401 (fail-closed)")
+    void doFilter_SemTokenType_Retorna401() throws ServletException, IOException {
+        String token = "legado.token.a";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        Claims claims = mock(Claims.class);
+        when(claims.getSubject()).thenReturn("user@test.com");
+        when(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class)).thenReturn(null); // claim ausente
+        when(jwtService.obterClaims(token)).thenReturn(claims);
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(filterChain, never()).doFilter(request, response);
+        verifyNoInteractions(userDetailsService);
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
     @Test

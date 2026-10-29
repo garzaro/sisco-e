@@ -1,3 +1,6 @@
+//Arquivo de configuração específico do projeto. Define permissões,
+//modelos padrão (ex: model, small_model), MCP servers, referências e variáveis de ambiente locais.
+
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "opencode/big-pickle",

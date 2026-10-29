@@ -11,13 +11,16 @@ public class SiscoEApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SiscoEApplication.class, args);
 	}
-
 }
 
 /**
  * TODO-list
+ *
+ * DTO
+ * [] Separar entre dtorequest e dtoresponse
+ *
  * USUARIO
- * [x] Salvar usuario
+ * [x] Salvar usuario - dividido dto rq re
  * [] Atualizar usuario
  * [] Desativar Usuario
  *
@@ -25,6 +28,7 @@ public class SiscoEApplication {
  * [x] Salvar escola
  * [] Atualizar escola
  * [] Desativar escola
+ * [] Deve validar contrato duplicado com o mesmo provedor
  *
  * Diretor
  * [x] Salvar diretor
@@ -50,5 +54,18 @@ public class SiscoEApplication {
  * [] Aviso de corpo de requisicao malformado mas deve indicar o o campo - data contratação
  * [] Data a partir de hoje - vr conersao de data para o front depois
  *
- *
+ * JWT
+ * [] Nao retornar o refresh ap cliente no corpo e sim no cookie
  * **/
+
+
+//O Fluxo Ideal de Dados
+//
+//		O padrão arquitetural recomendado (como na Clean Architecture ou Hexagonal Architecture) dita que a transformação ocorra o quanto antes:
+//		[Cliente] -> (JSON) -> [Controller / Handler]
+//		│
+//		▼ (Valida e mapeia DTO -> Modelo/Parâmetros)
+//		[Camada de Serviço] (Regra de negócio pura)
+//		│
+//		▼ (Persistência)
+//		[Repository / DB]

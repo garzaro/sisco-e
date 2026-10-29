@@ -26,7 +26,7 @@ public interface JwtService {
     String generateRefreshToken(UserDetails userDetails);
 
     /**
-     * retornar todas as informações contidas no token, - subject, nome, id, etc...
+     * retornar todas as informações contidas no token, - subject, nome, uuid, etc...
      * ao decodificar verifica se o usuario possui acesso a api
      **/
     Claims obterClaims(String token);

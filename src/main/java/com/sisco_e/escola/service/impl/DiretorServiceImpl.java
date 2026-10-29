@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.request.DiretorRequestDTO;
+import com.sisco_e.escola.api.dto.response.DiretorResponseDTO;
 import org.springframework.stereotype.Service;
 
-import com.sisco_e.escola.api.dto.DiretorDTO;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.DiretorMapper;
 import com.sisco_e.escola.model.entity.Diretor;
@@ -34,85 +35,85 @@ public class DiretorServiceImpl implements DiretorService {
 
 	@Override
 	@Transactional
-	public DiretorDTO cadastrarDiretor(DiretorDTO diretorDto) {
-		validarDiretor(diretorDto);
+	public DiretorResponseDTO cadastrarDiretor(DiretorRequestDTO diretorRequestDto) {
+		validarDiretor(diretorRequestDto);
         /**Isso evita tentar vincular um diretor a uma escola fantasma**/
-		Escola escola = escolaRepository.findById(diretorDto.getEscolaUuid())
+		Escola escola = escolaRepository.findById(diretorRequestDto.getEscolaUuid())
 			.orElseThrow(() -> new RegraNegocioException("Escola não encontrada para vínculo com diretor"));
 
-		Diretor diretor = diretorMapper.DtoToEntity(diretorDto);
+		Diretor diretor = diretorMapper.DtoToEntity(diretorRequestDto);
 		diretor.setEscola(escola);
-		diretor.setIsAtivo(Boolean.TRUE.equals(diretorDto.getIsAtivo()) || diretorDto.getIsAtivo() == null);
+		diretor.setIsAtivo(Boolean.TRUE.equals(diretorRequestDto.getIsAtivo()) || diretorRequestDto.getIsAtivo() == null);
         /**persistencia e retorno
          * recebe a entidade de volta, já contendo o ID gerado
          * * */
 		Diretor diretorSalvo = diretorRepository.save(diretor);  
         /**
-         * Converte a entidade recém-salva (agora completa e persistida) de volta para um DiretorDTO,
+         * Converte a entidade recém-salva (agora completa e persistida) de volta para um DiretorRequestDTO,
          * que é o formato limpo que será devolvido na resposta da API para quem fez a requisição
          * **/      
 		return diretorMapper.entityToDto(diretorSalvo);
 	}
 
 	@Override
-	public void validarDiretor(DiretorDTO diretorDto) {
-		if (diretorDto == null) {
+	public void validarDiretor(DiretorRequestDTO diretorRequestDto) {
+		if (diretorRequestDto == null) {
 			throw new RegraNegocioException("Dados do diretor não informados!");
 		}
 
-		if (diretorRepository.existsByCpfDiretor(diretorDto.getCpf())) {
+		if (diretorRepository.existsByCpfDiretor(diretorRequestDto.getCpf())) {
 			throw new RegraNegocioException("Verifique o CPF do diretor e tente novamente!");
 		}
 
-		 if (diretorRepository.existsByMatriculaFuncional(diretorDto.getMatriculaFuncional())) {
+		 if (diretorRepository.existsByMatriculaFuncional(diretorRequestDto.getMatriculaFuncional())) {
 		 	throw new RegraNegocioException("Verifique a matrícula do diretor e tente novamente!");
 		 }
 
-		if (diretorRepository.existsByEmailCorporativo(diretorDto.getEmail())) {
+		if (diretorRepository.existsByEmailCorporativo(diretorRequestDto.getEmail())) {
 			throw new RegraNegocioException("Verifique o e-mail do diretor e tente novamente!");
 		}
 
-		if (diretorDto.getEmailPessoal() != null && !diretorDto.getEmailPessoal().isBlank()
-				&& diretorRepository.existsByEmailPessoal(diretorDto.getEmailPessoal())) {
+		if (diretorRequestDto.getEmailPessoal() != null && !diretorRequestDto.getEmailPessoal().isBlank()
+				&& diretorRepository.existsByEmailPessoal(diretorRequestDto.getEmailPessoal())) {
 			throw new RegraNegocioException("Verifique o e-mail pessoal do diretor e tente novamente!");
 		}
 
-		if (diretorRepository.existsByEscolaUuid(diretorDto.getEscolaUuid())) {
+		if (diretorRepository.existsByEscolaUuid(diretorRequestDto.getEscolaUuid())) {
 			throw new RegraNegocioException("Já existe diretor vinculado a esta escola!");
 		}
 	}
 
 	@Override
-	public List<DiretorDTO> buscarTodosDiretores() {
+	public List<DiretorRequestDTO> buscarTodosDiretores() {
 		return diretorRepository
         .findAll()
         .stream()
-        .map(diretorMapper::entityToDto)
+        .map(diretorMapper::entityToRequestDto)
         .toList();
 	}
 
 	@Override
-	public Optional<DiretorDTO> buscarDiretorPorId(UUID uuid) {
-		return diretorRepository.findById(uuid).map(diretorMapper::entityToDto);
+	public Optional<DiretorRequestDTO> buscarDiretorPorId(UUID uuid) {
+		return diretorRepository.findById(uuid).map(diretorMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<DiretorDTO> buscarDiretorPorCpf(String cpf) {
-		return diretorRepository.findByCpfDiretor(cpf).map(diretorMapper::entityToDto);
+	public Optional<DiretorRequestDTO> buscarDiretorPorCpf(String cpf) {
+		return diretorRepository.findByCpfDiretor(cpf).map(diretorMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<DiretorDTO> buscarDiretorPorEmailCorporativo(String email) {
-		return diretorRepository.findByEmailCorporativo(email).map(diretorMapper::entityToDto);
+	public Optional<DiretorRequestDTO> buscarDiretorPorEmailCorporativo(String email) {
+		return diretorRepository.findByEmailCorporativo(email).map(diretorMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<DiretorDTO> buscarDiretorPorEmailPessoal(String emailPessoal) {
-		return diretorRepository.findByEmailPessoal(emailPessoal).map(diretorMapper::entityToDto);
+	public Optional<DiretorRequestDTO> buscarDiretorPorEmailPessoal(String emailPessoal) {
+		return diretorRepository.findByEmailPessoal(emailPessoal).map(diretorMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<DiretorDTO> buscarDiretorPorEscola(UUID uuidEscola) {
-		return diretorRepository.findByEscolaUuid(uuidEscola).map(diretorMapper::entityToDto);
+	public Optional<DiretorRequestDTO> buscarDiretorPorEscola(UUID uuidEscola) {
+		return diretorRepository.findByEscolaUuid(uuidEscola).map(diretorMapper::entityToRequestDto);
 	}
 }

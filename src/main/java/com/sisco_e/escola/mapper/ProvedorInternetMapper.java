@@ -4,7 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.sisco_e.escola.api.dto.ProvedorInternetDTO;
+import com.sisco_e.escola.api.dto.request.ProvedorInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ProvedorInternetResponseDTO;
 import com.sisco_e.escola.model.entity.ProvedorInternet;
 
 @Mapper(componentModel = "spring",
@@ -12,7 +13,9 @@ import com.sisco_e.escola.model.entity.ProvedorInternet;
 		nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface ProvedorInternetMapper {
 
-	ProvedorInternet DtoToEntity(ProvedorInternetDTO dto);
+	ProvedorInternet DtoToEntity(ProvedorInternetRequestDTO dto);
 
-	ProvedorInternetDTO entityToDto(ProvedorInternet entity);
+	ProvedorInternetResponseDTO entityToDto(ProvedorInternet entity);
+
+	ProvedorInternetRequestDTO entityToRequestDto(ProvedorInternet entity);
 }

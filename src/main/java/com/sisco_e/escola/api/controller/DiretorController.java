@@ -3,7 +3,9 @@ package com.sisco_e.escola.api.controller;
 import java.util.List;
 import java.util.UUID;
 
-import com.sisco_e.escola.api.dto.ApiResponse;
+import com.sisco_e.escola.api.dto.response.ApiResponse;
+import com.sisco_e.escola.api.dto.request.DiretorRequestDTO;
+import com.sisco_e.escola.api.dto.response.DiretorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sisco_e.escola.api.dto.DiretorDTO;
 import com.sisco_e.escola.service.DiretorService;
 
 import jakarta.validation.Valid;
@@ -33,49 +34,49 @@ public class DiretorController {
 	private final DiretorService diretorService;
 
 	@PostMapping("/reg/dir")
-	public ResponseEntity<ApiResponse<DiretorDTO>> cadastrarDiretor(@RequestBody @Valid DiretorDTO diretorDto) {
-		DiretorDTO diretorCriado = diretorService.cadastrarDiretor(diretorDto);
+	public ResponseEntity<ApiResponse<DiretorResponseDTO>> cadastrarDiretor(
+			@RequestBody @Valid DiretorRequestDTO diretorRequestDto) {
+		DiretorResponseDTO diretorCriado = diretorService.cadastrarDiretor(diretorRequestDto);
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(ApiResponse.success(
-						"Diretor cadastrado com sucesso!",
+				.body(ApiResponse.success("Diretor cadastrado com sucesso!",
 						diretorCriado));
 	}
 
 	@GetMapping
-	public ResponseEntity<List<DiretorDTO>> buscarTodosDiretores() {
+	public ResponseEntity<List<DiretorRequestDTO>> buscarTodosDiretores() {
 		return ResponseEntity.ok(diretorService.buscarTodosDiretores());
 	}
 
 	@GetMapping("/{uuid}")
-	public ResponseEntity<DiretorDTO> buscarDiretorPorId(@PathVariable UUID uuid) {
+	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorId(@PathVariable UUID uuid) {
 		return diretorService.buscarDiretorPorId(uuid)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
     
 	@GetMapping("/cpf")
-	public ResponseEntity<DiretorDTO> buscarDiretorPorCpf(@RequestParam String cpf) {
+	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorCpf(@RequestParam String cpf) {
 		return diretorService.buscarDiretorPorCpf(cpf)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/email")
-	public ResponseEntity<DiretorDTO> buscarDiretorPorEmail(@RequestParam String email) {
+	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorEmail(@RequestParam String email) {
 		return diretorService.buscarDiretorPorEmailCorporativo(email)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/email-pessoal")
-	public ResponseEntity<DiretorDTO> buscarDiretorPorEmailPessoal(@RequestParam String emailPessoal) {
+	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorEmailPessoal(@RequestParam String emailPessoal) {
 		return diretorService.buscarDiretorPorEmailPessoal(emailPessoal)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/escola/{escolaUuid}")
-	public ResponseEntity<DiretorDTO> buscarDiretorPorEscola(@PathVariable UUID escolaUuid) {
+	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorEscola(@PathVariable UUID escolaUuid) {
 		return diretorService.buscarDiretorPorEscola(escolaUuid)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());

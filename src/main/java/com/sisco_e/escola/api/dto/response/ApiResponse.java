@@ -1,4 +1,4 @@
-package com.sisco_e.escola.api.dto;
+package com.sisco_e.escola.api.dto.response;
 
 public record ApiResponse<T>(String message, T data) {
 

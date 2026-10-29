@@ -4,35 +4,36 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.request.EscolaRequestDTO;
+import com.sisco_e.escola.api.dto.response.EscolaResponseDTO;
 import org.springframework.stereotype.Service;
 
-import com.sisco_e.escola.api.dto.EscolaDTO;
 import com.sisco_e.escola.model.enums.TipoEscola;
 
 @Service
 public interface EscolaService {
 
-	EscolaDTO cadastrarEscola(EscolaDTO escolaDto);
+	EscolaResponseDTO cadastrarEscola(EscolaRequestDTO escolaRequestDto);
 
-	void validarEscola(EscolaDTO escolaDto);
+	void validarEscola(EscolaRequestDTO escolaRequestDto);
 
-	List<EscolaDTO> buscarTodasAsEscolasCadastradas();
+	List<EscolaRequestDTO> buscarTodasAsEscolasCadastradas();
 
-	Optional<EscolaDTO> buscarEscolaPorId(UUID uuid);
+	Optional<EscolaRequestDTO> buscarEscolaPorId(UUID uuid);
 
-	Optional<EscolaDTO> buscarEscolaPorNome(String nomeEscola);
+	Optional<EscolaRequestDTO> buscarEscolaPorNome(String nomeEscola);
 
-	List<EscolaDTO> buscarEscolaPorMunicipio(String municipio);
+	List<EscolaRequestDTO> buscarEscolaPorMunicipio(String municipio);
 
-	List<EscolaDTO> buscarEscolaPorEstado(String estado);
+	List<EscolaRequestDTO> buscarEscolaPorEstado(String estado);
 
-	List<EscolaDTO> buscarEscolaPorTipo(TipoEscola tipoEscola);
+	List<EscolaRequestDTO> buscarEscolaPorTipo(TipoEscola tipoEscola);
 
-	List<EscolaDTO> buscarEscolaPorParteDoNome(String parteNomeEscola);
+	List<EscolaRequestDTO> buscarEscolaPorParteDoNome(String parteNomeEscola);
 
-	EscolaDTO atualizarEscola(EscolaDTO escolaDto);
+	EscolaRequestDTO atualizarEscola(EscolaRequestDTO escolaRequestDto);
 
 	void deletarEscola(UUID uuid);
 
-	Optional<EscolaDTO> obterEscolaPorId(UUID uuid);
+	Optional<EscolaRequestDTO> obterEscolaPorId(UUID uuid);
 }

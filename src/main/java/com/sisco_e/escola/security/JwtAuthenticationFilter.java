@@ -3,6 +3,7 @@ package com.sisco_e.escola.security;
 import java.io.IOException;
 
 import com.sisco_e.escola.service.JwtService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,17 @@ import jakarta.servlet.http.HttpServletResponse;
 /** Filtro de Requisição JWT (JwtFilter)
  * O filtro intercepta cada requisição HTTP, verifica se o cabeçalho Authorization contém
  * um token Bearer, valida-o e injeta a autenticação no contexto do Spring Security.
+ * A sequência principal está correta
+ * sequência lógica do filtro:
+ * [x] Lê o cabeçalho Authorization.
+ * [x] Verifica o prefixo Bearer .
+ * [x] Extrai o JWT.
+ * [x] Obtém o identificador do usuário.
+ * [x] Carrega o usuário pelo UserDetailsService.
+ * [x] Valida o token.
+ * [x] Cria o objeto Authentication.
+ * [x] Coloca a autenticação no SecurityContext.
+ * [x] Continua a cadeia de filtros.
  * **/
 
 @Component
@@ -63,16 +75,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
  	String getUserEmail;
 
  	try {
- 		/**Extrai o username/email (subject) embutido no token JWT  jwtService. obterUserDetailsLogin(jwt);**/
- 		getUserEmail = jwtService.obterUserDetailsLogin(jwt);
+ 		/**Parse único do token: valida assinatura/expiração e expõe subject e claims**/
+ 		Claims claims = jwtService.obterClaims(jwt);
+ 		getUserEmail = claims.getSubject();
+
+		/**Fail-closed: apenas token de acesso autentica requisição a rota protegida.
+		 * Refresh token (ou token legado sem a claim) recebe 401 imediato.**/
+		if (!JwtService.TOKEN_TYPE_ACCESS.equals(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class))) {
+			logger.warn("Refresh token apresentado em rota protegida: {}", request.getRequestURI());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 
 		} catch (ExpiredJwtException | MalformedJwtException ex) {
 			logger.error("Não é possível definir a autenticação do usuário.");
 			/**Log crítico: token malformado/expirado é um evento de segurança relevante**/
 			logger.error("Token expirado ou inválido: {}", ex.getMessage());
-			/**Continua a execução para o próximo filtro na cadeia de filtros do Spring Security**/
-			filterChain.doFilter(request, response);
-			//ide
+			/**Fail-closed: 401 imediato, sem continuar a cadeia com o request**/
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}catch (Exception ex) {

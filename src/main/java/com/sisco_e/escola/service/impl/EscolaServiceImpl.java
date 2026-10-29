@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.request.EscolaRequestDTO;
+import com.sisco_e.escola.api.dto.response.EscolaResponseDTO;
 import org.springframework.stereotype.Service;
 
-import com.sisco_e.escola.api.dto.EscolaDTO;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import com.sisco_e.escola.mapper.EscolaMapper;
 import com.sisco_e.escola.model.entity.Escola;
@@ -26,9 +27,9 @@ public class EscolaServiceImpl implements EscolaService {
 
 	@Override
 	@Transactional
-	public EscolaDTO cadastrarEscola(EscolaDTO escolaDto) {
-		validarEscola(escolaDto);
-		Escola entity = escolaMapper.DtoToEntity(escolaDto);
+	public EscolaResponseDTO cadastrarEscola(EscolaRequestDTO escolaRequestDto) {
+		validarEscola(escolaRequestDto);
+		Escola entity = escolaMapper.DtoToEntity(escolaRequestDto);
 		/** Segue o boolean do domínio: toda escola cadastrada inicia ativa. */
 		entity.setIsAtivo(Boolean.TRUE);
 		Escola escolaSalva = escolaRepository.save(entity);
@@ -36,12 +37,12 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
-	public void validarEscola(EscolaDTO escolaDto) {
-		if (escolaDto == null) {
+	public void validarEscola(EscolaRequestDTO escolaRequestDto) {
+		if (escolaRequestDto == null) {
 			throw new RegraNegocioException("Dados da escola não informados!");
 		}
 
-		boolean escolaDuplicada = escolaRepository.existsByCodigoEscola(escolaDto.getCodigoEscola());
+		boolean escolaDuplicada = escolaRepository.existsByCodigoEscola(escolaRequestDto.getCodigoEscola());
 
 		if (escolaDuplicada) {
 			throw new RegraNegocioException("Verifique o código da escola e tente novamente!");
@@ -49,69 +50,69 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
-	public List<EscolaDTO> buscarTodasAsEscolasCadastradas() {
-		return escolaRepository.findAll().stream().map(escolaMapper::entityToDto).toList();
+	public List<EscolaRequestDTO> buscarTodasAsEscolasCadastradas() {
+		return escolaRepository.findAll().stream().map(escolaMapper::entityToRequestDto).toList();
 	}
 
 	@Override
-	public Optional<EscolaDTO> buscarEscolaPorId(UUID uuid) {
-		return escolaRepository.findById(uuid).map(escolaMapper::entityToDto);
+	public Optional<EscolaRequestDTO> buscarEscolaPorId(UUID uuid) {
+		return escolaRepository.findById(uuid).map(escolaMapper::entityToRequestDto);
 	}
 
 	@Override
-	public Optional<EscolaDTO> buscarEscolaPorNome(String nomeEscola) {
-		return escolaRepository.findByNomeEscola(nomeEscola).map(escolaMapper::entityToDto);
+	public Optional<EscolaRequestDTO> buscarEscolaPorNome(String nomeEscola) {
+		return escolaRepository.findByNomeEscola(nomeEscola).map(escolaMapper::entityToRequestDto);
 	}
 
 	@Override
-	public List<EscolaDTO> buscarEscolaPorMunicipio(String municipio) {
-		return escolaRepository.findByMunicipio(municipio).stream().map(escolaMapper::entityToDto).toList();
+	public List<EscolaRequestDTO> buscarEscolaPorMunicipio(String municipio) {
+		return escolaRepository.findByMunicipio(municipio).stream().map(escolaMapper::entityToRequestDto).toList();
 	}
 
 	@Override
-	public List<EscolaDTO> buscarEscolaPorEstado(String estado) {
-		return escolaRepository.findByEstado(estado).stream().map(escolaMapper::entityToDto).toList();
+	public List<EscolaRequestDTO> buscarEscolaPorEstado(String estado) {
+		return escolaRepository.findByEstado(estado).stream().map(escolaMapper::entityToRequestDto).toList();
 	}
 
 	@Override
-	public List<EscolaDTO> buscarEscolaPorTipo(TipoEscola tipoEscola) {
-		return escolaRepository.findByTipoEscola(tipoEscola).stream().map(escolaMapper::entityToDto).toList();
+	public List<EscolaRequestDTO> buscarEscolaPorTipo(TipoEscola tipoEscola) {
+		return escolaRepository.findByTipoEscola(tipoEscola).stream().map(escolaMapper::entityToRequestDto).toList();
 	}
 
 	@Override
-	public List<EscolaDTO> buscarEscolaPorParteDoNome(String parteNomeEscola) {
+	public List<EscolaRequestDTO> buscarEscolaPorParteDoNome(String parteNomeEscola) {
 		return escolaRepository.findByNomeEscolaContainingIgnoreCase(parteNomeEscola).stream()
-			.map(escolaMapper::entityToDto)
+			.map(escolaMapper::entityToRequestDto)
 			.toList();
 	}
 
 	@Override
 	@Transactional
-	public EscolaDTO atualizarEscola(EscolaDTO escolaDto) {
-		if (escolaDto == null || escolaDto.getUuid() == null) {
+	public EscolaRequestDTO atualizarEscola(EscolaRequestDTO escolaRequestDto) {
+		if (escolaRequestDto == null || escolaRequestDto.getUuid() == null) {
 			throw new RegraNegocioException("Id da escola é obrigatório para atualização");
 		}
 
-		Escola escolaExistente = escolaRepository.findById(escolaDto.getUuid())
+		Escola escolaExistente = escolaRepository.findById(escolaRequestDto.getUuid())
 			.orElseThrow(() -> new RegraNegocioException("Escola não encontrada para atualização"));
 
-		// boolean duplicada = escolaRepository.existsByNomeEscola(escolaDto.getNomeEscola(),
-		// 	escolaDto.getCidade(), escolaDto.getEstado(), escolaDto.getUuid());
+		// boolean duplicada = escolaRepository.existsByNomeEscola(escolaRequestDto.getNomeEscola(),
+		// 	escolaRequestDto.getCidade(), escolaRequestDto.getEstado(), escolaRequestDto.getUuid());
 
 		// if (duplicada) {
 		// 	throw new RegraNegocioException("Já existe escola com esse nome na cidade e estado informados");
 		// }
 
-		escolaExistente.setNomeEscola(escolaDto.getNomeEscola());
-		escolaExistente.setCodigoEscola(escolaDto.getCodigoEscola());
-		escolaExistente.setMunicipio(escolaDto.getMunicipio());
-		escolaExistente.setEstado(escolaDto.getEstado());
-		escolaExistente.setCep(escolaDto.getCep());
-		escolaExistente.setLogradouro(escolaDto.getLogradouro());
-		escolaExistente.setTipoEscola(escolaDto.getTipoEscola());
+		escolaExistente.setNomeEscola(escolaRequestDto.getNomeEscola());
+		escolaExistente.setCodigoEscola(escolaRequestDto.getCodigoEscola());
+		escolaExistente.setMunicipio(escolaRequestDto.getMunicipio());
+		escolaExistente.setEstado(escolaRequestDto.getEstado());
+		escolaExistente.setCep(escolaRequestDto.getCep());
+		escolaExistente.setLogradouro(escolaRequestDto.getLogradouro());
+		escolaExistente.setTipoEscola(escolaRequestDto.getTipoEscola());
 
 		Escola escolaAtualizada = escolaRepository.save(escolaExistente);
-		return escolaMapper.entityToDto(escolaAtualizada);
+		return null; // escolaMapper.entityToDto(escolaAtualizada);
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class EscolaServiceImpl implements EscolaService {
 	}
 
 	@Override
-	public Optional<EscolaDTO> obterEscolaPorId(UUID uuid) {
+	public Optional<EscolaRequestDTO> obterEscolaPorId(UUID uuid) {
 		return buscarEscolaPorId(uuid);
 	}
 }

@@ -25,11 +25,11 @@ public class UsuarioDetailsService implements UserDetailsService {
                 .map(usuario -> User.builder()
                         .username(usuario.getEmail())
                         .password(usuario.getPassword())
-                        .disabled(!Boolean.TRUE.equals(usuario.getIsAtivo()))
+//                        .disabled(!Boolean.TRUE.equals(usuario.getIsAtivo())) //redundante
                         .roles("USER")
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        "Usuário não encontrado"
+                        "Credenciais inválidas!"
                 ));
     }
 }

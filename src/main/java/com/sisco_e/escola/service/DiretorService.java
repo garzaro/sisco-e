@@ -4,26 +4,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.sisco_e.escola.api.dto.request.DiretorRequestDTO;
+import com.sisco_e.escola.api.dto.response.DiretorResponseDTO;
 import org.springframework.stereotype.Service;
-
-import com.sisco_e.escola.api.dto.DiretorDTO;
 
 @Service
 public interface DiretorService {
 
-	DiretorDTO cadastrarDiretor(DiretorDTO diretorDto);
+	DiretorResponseDTO cadastrarDiretor(DiretorRequestDTO diretorRequestDto);
 
-	void validarDiretor(DiretorDTO diretorDto);
+	void validarDiretor(DiretorRequestDTO diretorRequestDto);
 
-	List<DiretorDTO> buscarTodosDiretores();
+	List<DiretorRequestDTO> buscarTodosDiretores();
 
-	Optional<DiretorDTO> buscarDiretorPorId(UUID uuid);
+	Optional<DiretorRequestDTO> buscarDiretorPorId(UUID uuid);
 
-	Optional<DiretorDTO> buscarDiretorPorCpf(String cpfDiretor);
+	Optional<DiretorRequestDTO> buscarDiretorPorCpf(String cpfDiretor);
 
-	Optional<DiretorDTO> buscarDiretorPorEmailCorporativo(String emailCorporativo);
+	Optional<DiretorRequestDTO> buscarDiretorPorEmailCorporativo(String emailCorporativo);
 
-	Optional<DiretorDTO> buscarDiretorPorEmailPessoal(String emailPessoal);
+	Optional<DiretorRequestDTO> buscarDiretorPorEmailPessoal(String emailPessoal);
 
-	Optional<DiretorDTO> buscarDiretorPorEscola(UUID escolaUuid);
+	Optional<DiretorRequestDTO> buscarDiretorPorEscola(UUID escolaUuid);
 }

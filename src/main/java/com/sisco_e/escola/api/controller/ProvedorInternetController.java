@@ -3,7 +3,9 @@ package com.sisco_e.escola.api.controller;
 import java.util.List;
 import java.util.UUID;
 
-import com.sisco_e.escola.api.dto.ApiResponse;
+import com.sisco_e.escola.api.dto.request.ProvedorInternetRequestDTO;
+import com.sisco_e.escola.api.dto.response.ApiResponse;
+import com.sisco_e.escola.api.dto.response.ProvedorInternetResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.sisco_e.escola.api.dto.ProvedorInternetDTO;
 import com.sisco_e.escola.service.ProvedorInternetService;
 
 import jakarta.validation.Valid;
@@ -29,55 +30,54 @@ public class ProvedorInternetController {
     private final ProvedorInternetService provedorInternetService;
 
     @PostMapping("/reg/provedor")
-    public ResponseEntity<ApiResponse<ProvedorInternetDTO>> cadastrarProvedorInternet(
-            @RequestBody @Valid ProvedorInternetDTO provedorInternetDto) {
-        ProvedorInternetDTO provedorCriado =
-                provedorInternetService.cadastrarProvedorInternet(provedorInternetDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(
-                        "Provedor criado com sucesso!",
-                        provedorCriado));
+    public ResponseEntity<ApiResponse<ProvedorInternetResponseDTO>> cadastrarProvedorInternet(
+            @RequestBody @Valid ProvedorInternetRequestDTO provedorInternetRequestDto) {
+        ProvedorInternetResponseDTO provedorCriado = provedorInternetService
+                .cadastrarProvedorInternet(provedorInternetRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
+                        "Provedor criado com sucesso!", provedorCriado
+        ));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProvedorInternetDTO>> buscarTodosProvedoresInternet() {
+    public ResponseEntity<List<ProvedorInternetRequestDTO>> buscarTodosProvedoresInternet() {
         return ResponseEntity.ok(provedorInternetService.buscarTodosProvedoresInternetCadastrados());
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<ProvedorInternetDTO> buscarProvedorInternetPorId(@PathVariable UUID uuid) {
+    public ResponseEntity<ProvedorInternetRequestDTO> buscarProvedorInternetPorId(@PathVariable UUID uuid) {
         return provedorInternetService.buscarProvedorInternetPorId(uuid)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/nome")
-    public ResponseEntity<ProvedorInternetDTO> buscarProvedorInternetPorNome(@RequestParam String nomeProvedor) {
+    public ResponseEntity<ProvedorInternetRequestDTO> buscarProvedorInternetPorNome(@RequestParam String nomeProvedor) {
         return provedorInternetService.buscarProvedorInternetPorNome(nomeProvedor)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/cnpj")
-    public ResponseEntity<ProvedorInternetDTO> buscarProvedorInternetPorCnpj(@RequestParam String cnpj) {
+    public ResponseEntity<ProvedorInternetRequestDTO> buscarProvedorInternetPorCnpj(@RequestParam String cnpj) {
         return provedorInternetService.buscarProvedorInternetPorCnpj(cnpj)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<List<ProvedorInternetDTO>> buscarProvedoresInternetPorParteDoNome(
+    public ResponseEntity<List<ProvedorInternetRequestDTO>> buscarProvedoresInternetPorParteDoNome(
             @RequestParam String termo) {
         return ResponseEntity.ok(provedorInternetService.buscarProvedoresInternetPorParteDoNome(termo));
     }
 
-    @PutMapping("/{uuid}")
-    public ResponseEntity<ProvedorInternetDTO> atualizarProvedorInternet(
-            @PathVariable UUID uuid,
-            @RequestBody @Valid ProvedorInternetDTO provedorInternetDto) {
-        provedorInternetDto.setUuid(uuid);
-        return ResponseEntity.ok(provedorInternetService.atualizarProvedorInternet(provedorInternetDto));
-    }
+//    @PutMapping("/{uuid}")
+//    public ResponseEntity<ProvedorInternetRequestDTO> atualizarProvedorInternet(
+//            @PathVariable UUID uuid,
+//            @RequestBody @Valid ProvedorInternetRequestDTO provedorInternetRequestDto) {
+//        provedorInternetRequestDto.setUuid(uuid);
+//        return ResponseEntity.ok(provedorInternetService.atualizarProvedorInternet(provedorInternetRequestDto));
+//    }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deletarProvedorInternet(@PathVariable UUID uuid) {

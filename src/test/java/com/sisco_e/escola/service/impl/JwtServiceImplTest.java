@@ -1,5 +1,6 @@
 package com.sisco_e.escola.service.impl;
 
+import com.sisco_e.escola.service.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.WeakKeyException;
@@ -155,6 +156,17 @@ class JwtServiceImplTest {
         assertThat(token.split("\\.")).hasSize(3);
     }
 
+    @Test
+    @DisplayName("G-10: access token deve ter claim token_type = \"ACCESS\"")
+    void generateToken_TokenTypeAccess() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateToken(createUser("user@test.com"));
+
+        Claims claims = service.obterClaims(token);
+        assertThat(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class))
+                .isEqualTo(JwtService.TOKEN_TYPE_ACCESS);
+    }
+
     // --- 3.3 generateRefreshToken ---
 
     @Test
@@ -208,6 +220,17 @@ class JwtServiceImplTest {
 
         Claims claims = service.obterClaims(token);
         assertThat(claims).doesNotContainKey("horaExpiração");
+    }
+
+    @Test
+    @DisplayName("R-06: refresh token deve ter claim token_type = \"REFRESH\"")
+    void generateRefreshToken_TokenTypeRefresh() {
+        JwtServiceImpl service = createService(SECRET_32);
+        String token = service.generateRefreshToken(createUser("user@test.com"));
+
+        Claims claims = service.obterClaims(token);
+        assertThat(claims.get(JwtService.CLAIM_TOKEN_TYPE, String.class))
+                .isEqualTo(JwtService.TOKEN_TYPE_REFRESH);
     }
 
     // --- 3.4 obterClaims ---
