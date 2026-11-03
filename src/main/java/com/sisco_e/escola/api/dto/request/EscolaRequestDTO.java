@@ -56,5 +56,4 @@ public class EscolaRequestDTO {
 	@NotNull(message = "{escola.tipo.escola.notnull}")
 	private TipoEscola tipoEscola;
 
-	private UUID uuid;
 }

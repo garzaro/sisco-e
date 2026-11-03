@@ -17,23 +17,22 @@ public interface EscolaService {
 
 	void validarEscola(EscolaRequestDTO escolaRequestDto);
 
-	List<EscolaRequestDTO> buscarTodasAsEscolasCadastradas();
+	EscolaResponseDTO atualizarEscola(UUID escolaUuid, EscolaRequestDTO escolaRequestDto);
 
-	Optional<EscolaRequestDTO> buscarEscolaPorId(UUID uuid);
+	List<EscolaResponseDTO> buscarTodasAsEscolasCadastradas();
 
-	Optional<EscolaRequestDTO> buscarEscolaPorNome(String nomeEscola);
+	Optional<EscolaResponseDTO> buscarEscolaPorId(UUID uuid);
 
-	List<EscolaRequestDTO> buscarEscolaPorMunicipio(String municipio);
+	Optional<EscolaResponseDTO> buscarEscolaPorNome(String nomeEscola);
 
-	List<EscolaRequestDTO> buscarEscolaPorEstado(String estado);
+	List<EscolaResponseDTO> buscarEscolaPorMunicipio(String municipio);
 
-	List<EscolaRequestDTO> buscarEscolaPorTipo(TipoEscola tipoEscola);
+	List<EscolaResponseDTO> buscarEscolaPorEstado(String estado);
 
-	List<EscolaRequestDTO> buscarEscolaPorParteDoNome(String parteNomeEscola);
+	List<EscolaResponseDTO> buscarEscolaPorTipo(TipoEscola tipoEscola);
 
-	EscolaRequestDTO atualizarEscola(EscolaRequestDTO escolaRequestDto);
+	List<EscolaResponseDTO> buscarEscolaPorParteDoNome(String parteNomeEscola);
 
 	void deletarEscola(UUID uuid);
 
-	Optional<EscolaRequestDTO> obterEscolaPorId(UUID uuid);
 }

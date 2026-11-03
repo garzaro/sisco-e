@@ -36,11 +36,15 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
-
+    private static final String CLAIM_TOKEN_TYPE = "token_type";
+    private static final String TOKEN_TYPE_ACCESS = "access";
+    private static final String TOKEN_TYPE_REFRESH = "refresh";
+    
     private final SecretKey signingKey;
     private final long expirationMs;
     private final long expirationRefeshToken;
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     public JwtServiceImpl(
             @Value("${app.security.jwt.jwtSecretKey}") String secret,
@@ -72,6 +76,7 @@ public class JwtServiceImpl implements JwtService {
                 .issuedAt(Date.from(agora))
                 .expiration(Date.from(expiracao))
                 .subject(userDetails.getUsername())
+                .claim(CLAIM_TOKEN_TYPE, TOKEN_TYPE_ACCESS)
                 .claim("roles", userDetails.getAuthorities()) //ver necessidade de trasnportar isso no token, ja existe no filtro userDetails.getAuthorities().
                 .claim("horaExpiração", horaFormatada)
                 .signWith(signingKey)
@@ -87,6 +92,7 @@ public class JwtServiceImpl implements JwtService {
                 .issuedAt(Date.from(agora))
                 .expiration(Date.from(expiracao))
                 .subject(userDetails.getUsername())
+                .claim(CLAIM_TOKEN_TYPE, TOKEN_TYPE_REFRESH)
                 .claim("roles", userDetails.getAuthorities())
 
                 .signWith(signingKey)
@@ -101,6 +107,37 @@ public class JwtServiceImpl implements JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    @Override
+    public Optional<String> obterSubjectAccessToken(String token) {
+        try {
+            Claims claims = obterClaims(token);
+            String tokenType = claims.get(CLAIM_TOKEN_TYPE, String.class);
+            if (!TOKEN_TYPE_ACCESS.equals(tokenType)) {
+                logger.warn("Token apresentado não é um access token!");
+                return Optional.empty();
+            }
+
+            String subject = claims.getSubject();
+            return subject == null || subject.isBlank()
+            ? Optional.empty()
+            : Optional.of(subject);
+
+        } catch (JwtException | IllegalArgumentException ex) {
+            return Optional.empty();
+        }
+    } 
+
+    @Override
+    public boolean isRefreshToken(String token) {
+        try {
+            Claims claims = obterClaims(token);
+            return TOKEN_TYPE_REFRESH.equals(
+                claims.get(CLAIM_TOKEN_TYPE, String.class));
+        } catch (JwtException | IllegalArgumentException ex) {
+            return false;
+        }
     }
 
     @Override

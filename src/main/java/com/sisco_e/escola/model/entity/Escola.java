@@ -37,8 +37,8 @@ public class Escola {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "uuid_escola")
-	private UUID uuid;
+	@Column(name = "escola_uuid")
+	private UUID escolaUuid;
 
 	@Column(name = "nome_escola", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
 	private String nomeEscola;
