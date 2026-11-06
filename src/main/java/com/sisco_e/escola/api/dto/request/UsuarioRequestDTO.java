@@ -25,8 +25,6 @@ import org.hibernate.validator.constraints.br.CPF;
 @Builder
 public class UsuarioRequestDTO {
 
-    private UUID uuid;
-
     @NotBlank(message = "{usuario.nome.notblank}")
     @Size(max = 120, message = "{usuario.nome.size}")
     private String nomeCompleto;
@@ -49,12 +47,10 @@ public class UsuarioRequestDTO {
     String email;
 
     @NotBlank(message = "{usuario.senha.notblank}")
-    @Size(min = 6, max = 255, message = "{usuario.senha.size}")
+    @Size(min = 8, max = 255, message = "{usuario.senha.size}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])" +
             "(?=.*\\d)(?=.*[@$!%*?&])" +
             "[A-Za-z\\d@$!%*?&]{6,}$",
             message = "{usuario.senha.pattern}")
-    String password;
-
-    private Boolean isAtivo;
+    String password;    
 }

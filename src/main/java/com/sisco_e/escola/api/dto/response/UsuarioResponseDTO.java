@@ -12,15 +12,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class UsuarioResponseDTO {
-    UUID uuid;
+    private UUID uuid;
 
-    String nomeCompleto;
+    private String nomeCompleto;
 
-    String cpf;
+    private String cpf;
 
-    String username;
+    private String username;
 
-    String email;
+    private String email;
 
-    Boolean isAtivo;
+    private Boolean isAtivo;
 }
