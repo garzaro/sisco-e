@@ -9,11 +9,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class ProvedorInternetResponseDTO {
-    UUID uuid;
+    private UUID uuid;
 
-    String nomeProvedor;
+    private String nomeProvedor;
 
-    String cnpj;
+    private String cnpj;
 
-    String telefone;
+    private String telefone;
 }

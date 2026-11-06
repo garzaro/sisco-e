@@ -1,10 +1,9 @@
 package com.sisco_e.escola.api.dto.request;
 
-import java.util.UUID;
-
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +17,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ProvedorInternetRequestDTO {
-	private UUID uuid;
 
 	@NotBlank(message = "{provedor.nome.notblank}")
 	@Size(max = 120, message = "{provedor.nome.size}")
@@ -30,6 +28,7 @@ public class ProvedorInternetRequestDTO {
 	private String cnpj;
 	
 	@NotBlank(message = "{provedor.telefone.notblank}")
-	@Size(min= 10, max= 11, message = "{provedor.telfone.size}")	
+	@Size(min = 10, max = 11, message = "{provedor.telefone.size}")
+	@Pattern(regexp = "^[0-9]{10,11}$", message = "{provedor.telefone.formato}")
 	private String telefone;
 }
