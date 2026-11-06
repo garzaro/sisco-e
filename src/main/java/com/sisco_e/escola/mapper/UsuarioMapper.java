@@ -8,22 +8,29 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS
-) //isso é perfeito para métodos de atualização (PUT/PATCH), 
-// pois evita que campos nulos enviados na requisição sobrescrevam dados válidos que já existem no banco
-public interface UsuarioMapper {
-    /**entidade na entrada**/
-    @Mapping(target = "dataCadastro", ignore = true)
-    Usuario DtoToEntity(UsuarioRequestDTO requestDTO);
+) //para métodos de atualização (PUT/PATCH),
+// evita que campos nulos enviados na requisição sobrescrevam dados válidos que já existem no banco
 
-    /**@MappingTarget - para atualizar uma entidade já carregada,
-     *  em vez de criar uma nova e perder o estado do JPA
-     *  **/
-    @Mapping(target = "uuid", ignore = true)
-    @Mapping(target = "password", ignore = true)
+public interface UsuarioMapper {
+    /**entrada de dados**/
     @Mapping(target = "dataCadastro", ignore = true)
-    void atualizar(UsuarioRequestDTO request, @MappingTarget Usuario usuario);
+    @Mapping(target = "dataAtualizacao", ignore = true)
+    @Mapping(target = "isAtivo", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    Usuario dtoToEntity(UsuarioRequestDTO requestDTO);
 
     /**to response**/
     UsuarioResponseDTO entityToDto(Usuario usuario);
-
+    
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "isAtivo", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "dataCadastro", ignore = true)
+    @Mapping(target = "dataAtualizacao", ignore = true)        
+    void atualizar(UsuarioRequestDTO request, @MappingTarget Usuario usuario);    
 }
+
+/**
+ * @MappingTarget - para atualizar uma entidade já carregada,
+ * em vez de criar uma nova e perder o estado do JPA
+ * **/

@@ -11,16 +11,34 @@ import com.sisco_e.escola.model.entity.Escola;
 		nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface EscolaMapper {
 
-	// @Mapping(target = "isAtivo", source = "isAtivo")
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
-	Escola DtoToEntity(EscolaRequestDTO requestDto);
+	@Mapping(target = "isAtivo", ignore = true)
+	@Mapping(target = "uuid", ignore = true)
+	@Mapping(target = "diretor", ignore = true) 
+	Escola dtoToEntity(EscolaRequestDTO requestDto);
 
-	// @Mapping(target = "isAtivo", source = "isAtivo")
-	@Mapping(target = "uuid", source = "uuid")
-	EscolaResponseDTO entityToDto(Escola escolaResponse);
+	EscolaResponseDTO entityToDto(Escola responseResponse);
 
-	void atualizarEscolaFromDto(EscolaRequestDTO requestDto, @MappingTarget Escola escola);
-
-//	EscolaRequestDTO entityToRequestDto(Escola entity);
+	@Mapping(target = "uuid", ignore = true)
+	@Mapping(target = "diretor", ignore = true)
+	@Mapping(target = "isAtivo", ignore = true)
+	@Mapping(target = "dataCadastro", ignore = true)
+	@Mapping(target = "dataAtualizacao", ignore = true)
+	void atualizarEscola(EscolaRequestDTO requestDto, @MappingTarget Escola escola);
 }
+
+/**
+ * @Mapping(source = "uuid", target = "escolaUuid")
+ * EscolaResponseDTO toResponse(Escola escola);
+ *
+ * source é o campo da entidade (uuid) e target é o do DTO (escolaUuid).
+ *
+ *  Se for o contrário (entidade escolaUuid, DTO uuid), é só trocar os dois.
+ *
+ * Se o DTO (request) de entrada não tiver o campo (o UUID é gerado pelo banco), ignore o alvo:
+ * toEntity - @Mapping(target = "uuid", ignore = true)
+ *
+ * No update, o uuid não pode ser sobrescrito pelo DTO (se vier nulo ou diferente, corrompe a identidade da entidade).
+ */
+

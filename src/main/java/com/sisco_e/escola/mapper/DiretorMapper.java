@@ -14,21 +14,19 @@ import com.sisco_e.escola.model.entity.Diretor;
 		nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface DiretorMapper {
 
-	@Mapping(target = "cpfDiretor", source = "cpf")
-	@Mapping(target = "emailCorporativo", source = "email")
+	
+	@Mapping(source = "cpf", target = "cpfDiretor")
+	@Mapping(source = "email", target = "emailCorporativo")
+	@Mapping(target = "uuid", ignore = true)
+	@Mapping(target = "escola", ignore = true)
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
-	Diretor DtoToEntity(DiretorRequestDTO dto);
-
-	@Mapping(target = "cpf", source = "cpfDiretor")
-	@Mapping(target = "email", source = "emailCorporativo")
-	@Mapping(target = "escolaUuid", source = "escola.uuid")
-	@Mapping(target = "uuid", source = "uuid")
-    DiretorResponseDTO entityToDto(Diretor entity);
-
-	@Mapping(target = "cpf", source = "cpfDiretor")
-	@Mapping(target = "email", source = "emailCorporativo")
-	@Mapping(target = "escolaUuid", source = "escola.uuid")
-	@Mapping(target = "uuid", source = "uuid")
-	DiretorRequestDTO entityToRequestDto(Diretor entity);
+	@Mapping(target = "isAtivo", ignore = true)
+	Diretor dtoToEntity(DiretorRequestDTO dto);
+		
+	
+	@Mapping(source = "cpfDiretor", target = "cpf")
+	@Mapping(source = "emailCorporativo", target = "email")
+	@Mapping(source = "escola.uuid", target = "escolaUuid")
+	DiretorResponseDTO entityToDto(Diretor entity);
 }

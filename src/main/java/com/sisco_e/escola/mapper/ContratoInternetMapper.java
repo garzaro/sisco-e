@@ -14,16 +14,15 @@ import com.sisco_e.escola.model.entity.ContratoInternet;
 		nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface ContratoInternetMapper {
 
+	@Mapping(target = "uuid", ignore = true)
+	@Mapping(target = "escola", ignore = true)
+	@Mapping(target = "provedor", ignore = true)
+	@Mapping(target = "status", ignore = true)
 	@Mapping(target = "dataCadastro", ignore = true)
 	@Mapping(target = "dataAtualizacao", ignore = true)
 	ContratoInternet dtoToEntity(ContratoInternetRequestDTO dto);
 
-	@Mapping(target = "uuidEscola", source = "escola.uuid")
-	@Mapping(target = "uuidProvedor", source = "provedor.uuid")
-	@Mapping(target = "uuid", source = "uuid")
-    ContratoInternetResponseDto entityToDto(ContratoInternet entity);
-
-	@Mapping(target = "uuidEscola", source = "escola.uuid")
-	@Mapping(target = "uuidProvedor", source = "provedor.uuid")
-    ContratoInternetRequestDTO entityToRequestDto(ContratoInternet entity);
+	@Mapping(source = "escola.uuid", target = "uuidEscola")
+	@Mapping(source = "provedor.uuid", target = "uuidProvedor")
+	ContratoInternetResponseDto entityToDto(ContratoInternet entity);
 }
