@@ -10,23 +10,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class EscolaResponseDTO {
-    UUID uuid;
+    private UUID uuid;
 
-    String nomeEscola;
+    private String nomeEscola;
 
-    String codigoEscola;
+    private String codigoEscola;
 
-    String municipio;
+    private String municipio;
 
-    String estado;
+    private String estado;
 
-    String logradouro;
+    private String logradouro;
 
-    String bairro;
+    private String bairro;
 
-    String cep;
+    private String cep;
 
-    TipoEscola tipoEscola;
+    private TipoEscola tipoEscola;
 
-    Boolean IsAtivo;
+    private Boolean isAtivo;
 }

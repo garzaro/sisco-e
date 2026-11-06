@@ -6,6 +6,7 @@ import com.sisco_e.escola.model.enums.TipoEscola;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,16 +42,17 @@ public class EscolaRequestDTO {
 	@Size(min = 2, max = 2, message = "{escola.uf.tamanho}")
 	private String estado;	
 
-	@NotBlank
-	@Size(max = 255)
+	@NotBlank(message = "{escola.logradouro.notblank}")
+	@Size(max = 255, message = "{escola.logradouro.size}")
 	private String logradouro;
 	
-	@NotBlank
-	@Size(max = 255)
+	@NotBlank(message = "{escola.bairro.notblank}")
+	@Size(max = 255, message = "{escola.bairro.size}")
 	private String bairro;
 
-	@NotBlank
-	@Size(max = 8)
+	@NotBlank(message = "{escola.cep.notblank}")
+	@Size(min = 8, max = 8, message = "{escola.cep.size}")
+	@Pattern(regexp = "^[0-9]{8}$", message = "{escola.cep.formato}")
 	private String cep;
 	
 	@NotNull(message = "{escola.tipo.escola.notnull}")
