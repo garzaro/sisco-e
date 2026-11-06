@@ -1,13 +1,12 @@
 package com.sisco_e.escola.api.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+
+import com.sisco_e.escola.model.enums.StatusContrato;
 
 @Getter
 @Setter
@@ -28,4 +27,6 @@ public class ContratoInternetResponseDto {
     private LocalDate dataContratacao;
 
     private LocalDate dataFimContrato;
+
+    private StatusContrato status;
 }

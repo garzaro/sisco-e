@@ -19,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ContratoInternetRequestDTO {
-
+	
 	@NotBlank(message = "{contrato.velocidade.notblank}")
 	private String velocidade;
 
@@ -27,13 +27,8 @@ public class ContratoInternetRequestDTO {
 	@NotNull(message = "{contrato.valor.mensal.notnull}")
 	private BigDecimal valorMensal;
 
- @NotNull(message = "{contrato.data.contratacao.notblank}")
+ 	@NotNull(message = "{contrato.data.contratacao.notblank}")
 	private LocalDate dataContratacao;
+	
 	private LocalDate dataFimContrato;
-
-	@NotNull(message = "{contrato.uuid.escola.notnull}")
-	private UUID uuidEscola;
-
-	@NotNull(message = "{contrato.uuid.provedor.notnull}")
-	private UUID uuidProvedor;
 }
