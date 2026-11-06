@@ -1,7 +1,6 @@
 package com.sisco_e.escola.api.dto.request;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -22,8 +21,6 @@ import lombok.Setter;
 @Builder
 public class DiretorRequestDTO {
 
-	private UUID uuid;
-
 	@NotBlank(message = "{diretor.nome.notblank}")
 	@Size(max = 120, message = "{diretor.nome.size}")
 	private String nomeDiretor;
@@ -33,8 +30,8 @@ public class DiretorRequestDTO {
 	@Size(max = 11, message = "{diretor.cpf.size}")
 	private String cpf;
 
-	@NotNull(message = "{diretor.matricula.notnull}")
-	@Size(min = 5, max = 10, message = "{diretor.matricula.size}")
+	@NotBlank(message = "{diretor.matricula.notblank}")
+	@Size(min = 6, max = 19, message = "{diretor.matricula.size}")
 	private String matriculaFuncional;
 
 	@NotBlank(message = "{diretor.email.notblank}")
@@ -49,9 +46,5 @@ public class DiretorRequestDTO {
 	@NotNull(message = "{diretor.data.posse}")
 	private Instant dataPosse;
 
-	private Instant dataFimMandato;
-
-	private UUID escolaUuid;
-
-	private Boolean isAtivo;
+	private Instant dataFimMandato;	
 }

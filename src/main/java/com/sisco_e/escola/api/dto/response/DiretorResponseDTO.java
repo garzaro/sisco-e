@@ -1,39 +1,31 @@
 package com.sisco_e.escola.api.dto.response;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
-import org.hibernate.validator.constraints.br.CPF;
-
 import java.time.Instant;
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DiretorResponseDTO {
+    private UUID uuid;
 
-    UUID uuid;
+    private UUID escolaUuid;
 
-    String nomeDiretor;
+    private String nomeDiretor;
 
-    String cpf;
+    private String cpf;
 
-    String matriculaFuncional;
+    private String matriculaFuncional;
 
-    String email;
+    private String email;
 
-    String emailPessoal;
+    private String emailPessoal;
 
-    Instant dataPosse;
+    private Instant dataPosse;
 
-    Instant dataFimMandato;
+    private Instant dataFimMandato;
 
-    Boolean isAtivo;
-
-    UUID escolaUuid;
+    private Boolean isAtivo;
 }
