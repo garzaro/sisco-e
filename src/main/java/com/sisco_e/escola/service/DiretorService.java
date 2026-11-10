@@ -13,17 +13,17 @@ public interface DiretorService {
 
 	DiretorResponseDTO cadastrarDiretor(DiretorRequestDTO diretorRequestDto);
 
-	void validarDiretor(DiretorRequestDTO diretorRequestDto);
+	void validarDiretor(DiretorResponseDTO diretorResponseDTO);
 
-	List<DiretorRequestDTO> buscarTodosDiretores();
+	List<DiretorResponseDTO> buscarTodosDiretores();
 
-	Optional<DiretorRequestDTO> buscarDiretorPorId(UUID uuid);
+	Optional<DiretorResponseDTO> buscarDiretorPorId(UUID uuid);
 
-	Optional<DiretorRequestDTO> buscarDiretorPorCpf(String cpfDiretor);
+	Optional<DiretorResponseDTO> buscarDiretorPorCpf(String cpfDiretor);
 
-	Optional<DiretorRequestDTO> buscarDiretorPorEmailCorporativo(String emailCorporativo);
+	Optional<DiretorResponseDTO> buscarDiretorPorEmailCorporativo(String emailCorporativo);
 
-	Optional<DiretorRequestDTO> buscarDiretorPorEmailPessoal(String emailPessoal);
+	Optional<DiretorResponseDTO> buscarDiretorPorEmailPessoal(String emailPessoal);
 
-	Optional<DiretorRequestDTO> buscarDiretorPorEscola(UUID escolaUuid);
+	Optional<DiretorResponseDTO> buscarDiretorPorEscola(UUID escolaUuid);
 }
