@@ -40,7 +40,7 @@ public class Diretor {
 	@Column(name = "nome_diretor", nullable = false, columnDefinition = "CHARACTER VARYING(120)")
 	private String nomeDiretor;
 
-	@Column(name = "cpf", nullable = false, unique = true, columnDefinition = "CHARACTER VARYING(11)")
+	@Column(name = "cpf_diretor", nullable = false, unique = true, columnDefinition = "CHARACTER VARYING(11)")
 	private String cpfDiretor;
 
 	@Column(name = "matricula_funcional", nullable = false, unique = true, columnDefinition = "CHARACTER VARYING(20)")
