@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,16 +21,14 @@ public interface EscolaRepository extends JpaRepository<Escola, UUID> {
 
 	Optional<Escola> findByCodigoEscola(String codigoEscola);
 	
-	Optional<Escola> findByNomeEscola(String nomeEscola);
+	List<Escola> findTop10ByNomeEscolaContainingIgnoreCase(String parteNomeEscola);
 
-	List<Escola> findByMunicipio(String municipio);
+	Page<Escola> findByMunicipio(String municipio, Pageable pageable);
 
-	List<Escola> findByEstado(String estado);	
+	Page<Escola> findByTipoEscola(TipoEscola tipoEscola, Pageable pageable);
 
-	List<Escola> findByTipoEscola(TipoEscola tipoEscola);
+	Page<Escola> findByMunicipioAndEstado(String municipio, String estado, Pageable pageable);
 
-	List<Escola> findByNomeEscolaContainingIgnoreCase(String parteNomeEscola);
-
-	List<Escola> findByMunicipioAndEstado(String municipio, String estado);
+	Page<Escola> findByEstado(String estado, Pageable pageable);
 
 }
