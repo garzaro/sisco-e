@@ -1,16 +1,24 @@
 package com.sisco_e.escola.exception;
 
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.QueryTimeoutException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -21,6 +29,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**este cara captura as excessões**/
@@ -30,9 +39,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory
+            .getLogger(GlobalExceptionHandler.class);
+
     private final MessageSource messageSource;
 
-    private ResponseEntity<ErrorResponse> buildErrorResponse(String messageKey, HttpStatus status) {
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            String messageKey, HttpStatus status)
+    {
         String mensagem = messageSource.getMessage(
                 messageKey,
                 null,
@@ -71,14 +85,29 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(RecursoNaoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
+
+        // Obtém o Locale atual da requisição (definido pelo cabeçalho Accept-Language)
+        Locale locale = LocaleContextHolder.getLocale();
+
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
+
+//            // Em vez de error.getDefaultMessage(), resolvemos via MessageSource:
+//            String errorMessage = messageSource.getMessage(error, locale);
+
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
@@ -133,5 +162,27 @@ public class GlobalExceptionHandler {
         log.error("Ocorreu um erro interno no servidor: {}", ex.getMessage(), ex);
         return ResponseEntity
         .status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro interno no servidor!");
-    }        
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+
+        log.warn("Erro de autenticação: {}", ex.getMessage());
+
+        return ResponseEntity
+                .status(ex.getHttpStatus())
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+    /**
+     * Quando ocorre dentro do Spring MVC
+     * Por exemplo, em um metodo de controller ou service chamado durante o processamento MVC.
+     * **/
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse("Acesso negado."));
+    }
 }
