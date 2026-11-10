@@ -6,24 +6,19 @@ import java.util.UUID;
 import com.sisco_e.escola.api.dto.request.EscolaRequestDTO;
 import com.sisco_e.escola.api.dto.response.ApiResponse;
 import com.sisco_e.escola.api.dto.response.EscolaResponseDTO;
+import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sisco_e.escola.model.enums.TipoEscola;
 import com.sisco_e.escola.service.EscolaService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+/**Mantive o ResponseEntity so pra  manter padrao, ja tinha começado com ele ai vai...o Page ja basta**/
 @RestController
 @RequestMapping("/api/escola")
 @RequiredArgsConstructor
@@ -41,49 +36,50 @@ public class EscolaController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<EscolaRequestDTO>> buscarTodasAsEscolas() {
-		return ResponseEntity.ok(escolaService.buscarTodasAsEscolasCadastradas());
+	public Page<EscolaResponseDTO> listarEscolasCadastradas(Pageable pageable) {
+		return escolaService.buscarEscolasCadastradas(pageable);
 	}
 
-	@GetMapping("/{uuid}")
-	public ResponseEntity<EscolaRequestDTO> buscarEscolaPorId(@PathVariable UUID uuid) {
-		return escolaService.buscarEscolaPorId(uuid)
-			.map(ResponseEntity::ok)
-			.orElse(ResponseEntity.notFound().build());
+	@GetMapping("/{escolaUuid}")
+	public ResponseEntity<EscolaResponseDTO> buscarEscolaPorId(@PathVariable UUID escolaUuid) {
+		return ResponseEntity.ok(escolaService.buscarEscolaPorId(escolaUuid));
 	}
 
-	@GetMapping("/nome")
-	public ResponseEntity<EscolaRequestDTO> buscarEscolaPorNome(@RequestParam String nomeEscola) {
-		return escolaService.buscarEscolaPorNome(nomeEscola)
-			.map(ResponseEntity::ok)
-			.orElse(ResponseEntity.notFound().build());
+	@PutMapping("/{escolaUuid}")
+	public ResponseEntity<EscolaResponseDTO> atualizarEscola(
+			@PathVariable UUID escolaUuid,
+			@RequestBody @Valid EscolaRequestDTO escolaRequestDto
+	) {
+		return ResponseEntity.ok(escolaService.atualizarEscola(escolaUuid, escolaRequestDto));
+	}
+
+	@GetMapping("/buscar-nome-escola")
+	public List<EscolaResponseDTO> buscarEscolaPorNome(
+			@RequestParam @Size(min = 3) String nomeEscola
+	) {
+		return escolaService
+				.buscarByNomeEscolaContainingIgnoreCaseOrderByNomeEscolaAsc(nomeEscola);
 	}
 
 	@GetMapping("/municipio")
-	public ResponseEntity<List<EscolaRequestDTO>> buscarEscolaPorMunicipio(@RequestParam String municipio) {
-		return ResponseEntity.ok(escolaService.buscarEscolaPorMunicipio(municipio));
+	public ResponseEntity<Page<EscolaResponseDTO>> buscarEscolaPorMunicipio(
+			@RequestParam String municipio, Pageable pageable
+	) {
+		return ResponseEntity.ok(escolaService.buscarEscolaPorMunicipio(municipio, pageable));
 	}
 
 	@GetMapping("/estado")
-	public ResponseEntity<List<EscolaRequestDTO>> buscarEscolaPorEstado(@RequestParam String estado) {
-		return ResponseEntity.ok(escolaService.buscarEscolaPorEstado(estado));
+	public ResponseEntity<Page<EscolaResponseDTO>> buscarEscolaPorEstado(
+			@RequestParam String estado, Pageable pageable) {
+		return ResponseEntity.ok(escolaService.buscarEscolaPorEstado(estado, pageable));
 	}
 
-	@GetMapping("/tipo")
-	public ResponseEntity<List<EscolaRequestDTO>> buscarEscolaPorTipo(@RequestParam TipoEscola tipoEscola) {
-		return ResponseEntity.ok(escolaService.buscarEscolaPorTipo(tipoEscola));
+	@GetMapping("/tipo-escola")
+	public ResponseEntity<Page<EscolaResponseDTO>> buscarEscolaPorTipo(
+			@RequestParam TipoEscola tipoEscola, Pageable pageable
+	) {
+		return ResponseEntity.ok(escolaService.buscarEscolaPorTipo(tipoEscola, pageable));
 	}
-
-	@GetMapping("/buscar")
-	public ResponseEntity<List<EscolaRequestDTO>> buscarEscolaPorParteDoNome(@RequestParam String termo) {
-		return ResponseEntity.ok(escolaService.buscarEscolaPorParteDoNome(termo));
-	}
-
-//	@PutMapping("/{uuid}")
-//	public ResponseEntity<EscolaResponseDTO> atualizarEscola(@PathVariable UUID uuid, @RequestBody @Valid EscolaRequestDTO escolaRequestDto) {
-//		escolaRequestDto.setUuid(uuid);
-//		return ResponseEntity.ok(escolaService.atualizarEscola(escolaRequestDto));
-//	}
 
 	@DeleteMapping("/{uuid}")
 	public ResponseEntity<Void> deletarEscola(@PathVariable UUID uuid) {
