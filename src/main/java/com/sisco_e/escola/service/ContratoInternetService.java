@@ -13,7 +13,8 @@ public interface ContratoInternetService {
 	
 	void validarContrato(ContratoInternetRequestDTO contratoDto);
 
-	List<ContratoInternetRequestDTO> buscarContratosAtivosComEscolaEProvedor();
+	List<ContratoInternetResponseDto> buscarContratosAtivosComEscolaEProvedor();
 
-	List<ContratoInternetRequestDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status);
+	List<ContratoInternetResponseDto> buscarPorEscolaEStatus(
+			UUID uuidEscola, StatusContrato status);
 }
