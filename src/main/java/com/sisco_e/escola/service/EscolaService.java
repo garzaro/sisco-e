@@ -1,11 +1,13 @@
 package com.sisco_e.escola.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.sisco_e.escola.api.dto.request.EscolaRequestDTO;
 import com.sisco_e.escola.api.dto.response.EscolaResponseDTO;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sisco_e.escola.model.enums.TipoEscola;
@@ -17,22 +19,26 @@ public interface EscolaService {
 
 	void validarEscola(EscolaRequestDTO escolaRequestDto);
 
+	void deletarEscola(UUID escolaUuid);
+	/**
+	 * Atualiza os dados de uma escola existente identificada pelo seu UUID.
+	 */
 	EscolaResponseDTO atualizarEscola(UUID escolaUuid, EscolaRequestDTO escolaRequestDto);
 
-	List<EscolaResponseDTO> buscarTodasAsEscolasCadastradas();
+	EscolaResponseDTO buscarEscolaPorCodigo(String codigoEscola);
 
-	Optional<EscolaResponseDTO> buscarEscolaPorId(UUID uuid);
+	EscolaResponseDTO buscarEscolaPorId(UUID escolaUuid);
 
-	Optional<EscolaResponseDTO> buscarEscolaPorNome(String nomeEscola);
+	/**
+	 * Busca rápida limitada para preenchimento de autocomplete/sugestões na interface.
+	 */
+	List<EscolaResponseDTO> buscarByNomeEscolaContainingIgnoreCaseOrderByNomeEscolaAsc(String parteNomeEscola);
 
-	List<EscolaResponseDTO> buscarEscolaPorMunicipio(String municipio);
+	Page<EscolaResponseDTO> buscarEscolasCadastradas(Pageable pageable);
 
-	List<EscolaResponseDTO> buscarEscolaPorEstado(String estado);
+	Page<EscolaResponseDTO> buscarEscolaPorMunicipio(String municipio, Pageable pageable);
 
-	List<EscolaResponseDTO> buscarEscolaPorTipo(TipoEscola tipoEscola);
+	Page<EscolaResponseDTO> buscarEscolaPorEstado(String estado, Pageable pageable);
 
-	List<EscolaResponseDTO> buscarEscolaPorParteDoNome(String parteNomeEscola);
-
-	void deletarEscola(UUID uuid);
-
+	Page<EscolaResponseDTO> buscarEscolaPorTipo(TipoEscola tipoEscola, Pageable pageable);
 }
