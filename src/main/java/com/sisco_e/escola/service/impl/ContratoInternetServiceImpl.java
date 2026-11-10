@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.sisco_e.escola.api.dto.request.ContratoInternetRequestDTO;
+import com.sisco_e.escola.api.dto.request.EscolaRequestDTO;
 import com.sisco_e.escola.api.dto.response.ContratoInternetResponseDto;
+import com.sisco_e.escola.api.dto.response.EscolaResponseDTO;
 import com.sisco_e.escola.exception.RegraNegocioException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -63,36 +65,51 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 	private final ProvedorInternetRepository provedorInternetRepository;
 	private final ContratoInternetMapper contratoInternetMapper;
 
-	@Transactional
 	@Override
-	public ContratoInternetResponseDto cadastrarContrato(ContratoInternetRequestDTO contratoDto){
+	@Transactional
+	public ContratoInternetResponseDto cadastrarContrato(
+			ContratoInternetRequestDTO contratoDto
+	){
 		validarContrato(contratoDto);
 
-		ContratoInternet contrato = contratoInternetMapper.dtoToEntity(contratoDto);
-		contrato.setStatus(StatusContrato.ATIVO);
+		ContratoInternet entity = contratoInternetMapper.dtoToEntity(contratoDto);
+		entity.setStatus(StatusContrato.ATIVO);
 
-		Escola escola = escolaRepository.findById(contratoDto.getUuidEscola())
+		Escola escolaSalva = escolaRepository.findById(contratoDto. getUuidEscola())
 				.orElseThrow(() ->
 						new EntityNotFoundException("Escola não encontrada para vínculo com o contrato!"));
 		ProvedorInternet provedor = provedorInternetRepository.findById(contratoDto.getUuidProvedor())
 				.orElseThrow(() ->
 						new EntityNotFoundException("Provedor não encontrado para vínculo com o contrato!"));
 
-		contrato.setEscola(escola);
-		contrato.setProvedor(provedor);
+		entity.setEscola(escolaSalva);
+		entity.setProvedor(provedor);
 
-		ContratoInternet contratoSalvo = contratoInternetRepository.save(contrato);
+		ContratoInternet contratoSalvo = contratoInternetRepository.save(entity);
 		return contratoInternetMapper.entityToDto(contratoSalvo);
 	}
 
+//	@Override
+//	@Transactional
+//	public EscolaResponseDTO cadastrarEscola(EscolaRequestDTO escolaRequestDto) {
+//		validarEscola(escolaRequestDto);
+//		Escola entity = escolaMapper.dtoToEntity(escolaRequestDto);
+//		/** Segue o boolean do domínio: toda escola cadastrada inicia ativa. */
+//		entity.setIsAtivo(Boolean.TRUE);
+//		Escola escolaSalva = escolaRepository.save(entity);
+//		return escolaMapper.entityToDto(escolaSalva);
+//	}
+
+
+
 	@Override
-	public List<ContratoInternetRequestDTO> buscarContratosAtivosComEscolaEProvedor() {
+	public List<ContratoInternetResponseDto> buscarContratosAtivosComEscolaEProvedor() {
 		return contratoInternetRepository.findContratosAtivosComEscolaEProvedor()
 				.stream().map(contratoInternetMapper::entityToRequestDto).toList();
 	}
 
 	@Override
-	public List<ContratoInternetRequestDTO> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status) {
+	public List<ContratoInternetResponseDto> buscarPorEscolaEStatus(UUID uuidEscola, StatusContrato status) {
 		return contratoInternetRepository.findByEscola_UuidAndStatus(uuidEscola, status)
 				.stream().map(contratoInternetMapper::entityToRequestDto).toList();
 	}
@@ -217,7 +234,7 @@ public class ContratoInternetServiceImpl implements ContratoInternetService {
 
 //     validarA(aDto);
 
-//     A a = aMapper.DtoToEntity(aDto);
+//     A a = aMapper.dtoToEntity(aDto);
 
 //     a.setIsAtivo(
 //         Boolean.TRUE.equals(aDto.getIsAtivo()) ||
