@@ -43,40 +43,40 @@ public class DiretorController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<DiretorRequestDTO>> buscarTodosDiretores() {
+	public ResponseEntity<List<DiretorResponseDTO>> buscarTodosDiretores() {
 		return ResponseEntity.ok(diretorService.buscarTodosDiretores());
 	}
 
 	@GetMapping("/{uuid}")
-	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorId(@PathVariable UUID uuid) {
+	public ResponseEntity<DiretorResponseDTO> buscarDiretorPorId(@PathVariable UUID uuid) {
 		return diretorService.buscarDiretorPorId(uuid)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
     
 	@GetMapping("/cpf")
-	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorCpf(@RequestParam String cpf) {
+	public ResponseEntity<DiretorResponseDTO> buscarDiretorPorCpf(@RequestParam String cpf) {
 		return diretorService.buscarDiretorPorCpf(cpf)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/email")
-	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorEmail(@RequestParam String email) {
+	public ResponseEntity<DiretorResponseDTO> buscarDiretorPorEmail(@RequestParam String email) {
 		return diretorService.buscarDiretorPorEmailCorporativo(email)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/email-pessoal")
-	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorEmailPessoal(@RequestParam String emailPessoal) {
+	public ResponseEntity<DiretorResponseDTO> buscarDiretorPorEmailPessoal(@RequestParam String emailPessoal) {
 		return diretorService.buscarDiretorPorEmailPessoal(emailPessoal)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/escola/{escolaUuid}")
-	public ResponseEntity<DiretorRequestDTO> buscarDiretorPorEscola(@PathVariable UUID escolaUuid) {
+	public ResponseEntity<DiretorResponseDTO> buscarDiretorPorEscola(@PathVariable UUID escolaUuid) {
 		return diretorService.buscarDiretorPorEscola(escolaUuid)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
