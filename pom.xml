@@ -36,11 +36,19 @@
          	<artifactId>spring-boot-starter-web</artifactId>
      	</dependency>
      	<!--Email com domions permitidos-->
-     	<dependency>
+     	<!-- <dependency>
      		<groupId>com.alowed-domain</groupId>
     		<artifactId>dominios-permitidos</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
-		</dependency>    
+		</dependency> -->
+
+		<!-- Source: https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations -->
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>3.0.0</version>
+			<scope>compile</scope>
+		</dependency>
           
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
