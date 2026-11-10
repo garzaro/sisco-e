@@ -39,12 +39,12 @@ public class ContratoInternetController {
 	}
 
 	@GetMapping("/ativos")
-	public ResponseEntity<List<ContratoInternetRequestDTO>> listarAtivos() {
+	public ResponseEntity<List<ContratoInternetResponseDto>> listarAtivos() {
 		return ResponseEntity.ok(contratoInternetService.buscarContratosAtivosComEscolaEProvedor());
 	}
 
 	@GetMapping("/escola/{escolaId}")
-	public ResponseEntity<List<ContratoInternetRequestDTO>> listarPorEscolaEStatus(
+	public ResponseEntity<List<ContratoInternetResponseDto>> listarPorEscolaEStatus(
 			@PathVariable UUID escolaId,
 			@RequestParam StatusContrato status) {
 		return ResponseEntity.ok(contratoInternetService.buscarPorEscolaEStatus(escolaId, status));
