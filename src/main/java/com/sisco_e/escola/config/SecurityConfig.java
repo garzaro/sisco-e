@@ -1,5 +1,6 @@
 package com.sisco_e.escola.config;
 
+import com.sisco_e.escola.exception.CustomAccessDeniedHandler;
 import com.sisco_e.escola.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +25,22 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
-//CONTINUAR COM O LOGIN, PAREI COLOCANDO A ROTA NO
-// requestMatchers DO CONFIG VEJA LA O QUE FOI FEITO ANTE DE CONTINUAR
+
+/**
+ * TODO-list
+ * []
+ *
+ * **/
+
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UsuarioDetailsService usuarioDetailsService;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	@Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,7 +64,12 @@ public class SecurityConfig {
 //	                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception ->
+                        exception.accessDeniedHandler(customAccessDeniedHandler )) //403 user autenticado nao tem permissoes
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+//                .headers(headers ->
+//                        headers.frameOptions(frame -> frame.deny()))
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
@@ -108,3 +121,11 @@ public class SecurityConfig {
         return source;
     }
 }
+
+
+// sameOrigin())) - Situação	SAMEORIGIN
+//React incorpora uma página do próprio Sisco em iframe, mesma origem
+//<iframe
+//src="/relatorios/financeiros"
+//title="Relatórios financeiros"
+//        />
